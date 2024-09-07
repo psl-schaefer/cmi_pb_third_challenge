@@ -1,0 +1,230 @@
+---
+title: "Baseline Models V1"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(ggdark)
+  library(factoextra)
+  library(FactoMineR)
+  library(magick) # formatting
+  library(ranger)
+})
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "colors.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+# loading
+meta_df <- read_harmonized_meta_data(input_dir)
+data_list <- read_harmonized_experimental_data(input_dir)
+
+# filtering
+meta_df <- filter_harmonized_meta_data(meta_data=meta_df, experimental_data=data_list)
+data_list <- filter_harmonized_experimental_data(meta_data=meta_df, experimental_data=data_list)
+```
+
+# Task 1
+
+- 10-fold CV
+
+- Random Forest
+
+```{r}
+df_targets <- meta_df %>%
+  dplyr::filter(planned_day_relative_to_boost %in% c(0, 14)) %>%
+  dplyr::left_join(data_list$plasma_antibody_levels, by="specimen_id") %>%
+  dplyr::filter(isotype_antigen == "IgG_PT") %>%
+  dplyr::select(subject_id, planned_day_relative_to_boost, MFI_normalised) %>%
+  tidyr::pivot_wider(names_from="planned_day_relative_to_boost",
+                     values_from="MFI_normalised", names_prefix = "day_") %>%
+  dplyr::mutate(fc = day_14 / day_0) %>%
+  tidyr::drop_na()
+
+demo_covariates <- meta_df %>%
+  dplyr::select(subject_id, infancy_vac, biological_sex, ethnicity, 
+                age_at_boost, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::mutate(infancy_vac_value=1, biological_sex_value=1, 
+                ethnicity_value=1, dataset_value=1) %>%
+  tidyr::pivot_wider(names_from=infancy_vac, values_from=infancy_vac_value, 
+                     names_prefix="infancy_vac_") %>%
+  tidyr::pivot_wider(names_from=biological_sex, values_from=biological_sex_value,
+                     names_prefix="biological_sex_") %>%
+  tidyr::pivot_wider(names_from=ethnicity, values_from=ethnicity_value, 
+                     names_prefix="ethnicity_") %>%
+  tidyr::pivot_wider(names_from=dataset, values_from=dataset_value, 
+                     names_prefix="dataset_") %>%
+  mutate(across(everything(), .fns = ~replace_na(.,0)))
+
+pbmc_covariates <- meta_df %>%
+  dplyr::filter(planned_day_relative_to_boost %in% c(0)) %>%
+  dplyr::inner_join(data_list$pbmc_cell_frequency, by="specimen_id") %>%
+  dplyr::select(subject_id, cell_type_name, percent_live_cell) %>%
+  tidyr::pivot_wider(names_from="cell_type_name", values_from="percent_live_cell") %>%
+  mutate(across(everything(), .fns = ~replace_na(.,0)))
+
+df_all <- demo_covariates %>%
+  dplyr::inner_join(pbmc_covariates, by="subject_id") %>%
+  dplyr::inner_join(df_targets, by="subject_id")
+
+pbmc_feature_names <- unique(data_list$pbmc_cell_frequency$cell_type_name)
+demo_feature_names <- colnames(demo_covariates)[!(colnames(demo_covariates) %in% c("subject_id"))]
+```
+
+## 1a
+
+```{r}
+set.seed(42)
+rf_model <- ranger::ranger(x = df_all %>%
+                             dplyr::select(dplyr::all_of(c(demo_feature_names, "day_0"))),
+                           y = df_all %>%
+                             dplyr::pull(day_14), 
+                           importance = "permutation"
+)
+#rf_model$variable.importance
+rf_model$call <- NULL
+rf_model
+```
+
+```{r}
+set.seed(42)
+rf_model <- ranger::ranger(x = df_all %>%
+                             dplyr::select(dplyr::all_of(c(pbmc_feature_names, "day_0"))),
+                           y = df_all %>%
+                             dplyr::pull(day_14), 
+                           importance = "permutation"
+)
+#rf_model$variable.importance
+rf_model$call <- NULL
+rf_model
+```
+
+```{r}
+set.seed(42)
+rf_model <- ranger::ranger(x = df_all %>%
+                             dplyr::select(dplyr::all_of(c(demo_feature_names, pbmc_feature_names, "day_0"))),
+                           y = df_all %>%
+                             dplyr::pull(day_14), 
+                           importance = "permutation"
+)
+#rf_model$variable.importance
+rf_model$call <- NULL
+rf_model
+```
+
+## 1b
+
+```{r}
+set.seed(42)
+rf_model <- ranger::ranger(x = df_all %>%
+                             dplyr::select(dplyr::all_of(c(demo_feature_names, "day_0"))),
+                           y = df_all %>%
+                             dplyr::pull(fc), 
+                           importance = "permutation"
+)
+#rf_model$variable.importance
+rf_model$call <- NULL
+rf_model
+```
+
+```{r}
+set.seed(42)
+rf_model <- ranger::ranger(x = df_all %>%
+                             dplyr::select(dplyr::all_of(c(pbmc_feature_names, "day_0"))),
+                           y = df_all %>%
+                             dplyr::pull(fc), 
+                           importance = "permutation"
+)
+#rf_model$variable.importance
+rf_model$call <- NULL
+rf_model
+```
+
+```{r}
+set.seed(42)
+rf_model <- ranger::ranger(x = df_all %>%
+                             dplyr::select(dplyr::all_of(c(demo_feature_names, pbmc_feature_names, "day_0"))),
+                           y = df_all %>%
+                             dplyr::pull(fc), 
+                           importance = "permutation"
+)
+#rf_model$variable.importance
+rf_model$call <- NULL
+rf_model
+```
+
+```{r}
+df_all %>%
+  ggplot(aes(x=day_0, y=fc)) +
+  geom_point() +
+  geom_smooth() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(jsonlite)
+library(httr)
+
+# Base URL for the API
+base_url <- "https://www.cmi-pb.org/api/v5"
+#base_url <- "https://www.cmi-pb.org/api"
+
+# Define the endpoints you want to query
+endpoints <- c("/cell_type", "/gene")
+
+# Loop through endpoints and download JSON files
+for (endpoint in endpoints) {
+  # Construct full URL
+  url <- paste0(base_url, endpoint)
+  
+  # Make GET request
+  response <- GET(url)
+  
+  # Check if the request was successful
+  if (status_code(response) == 200) {
+    # Save the JSON content to a file
+    json_content <- content(response, as = "text", encoding = "UTF-8")
+    write(json_content, file = paste0("output_", basename(endpoint), ".json"))
+    cat("Downloaded:", endpoint, "\n")
+  } else {
+    cat("Failed to download", endpoint, "Status code:", status_code(response), "\n")
+  }
+}
+
+celltype_info <- purrr::map(jsonlite::read_json("output_cell_type.json"), function(l) {
+  as.data.frame(l)
+}) %>%
+  dplyr::bind_rows()
+
+str(jsonlite::read_json("output_gene.json")) %>% head()
+
+gene_info <- purrr::map(jsonlite::read_json("output_gene.json"), function(l) {
+  tibble::tibble(
+    versioned_ensembl_gene_id = l[["versioned_ensembl_gene_id"]],
+    gene_symbol = l[["gene_symbol"]]
+  )
+}) %>%
+  dplyr::bind_rows()
+```
+
+
+
+
+

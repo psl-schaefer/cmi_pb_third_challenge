@@ -1,0 +1,483 @@
+---
+title: "Batch Effects"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(ggdark)
+  library(factoextra)
+  library(FactoMineR)
+  library(magick) # formatting
+})
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "defaults.R"))
+source(file.path("..", "src", "colors.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+meta_df <- read_harmonized_meta_data(input_dir)
+data_list <- read_harmonized_experimental_data(input_dir)
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+```
+
+# Baseline (planned day 0)
+
+```{r}
+baseline_specimen <- meta_df %>%
+  dplyr::filter(planned_day_relative_to_boost==0) %>%
+  dplyr::pull(specimen_id)
+```
+
+## PBMC Fractions
+
+```{r}
+set.seed(42)
+
+pbmc_cell_frequency_wide <- data_list$pbmc_cell_frequency %>%
+  dplyr::filter(specimen_id %in% baseline_specimen) %>%
+  dplyr::filter(cell_type_name %in%
+                  experimental_data_settings$pbmc_cell_frequency$feature_subset) %>% 
+  dplyr::left_join((meta_df %>%
+                      dplyr::select(specimen_id, dataset) %>%
+                      dplyr::distinct()),
+                   by="specimen_id") %>%
+  dplyr::left_join((celltype_meta %>%
+                      dplyr::select(cell_type_name, dataset, level) %>%
+                      dplyr::distinct()),
+                    by=c("dataset", "cell_type_name")) %>%
+  dplyr::select(specimen_id, cell_type_name, percent_live_cell) %>%
+  tidyr::pivot_wider(names_from=cell_type_name, 
+                     values_from=percent_live_cell) %>%
+  dplyr::mutate_all(~tidyr::replace_na(., 0))
+
+pca_out <- pbmc_cell_frequency_wide %>%
+  tibble::column_to_rownames(var="specimen_id") %>%
+  as.matrix() %>%
+  irlba::prcomp_irlba(x=., n=2, center = TRUE, scale. = FALSE)
+
+rownames(pca_out$rotation) <- pbmc_cell_frequency_wide %>%
+  tibble::column_to_rownames(var="specimen_id") %>%
+  colnames()
+
+rownames(pca_out$x) <- pbmc_cell_frequency_wide$specimen_id
+
+pbmc_fill <- pbmc_cell_frequency_wide %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::pull(dataset)
+
+pbmc_cell_frequency_pca_plot <- pca_out$x %>%
+  as.data.frame() %>%
+  rownames_to_column("specimen_id") %>%
+  dplyr::mutate(specimen_id=as.integer(specimen_id)) %>%
+  dplyr::left_join(pbmc_cell_frequency_wide, by="specimen_id") %>%
+  dplyr::left_join(meta_df, by="specimen_id")
+
+var_contrib <- get_pca_var(pca_out)$contrib
+top_variables <- rowSums(var_contrib) %>%
+  sort(decreasing=TRUE) %>%
+  head(10) %>%
+  names()
+```
+
+```{r}
+#| crop: true
+#| 
+pbmc_cell_frequency_pca_plot %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=dataset),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+
+```{r}
+#| crop: true
+#| 
+pbmc_cell_frequency_pca_plot %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=actual_day_relative_to_boost),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+```{r fig.width=10, fig.height=8}
+#| crop: true
+#| 
+pbmc_cell_frequency_pca_plot %>%
+  .[, c("PC1", "PC2", top_variables)] %>%
+  tidyr::pivot_longer(cols=top_variables, 
+                      values_to = "percent_live_cell",
+                      names_to = "celltypes") %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=percent_live_cell), alpha=0.5) + 
+  facet_wrap(~celltypes) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+
+```{r}
+#| crop: true
+#| 
+fviz_pca_biplot(pca_out, 
+                geom.ind = "point",
+                pointshape = 21,
+                pointsize = 2.5,
+                fill.ind = pbmc_fill,
+                col.ind = "black",
+                repel = TRUE,
+                select.var = list(name = top_variables)
+             ) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+## PBMC Gene Expression
+
+```{r}
+set.seed(42)
+
+pbmc_gene_expression_wide <- data_list$pbmc_gene_expression %>%
+  dplyr::filter(specimen_id %in% baseline_specimen) %>%
+  dplyr::select(-tpm) %>%
+  dplyr::distinct() %>% # why is this necessary?
+  tidyr::pivot_wider(names_from="versioned_ensembl_gene_id", 
+                     values_from="raw_count")
+
+pbmc_gene_expression_mtx <- pbmc_gene_expression_wide %>%
+ tibble::column_to_rownames(var="specimen_id") %>%
+  as.matrix()
+
+stopifnot(!any(is.na(pbmc_gene_expression_mtx)))
+stopifnot(!any(is.infinite(pbmc_gene_expression_mtx)))
+
+# filter genes
+min_counts <- 200
+min_samples <- 20
+
+genes_to_keep <- colnames(pbmc_gene_expression_mtx)[
+  (colSums(pbmc_gene_expression_mtx) >= min_counts) &
+    (colSums(pbmc_gene_expression_mtx > 0) >= min_samples)
+]
+print(length(genes_to_keep))
+
+target_sum <- 1e6
+pbmc_gene_expression_norm <- 
+  pbmc_gene_expression_mtx / rowSums(pbmc_gene_expression_mtx) * target_sum
+
+stopifnot(all(dplyr::near(rowSums(pbmc_gene_expression_norm), target_sum, tol=0.1)))
+
+pbmc_gene_expression_norm <- pbmc_gene_expression_norm[ , genes_to_keep]
+
+pbmc_gene_expression_log <- log1p(pbmc_gene_expression_norm)
+
+# only consider highly variable genes?
+
+pca_out <- irlba::prcomp_irlba(x=pbmc_gene_expression_log, 
+                               n=2, center = TRUE, scale. = FALSE)
+
+rownames(pca_out$rotation) <- colnames(pbmc_gene_expression_log)
+rownames(pca_out$x) <- rownames(pbmc_gene_expression_log)
+
+pca_plot_df <- pca_out$x %>%
+  as.data.frame() %>%
+  rownames_to_column("specimen_id") %>%
+  dplyr::mutate(specimen_id=as.integer(specimen_id)) %>%
+  dplyr::left_join(pbmc_gene_expression_wide[, c("specimen_id", genes_to_keep)], by="specimen_id") %>%
+  dplyr::left_join(meta_df, by="specimen_id")
+
+var_contrib <- get_pca_var(pca_out)$contrib
+top_variables <- rowSums(var_contrib) %>%
+  sort(decreasing=TRUE) %>%
+  head(10) %>%
+  names()
+```
+
+```{r}
+#| crop: true
+#| 
+pca_plot_df %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=dataset),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+
+```{r}
+#| crop: true
+#| 
+pca_plot_df %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=actual_day_relative_to_boost),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+```{r fig.width=10, fig.height=8}
+#| crop: true
+#| 
+pca_plot_df %>%
+  .[, c("PC1", "PC2", top_variables)] %>%
+  tidyr::pivot_longer(cols=top_variables, 
+                      values_to = "percent_live_cell",
+                      names_to = "celltypes") %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=percent_live_cell), alpha=0.5) + 
+  facet_wrap(~celltypes) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+
+```{r}
+#| crop: true
+#| 
+fviz_pca_biplot(pca_out, 
+                geom.ind = "point",
+                pointshape = 21,
+                pointsize = 2.5,
+                fill.ind = pca_plot_df$dataset,
+                col.ind = "black",
+                repel = TRUE,
+                select.var = list(name = top_variables)
+             ) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+## Plasma Antibody Levels
+
+```{r}
+set.seed(42)
+
+# use MFI_normalised or MFI?
+feature_names <- "isotype_antigen"
+feature_values <- "MFI_normalised"
+
+plasma_antibody_levels_wide <- data_list$plasma_antibody_levels %>%
+  dplyr::filter(specimen_id %in% baseline_specimen) %>%
+  .[, c("specimen_id", feature_names, feature_values)] %>%
+  tidyr::pivot_wider(names_from=feature_names, 
+                     values_from=feature_values)
+
+plasma_antibody_levels_mtx <- plasma_antibody_levels_wide %>%
+ tibble::column_to_rownames(var="specimen_id") %>%
+  as.matrix()
+
+#rowSums(plasma_antibody_levels_mtx)
+
+pca_out <- irlba::prcomp_irlba(x=plasma_antibody_levels_mtx, 
+                               n=2, center = TRUE, scale. = FALSE)
+
+rownames(pca_out$rotation) <- colnames(plasma_antibody_levels_mtx)
+rownames(pca_out$x) <- rownames(plasma_antibody_levels_mtx)
+
+pca_plot_df <- pca_out$x %>%
+  as.data.frame() %>%
+  rownames_to_column("specimen_id") %>%
+  dplyr::mutate(specimen_id=as.integer(specimen_id)) %>%
+  dplyr::left_join(plasma_antibody_levels_wide, by="specimen_id") %>%
+  dplyr::left_join(meta_df, by="specimen_id")
+
+var_contrib <- get_pca_var(pca_out)$contrib
+top_variables <- rowSums(var_contrib) %>%
+  sort(decreasing=TRUE) %>%
+  head(10) %>%
+  names()
+```
+
+```{r}
+#| crop: true
+#| 
+pca_plot_df %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=dataset),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+
+```{r}
+#| crop: true
+#| 
+pca_plot_df %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=actual_day_relative_to_boost),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+```{r fig.width=10, fig.height=8}
+#| crop: true
+#| 
+pca_plot_df %>%
+  .[, c("PC1", "PC2", top_variables)] %>%
+  tidyr::pivot_longer(cols=top_variables, 
+                      values_to = feature_values,
+                      names_to = feature_names) %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=.data[[feature_values]]), alpha=0.5) + 
+  facet_wrap(~.data[[feature_names]]) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+
+```{r}
+#| crop: true
+#| 
+fviz_pca_biplot(pca_out, 
+                geom.ind = "point",
+                pointshape = 21,
+                pointsize = 2.5,
+                fill.ind = pca_plot_df$dataset,
+                col.ind = "black",
+                repel = TRUE,
+                select.var = list(name = top_variables)
+             ) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+## Plasma Cytokine Concentration by Legendplex
+
+```{r}
+set.seed(42)
+
+# use MFI_normalised or MFI?
+feature_names <- "protein_id"
+feature_values <- "concentration"
+
+legendplex_wide <- data_list$plasma_cytokine_concentrations_by_legendplex %>%
+  dplyr::filter(specimen_id %in% baseline_specimen) %>%
+  .[, c("specimen_id", feature_names, feature_values)] %>%
+  tidyr::pivot_wider(names_from=feature_names, 
+                     values_from=feature_values)
+
+legendplex_mtx <- legendplex_wide %>%
+ tibble::column_to_rownames(var="specimen_id") %>%
+  as.matrix()
+
+#rowSums(plasma_antibody_levels_mtx)
+
+pca_out <- irlba::prcomp_irlba(x=legendplex_mtx, 
+                               n=2, center = TRUE, scale. = FALSE)
+
+rownames(pca_out$rotation) <- colnames(legendplex_mtx)
+rownames(pca_out$x) <- rownames(legendplex_mtx)
+
+pca_plot_df <- pca_out$x %>%
+  as.data.frame() %>%
+  rownames_to_column("specimen_id") %>%
+  dplyr::mutate(specimen_id=as.integer(specimen_id)) %>%
+  dplyr::left_join(legendplex_wide, by="specimen_id") %>%
+  dplyr::left_join(meta_df, by="specimen_id")
+
+var_contrib <- get_pca_var(pca_out)$contrib
+top_variables <- rowSums(var_contrib) %>%
+  sort(decreasing=TRUE) %>%
+  head(10) %>%
+  names()
+```
+
+```{r}
+#| crop: true
+#| 
+pca_plot_df %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=dataset),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+
+```{r}
+#| crop: true
+#| 
+pca_plot_df %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=actual_day_relative_to_boost),
+             alpha=0.5) + 
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+```{r fig.width=10, fig.height=8}
+#| crop: true
+#| 
+pca_plot_df %>%
+  .[, c("PC1", "PC2", top_variables)] %>%
+  tidyr::pivot_longer(cols=top_variables, 
+                      values_to = feature_values,
+                      names_to = feature_names) %>%
+  ggplot() +
+  geom_point(aes(x=PC1, y=PC2, color=.data[[feature_values]]), alpha=0.5) + 
+  facet_wrap(~.data[[feature_names]]) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_color_viridis_c()
+```
+
+
+```{r}
+#| crop: true
+#| 
+fviz_pca_biplot(pca_out, 
+                geom.ind = "point",
+                pointshape = 21,
+                pointsize = 2.5,
+                fill.ind = pca_plot_df$dataset,
+                col.ind = "black",
+                repel = TRUE,
+                select.var = list(name = top_variables)
+             ) +
+  coord_equal() +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+## Plasma Cytokine Concentration by Olink
+
+## T Cell Activation
+
+## T Cell Polarization
+
+# Appendix
+
+<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" >Session Information</button><div id="collapseOne" class="accordion-collapse collapse"><div>
+
+```{r}
+sessionInfo()
+```
+
+</div></div>

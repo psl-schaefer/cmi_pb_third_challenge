@@ -1,0 +1,32 @@
+project:
+  type: website
+  output-dir: docs
+
+bibliography: ref.bib 
+
+website:
+  title: "PSLS @ 3rd CMI-PB Challenge"
+  navbar:
+    right:
+      - text: "Home"
+        href: index.qmd
+      - icon: github
+        href: https://github.com/psl-schaefer
+      - icon: twitter
+        href: https://x.com/psl_schaefer
+      - icon: linkedin
+        href: https://www.linkedin.com/in/philipp-sl-schaefer/
+
+format:
+  html:
+    html-math-method: mathjax
+    theme: darkly
+    css: styles.css
+    toc: true
+    toc_float: yes
+    toc_depth: 2
+    number-sections: true
+    df-print: paged
+    code-tools: true
+    code-fold: true
+    code-overflow: scroll
