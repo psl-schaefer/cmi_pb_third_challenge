@@ -371,13 +371,24 @@ fviz_pca_biplot(pca_out,
 
 ## Plasma Cytokine Concentration by Legendplex
 
-```{r}
+```{r fig.width=8, fig.height=6}
+#| crop: true
+#| 
 set.seed(42)
 
 # use MFI_normalised or MFI?
 feature_names <- "protein_id"
 feature_values <- "concentration"
 
+data_list$plasma_cytokine_concentrations_by_legendplex %>%
+  ggplot() +
+  geom_histogram(aes(x=.data[[feature_values]]), bins=30) + 
+  facet_wrap(~.data[[feature_names]], scales="free") +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+
+```{r}
 legendplex_wide <- data_list$plasma_cytokine_concentrations_by_legendplex %>%
   dplyr::filter(specimen_id %in% baseline_specimen) %>%
   .[, c("specimen_id", feature_names, feature_values)] %>%
@@ -387,6 +398,13 @@ legendplex_wide <- data_list$plasma_cytokine_concentrations_by_legendplex %>%
 legendplex_mtx <- legendplex_wide %>%
  tibble::column_to_rownames(var="specimen_id") %>%
   as.matrix()
+
+outliers <- c(
+  names(legendplex_mtx[, "P13501"])[legendplex_mtx[, "P13501"] > quantile(legendplex_mtx[, "P13501"], probs=0.75) * 3],
+  names(legendplex_mtx[, "P13500"])[legendplex_mtx[, "P13500"] > quantile(legendplex_mtx[, "P13500"], probs=0.75) * 3]
+)
+
+legendplex_mtx <- legendplex_mtx[!rownames(legendplex_mtx) %in% outliers, ]
 
 #rowSums(plasma_antibody_levels_mtx)
 
@@ -570,10 +588,6 @@ fviz_pca_biplot(pca_out,
 ```
 
 ## T Cell Activation
-
-```{r}
-data_list$t_cell_activation
-```
 
 ```{r}
 set.seed(42)
