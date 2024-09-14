@@ -1,6 +1,7 @@
 
 library(readr)
 library(dplyr)
+library(stringr)
 library(lubridate)
 
 read_gene_meta <- function(input_dir) {
@@ -8,6 +9,13 @@ read_gene_meta <- function(input_dir) {
                     delim=";", show_col_types = FALSE) %>%
     return()
 }
+
+read_protein_meta <- function(input_dir) {
+  readr::read_delim(file.path(input_dir, "meta_data", "protein.csv"), 
+                    delim=";", show_col_types = FALSE) %>%
+    return()
+}
+
 
 read_celltype_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "celltype.csv"), 
@@ -66,6 +74,7 @@ filter_harmonized_meta_data <- function(meta_data, experimental_data) {
   return(meta_data)
 }
 
+
 read_harmonized_experimental_data <- function(input_dir) {
   # input_dir <- "/Users/pschafer/Projects/cmi_pb_third_challenge/data"
   experimental_data <- list.files(path = file.path(input_dir, 
@@ -81,6 +90,7 @@ read_harmonized_experimental_data <- function(input_dir) {
     stringr::str_remove("training_") %>%
     stringr::str_remove("_long.tsv")
   
+  # TODO: Replace this by my defaults file or not?
   feature_name_per_modality <- list(
     "pbmc_cell_frequency" = "cell_type_name",
     "pbmc_gene_expression" = "versioned_ensembl_gene_id",
@@ -101,6 +111,57 @@ read_harmonized_experimental_data <- function(input_dir) {
   return(experimental_data)
 }
 
+
+read_raw_experimental_data <- function(input_dir) {
+  # input_dir <- "/Users/pschafer/Projects/cmi_pb_third_challenge/data"
+  
+  all_exp_files <- list.files(path = file.path(input_dir, "raw_datasets"), 
+                              recursive=TRUE, full.names=TRUE) %>%
+    magrittr::extract(!grepl("specimen|subject", .))
+  
+  all_exp_data <- list(
+    "pbmc_cell_frequency",
+    "pbmc_gene_expression",
+    "plasma_ab_titer",
+    "plasma_cytokine_concentration_by_legendplex",
+    "plasma_cytokine_concentration_by_olink",
+    "t_cell_activation",
+    "t_cell_polarization"
+  ) %>%
+    purrr::set_names() %>%
+    purrr::map(., function(modality) {
+      # modality <- "pbmc_cell_frequency"
+      purrr::map(all_exp_files[grepl(modality, all_exp_files)],
+                 ~ readr::read_tsv(.x, show_col_types = FALSE)) %>%
+        dplyr::bind_rows()
+    })
+  
+  # recreate the isotype_antigen column from the harmonized data
+  all_exp_data$plasma_ab_titer <- all_exp_data$plasma_ab_titer %>%
+    dplyr::mutate(isotype_antigen = paste0(isotype, "_", antigen))
+  
+  # TODO: Replace this by my defaults file or not?
+  feature_name_per_modality <- list(
+    "pbmc_cell_frequency" = "cell_type_name",
+    "pbmc_gene_expression" = "versioned_ensembl_gene_id",
+    "plasma_ab_titer" = "isotype_antigen",
+    "plasma_cytokine_concentration_by_legendplex" = "protein_id",
+    "plasma_cytokine_concentration_by_olink" = "protein_id",
+    "t_cell_activation" = "stimulation",
+    "t_cell_polarization" = "protein_id"
+  )
+  
+  # make sure the feature names have no spaces (such that the wide format works better)
+  all_exp_data <- purrr::imap(all_exp_data, function(df, modality) {
+    # modality <- "pbmc_cell_frequency"; df <- all_exp_data$pbmc_cell_frequency
+    df %>%
+      dplyr::mutate(!!feature_name_per_modality[[modality]] := str_replace_all(df[[feature_name_per_modality[[modality]]]], " ", "_"))
+  })
+  
+  return(all_exp_data)
+}
+
+
 filter_harmonized_experimental_data <- function(meta_data, experimental_data, verbose=TRUE) {
   # 1. Only keep specimen that are documented in our meta_data
   experimental_data <- purrr::imap(
@@ -110,7 +171,7 @@ filter_harmonized_experimental_data <- function(meta_data, experimental_data, ve
       filtered_data <- .x %>% dplyr::filter(specimen_id %in% meta_data$specimen_id)
       final_count <- nrow(filtered_data)
       removed_count <- initial_count - final_count
-      if (verbose) message("Removed ", removed_count, " specimens from ", .y)
+      if (verbose) message("Removed ", removed_count, " specimens from ", .y, "because missing in meta data")
       return(filtered_data)
     }
   )

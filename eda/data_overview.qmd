@@ -31,8 +31,11 @@ input_dir = file.path("..", "data")
 
 ```{r}
 meta_df <- read_harmonized_meta_data(input_dir)
-data_list <- read_harmonized_experimental_data(input_dir)
+
+#data_list <- read_harmonized_experimental_data(input_dir)
+data_list <- read_raw_experimental_data(input_dir)
 data_list <- filter_harmonized_experimental_data(meta_df, data_list)
+
 celltype_meta <- read_celltype_meta(input_dir)
 gene_meta <- read_gene_meta(input_dir)
 ```
@@ -160,10 +163,13 @@ assays_per_specimen %>%
 ```
 
 ```{r fig.height=6, fig.width=12}
+for (day in c(0, 1, 3, 14)) {
+  
 annotation_data <- meta_df %>%
-  dplyr::select(specimen_id, planned_day_relative_to_boost, infancy_vac, dataset, biological_sex) %>%
+  dplyr::select(specimen_id, planned_day_relative_to_boost, infancy_vac, 
+                dataset, biological_sex) %>%
   dplyr::filter(specimen_id %in% assays_per_specimen$specimen_id) %>%
-  dplyr::filter(planned_day_relative_to_boost == 0) %>% 
+  dplyr::filter(planned_day_relative_to_boost == !!day) %>% 
   dplyr::select(- planned_day_relative_to_boost) %>%
   dplyr::arrange(dataset, infancy_vac, biological_sex) %>%
   tibble::column_to_rownames("specimen_id") %>%
@@ -185,7 +191,7 @@ heatmap_data <- heatmap_data[, rownames(annotation_data)]
 ht <- Heatmap(heatmap_data, 
               name = "heatmap", 
               row_title = "", 
-              column_title = "Baseline (Planned Day 0) Specimens",
+              column_title = paste0("Specimens for Planned Day ", day),
               col = colorRamp2(c(0, 1), c("white", "black")),
               cluster_rows = FALSE,
               cluster_columns = FALSE,
@@ -206,6 +212,11 @@ draw(ht,
      annotation_legend_side = "top",
      show_heatmap_legend = FALSE # don't show colorbar
      )
+}
+```
+
+```{r}
+
 ```
 
 # Training Data
@@ -233,7 +244,8 @@ meta_df %>%
   dplyr::mutate(task_1_possible = 
                   subject_id %in% (meta_df %>%
                                      dplyr::filter(planned_day_relative_to_boost==14) %>%
-                                     dplyr::left_join(data_list$plasma_antibody_levels, by="specimen_id") %>%
+                                     dplyr::left_join(data_list$plasma_ab_titer,
+                                                      by="specimen_id") %>%
                                      dplyr::filter(isotype_antigen=="IgG_PT") %>%
                                      tidyr::drop_na() %>%
                                      dplyr::pull(subject_id))
@@ -317,9 +329,9 @@ meta_df %>%
 value_vars_per_modality <- list(
   "pbmc_cell_frequency" = c("percent_live_cell"),
   "pbmc_gene_expression" = c("raw_count", "tpm"),
-  "plasma_antibody_levels" = c("MFI", "MFI_normalised"),
-  "plasma_cytokine_concentrations_by_legendplex" = c("concentration"),
-  "plasma_cytokine_concentrations_by_olink" = c("concentration"),
+  "plasma_ab_titer" = c("MFI", "MFI_normalised"),
+  "plasma_cytokine_concentration_by_legendplex" = c("concentration"),
+  "plasma_cytokine_concentration_by_olink" = c("concentration"),
   "t_cell_activation" = c("analyte_percentages"),
   "t_cell_polarization" = c("analyte_counts")
 )
@@ -390,7 +402,7 @@ data_list$pbmc_cell_frequency %>%
 ### Per Protein
 
 ```{r fig.height=6}
-data_list$plasma_cytokine_concentrations_by_olink %>%
+data_list$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(is_na = is.na(concentration)) %>%
   dplyr::group_by(protein_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
@@ -405,7 +417,7 @@ data_list$plasma_cytokine_concentrations_by_olink %>%
 ### Per Specimen
 
 ```{r}
-data_list$plasma_cytokine_concentrations_by_olink %>%
+data_list$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(is_na = is.na(concentration)) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
@@ -418,7 +430,7 @@ data_list$plasma_cytokine_concentrations_by_olink %>%
 ```
 
 ```{r}
-data_list$plasma_cytokine_concentrations_by_olink %>%
+data_list$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(is_na = is.na(concentration)) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
@@ -433,17 +445,17 @@ data_list$plasma_cytokine_concentrations_by_olink %>%
 ## How does the quality control for Olink look like?
 
 ```{r}
-data_list$plasma_cytokine_concentrations_by_olink %>%
+data_list$plasma_cytokine_concentration_by_olink %>%
   dplyr::count(quality_control)
 ```
 
 
 ```{r}
-data_list$plasma_cytokine_concentrations_by_olink %>%
+data_list$plasma_cytokine_concentration_by_olink %>%
   dplyr::left_join(meta_df, by="specimen_id") %>%
   dplyr::count(partition, dataset)
 
-data_list$plasma_cytokine_concentrations_by_legendplex %>%
+data_list$plasma_cytokine_concentration_by_legendplex %>%
   dplyr::left_join(meta_df, by="specimen_id") %>%
   dplyr::count(partition, dataset)
 ```
@@ -452,7 +464,7 @@ data_list$plasma_cytokine_concentrations_by_legendplex %>%
 
 ```{r}
 # check how often is it below the limit of detection?
-data_list$plasma_cytokine_concentrations_by_olink %>%
+data_list$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
   dplyr::count(below_lod)
 ```
@@ -462,7 +474,7 @@ data_list$plasma_cytokine_concentrations_by_olink %>%
 ### Per Isotype-Antigen
 
 ```{r}
-data_list$plasma_antibody_levels %>%
+data_list$plasma_ab_titer %>%
   dplyr::group_by(isotype_antigen) %>%
   dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %>%
   ggplot(aes(x=is_antigen_specific_fraction)) +
@@ -476,7 +488,7 @@ data_list$plasma_antibody_levels %>%
 So in some specimen we have non-specific antibody measurements? What does that mean?
 
 ```{r}
-data_list$plasma_antibody_levels %>%
+data_list$plasma_ab_titer %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %>%
   ggplot(aes(x=is_antigen_specific_fraction)) +

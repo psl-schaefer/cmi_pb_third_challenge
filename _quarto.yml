@@ -1,7 +1,11 @@
 project:
   type: website
   output-dir: docs
-
+  render:
+  - "*.qmd"
+  - "!tmp/"
+  - "!external_files/"
+  
 bibliography: ref.bib 
 
 website:

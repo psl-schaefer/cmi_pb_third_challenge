@@ -1,0 +1,8 @@
+data
+tmp
+.Rproj.user
+*.Rproj
+
+/.quarto/
+
+.DS_Store

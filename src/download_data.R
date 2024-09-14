@@ -26,7 +26,7 @@ if (!file.exists(meta_data_dir)) {
 }
 
 base_url <- "https://www.cmi-pb.org/api/v5" # "https://www.cmi-pb.org/api"
-endpoints <- c("/cell_type", "/gene")
+endpoints <- c("/cell_type", "/gene", "/protein")
 for (endpoint in endpoints) {
   url <- paste0(base_url, endpoint)
   response <- GET(url)
@@ -143,7 +143,7 @@ celltype_info <- celltype_info %>%
     ) %>%
   dplyr::ungroup()
 
-# Lastly add a column indicating whether the cell_type_name is present in the data
+# Lastly add a column indicating whether the cell_type_name is present in the raw data
 meta_df <- dplyr::bind_rows(
   read_tsv(file.path(data_dir, 
                      "harmonized_and_processed_data", 
@@ -156,18 +156,11 @@ meta_df <- dplyr::bind_rows(
                      "challenge_subject_specimen.tsv"), 
            show_col_types = FALSE)
 )
-celltype_per_dataset <- dplyr::bind_rows(
-  read_tsv(file.path(data_dir, 
-                     "harmonized_and_processed_data", 
-                     "master_harmonized_data_TSV", 
-                     "training_pbmc_cell_frequency_long.tsv"), 
-           show_col_types = FALSE),
-  read_tsv(file.path(data_dir, 
-                     "harmonized_and_processed_data", 
-                     "master_harmonized_data_TSV", 
-                     "challenge_pbmc_cell_frequency_long.tsv"), 
-           show_col_types = FALSE)
-) %>%
+celltype_per_dataset <- list.files(path = file.path(data_dir, "raw_datasets"), 
+                            recursive=TRUE, full.names=TRUE) %>%
+  magrittr::extract(grepl("pbmc_cell_frequency", .)) %>%
+  purrr::map(., ~ read_tsv(.x, show_col_types=FALSE)) %>%
+  dplyr::bind_rows() %>%
   dplyr::left_join((meta_df %>% 
                       dplyr::select(specimen_id, dataset)),
                    by="specimen_id") %>%
@@ -178,9 +171,12 @@ celltype_info <- celltype_info %>%
   dplyr::mutate(is_in_2020 = cell_type_name %in% celltype_per_dataset$cell_type_name[celltype_per_dataset$dataset=="2020_dataset"]) %>%
   dplyr::mutate(is_in_2021 = cell_type_name %in% celltype_per_dataset$cell_type_name[celltype_per_dataset$dataset=="2021_dataset"]) %>%
   dplyr::mutate(is_in_2022 = cell_type_name %in% celltype_per_dataset$cell_type_name[celltype_per_dataset$dataset=="2022_dataset"]) %>%
+  dplyr::mutate(is_in_2023 = cell_type_name %in% celltype_per_dataset$cell_type_name[celltype_per_dataset$dataset=="2022_dataset"]) %>%
   dplyr::mutate(in_experimental_data = cell_type_name %in% celltype_per_dataset$cell_type_name)
 
 readr::write_csv2(celltype_info, file=file.path(meta_data_dir, "celltype.csv"))
+
+
 
 gene_info <- purrr::map(jsonlite::read_json(file.path(meta_data_dir, "gene.json")), function(l) {
   tibble::tibble(
@@ -191,6 +187,20 @@ gene_info <- purrr::map(jsonlite::read_json(file.path(meta_data_dir, "gene.json"
   dplyr::bind_rows()
 
 readr::write_csv2(gene_info, file=file.path(meta_data_dir, "gene.csv"))
+
+
+protein_info <- purrr::map(jsonlite::read_json(file.path(meta_data_dir, "protein.json")), function(l) {
+  tibble::tibble(
+    uniprot_id = l[["uniprot_id"]],
+    mapping_db = l[["mapping_db"]],
+    versioned_ensembl_protein_id = l[["versioned_ensembl_protein_id"]],
+    versioned_ensembl_transcript_id = l[["versioned_ensembl_transcript_id"]]
+  )
+}) %>%
+  dplyr::bind_rows()
+
+readr::write_csv2(protein_info, file=file.path(meta_data_dir, "protein.csv"))
+
 
 # Ontology data (not sure what to do with this...)
 download.file("https://www.cmi-pb.org/myterminology/cmi-pb.owl", file.path(data_dir, "cmi-pb.owl"))
@@ -220,3 +230,7 @@ for (i in seq_along(classes)) {
 # View the resulting list
 #print(xml_list)
 
+
+# Download the gene info often used in the recommended processing files
+download.file("https://raw.githubusercontent.com/CMI-PB/second-challenge-train-dataset-preparation/main/data/gene_90_38_export.tsv", 
+              file.path(meta_data_dir, "gene_90_38_export.tsv"), method = "curl")
