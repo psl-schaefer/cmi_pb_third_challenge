@@ -101,14 +101,22 @@ meta_data %>%
 
 ## What is the age range
 
-```{r}
-meta_data %>%
+```{r fig.width=12, fig.height=4}
+p1 <- meta_data %>%
   ggplot() + 
   geom_histogram(aes(x=age_at_boost, fill=dataset, y=after_stat(density)), 
-                 color="black", position="identity", bins=30) +
+                 color="black", position="identity", bins=30, show.legend=FALSE) +
   facet_wrap(~dataset) +
   scale_fill_manual(values=dataset_colors) +
   ggdark::dark_mode(verbose=FALSE)
+
+p2 <- meta_data %>%
+  ggplot() +
+  geom_violin(aes(y=dataset, x=age_at_boost, fill=dataset)) +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_fill_manual(values=dataset_colors)
+
+cowplot::plot_grid(p1, p2, ncol=2, rel_widths=c(1.5,1))
 ```
 
 # Assays & Timepoints per Subject / Dataset
@@ -224,8 +232,101 @@ draw(ht,
 }
 ```
 
-```{r}
+## How large is the variance in the baseline measurements?
 
+```{r}
+plot_time_course <- function(experimental_data, modality) {
+  #experimental_data <- exp_data; modality <- "pbmc_cell_frequency"
+  
+  modality_settings <- experimental_data_settings[[modality]]
+  feature_col <- modality_settings$feature_col
+  value_col <- modality_settings$value_col
+  
+  plot_df <- experimental_data[[modality]] %>%
+    dplyr::left_join(meta_data, by="specimen_id") %>%
+    dplyr::filter(planned_day_relative_to_boost <= 0)
+  
+  # only keep datasets for which we have more than one time point
+  datasets_to_keep <- plot_df %>%
+    dplyr::select(dataset, planned_day_relative_to_boost) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(dataset) %>%
+    dplyr::summarize(n = n()) %>%
+    dplyr::filter(n > 1) %>%
+    dplyr::pull(dataset)
+  
+  plot_df <- plot_df %>%
+    dplyr::filter(dataset %in% datasets_to_keep)
+  
+  if ("feature_subset" %in% names(modality_settings)) {
+    plot_df <- plot_df %>% 
+      dplyr::filter(.data[[feature_col]] %in% modality_settings$feature_subset)
+  }
+  plot_df <- plot_df %>%
+    dplyr::mutate(specimen_id = factor(specimen_id))
+  
+  # check for significant slopes?
+  pvals <- purrr::map_dfr(unique(plot_df$dataset), function(d) {
+    purrr::map_dfr(unique(plot_df[[feature_col]]), function(f) {
+      # d=plot_df$dataset[1]; f=plot_df[[feature_col]][1]
+      model_df <- plot_df %>%
+        dplyr::filter(dataset==d, .data[[feature_col]]==f)
+      lin_model <- lm(formula=paste0(value_col, " ~ planned_day_relative_to_boost"),
+         data = model_df)
+      tibble(dataset=d, feature=f, pval=summary(lin_model)$coefficients[2, 4])
+    })
+  }) %>%
+    dplyr::mutate(padj = stats::p.adjust(pval))
+  pvals %>%
+    dplyr::filter(padj < 0.05) %>%
+    print()
+  
+  p1 <- plot_df %>%
+    dplyr::group_by(subject_id, .data[[feature_col]]) %>%
+    dplyr::summarize(min_feat = min(.data[[value_col]]),
+                     max_feat = max(.data[[value_col]]),
+                     mean_feat = mean(.data[[value_col]]),
+                     sd_feat = sd(.data[[value_col]]),
+                     .groups = "drop") %>%
+    dplyr::mutate(cv = sd_feat / mean_feat) %>%
+    ggplot() +
+    geom_violin(aes(y=.data[[feature_col]], x=cv)) +
+    ggdark::dark_mode() +
+    labs(x="Coefficient of Variation (CV)")
+  
+  p2 <- plot_df %>%
+    ggplot(aes(x=planned_day_relative_to_boost, y=.data[[value_col]])) +
+    geom_point(aes(color=dataset), alpha=0.5) +
+    geom_line(aes(group=subject_id), alpha=0.5) +
+    facet_wrap(~.data[[feature_col]], scales="free_y") +
+    geom_smooth(aes(color=dataset), method="lm", formula = 'y ~ x') +
+    ggdark::dark_mode()
+  return(list(p1=p1, p2=p2))
+}
+```
+
+```{r fig.width=10, fig.height=6}
+plot_time_course(experimental_data=exp_data, modality="pbmc_cell_frequency")
+```
+
+```{r fig.width=10, fig.height=6}
+plot_time_course(experimental_data=exp_data, modality="plasma_ab_titer")
+```
+
+```{r fig.width=10, fig.height=6}
+plot_time_course(experimental_data=exp_data, modality="plasma_cytokine_concentration_by_legendplex")
+```
+
+```{r fig.width=10, fig.height=6}
+plot_time_course(experimental_data=exp_data, modality="plasma_cytokine_concentration_by_olink")
+```
+
+```{r fig.width=10, fig.height=6}
+plot_time_course(experimental_data=exp_data, modality="t_cell_activation")
+```
+
+```{r fig.width=10, fig.height=6}
+plot_time_course(experimental_data=exp_data, modality="t_cell_polarization")
 ```
 
 # Training Data
@@ -338,6 +439,20 @@ purrr::imap(exp_data, function(df, modality) {
   tibble(modality = modality, feature_col = feature_col, sum_na = sum(is.na(df[[value_col]])))
 }) %>%
   dplyr::bind_rows()
+```
+
+## Wide format
+
+```{r}
+purrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, impute=""),
+                  function(mtx, modality) {
+                    rmeans <- rowMeans(is.na(mtx))
+                    tibble(modality=modality, 
+                           subject_id = names(rmeans), 
+                           na_frac=rmeans)
+           }) %>%
+  dplyr::group_by(modality) %>%
+  dplyr::summarise(mean_na_frac = mean(na_frac))
 ```
 
 ## What is the fraction of NA values in the PBMC Cell Type Frequencies
@@ -534,8 +649,14 @@ exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::filter(protein_id %in% c("P60568"))
 ```
 
+```{r}
+exp_data$plasma_ab_titer %>%
+  dplyr::mutate(below_lod = MFI < lower_limit_of_detection) %>%
+  dplyr::pull(below_lod) %>%
+  mean(na.rm=TRUE)
+```
 
-## What is the fraction of unspecific antibody measurements
+## What is the fraction of antigen-specific antibody measurements
 
 ### Per Isotype-Antigen
 
@@ -549,6 +670,15 @@ exp_data$plasma_ab_titer %>%
   ggdark::dark_mode(verbose=FALSE)
 ```
 
+```{r}
+exp_data$plasma_ab_titer %>%
+  dplyr::group_by(isotype_antigen) %>%
+  dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %>%
+  dplyr::arrange(is_antigen_specific_fraction)
+```
+
+So the top entry makes sense, IgE_Total does not refer to any specific antigen
+
 ### Per Specimen
 
 So in some specimen we have non-specific antibody measurements? What does that mean?
@@ -561,6 +691,17 @@ exp_data$plasma_ab_titer %>%
   geom_histogram(binwidth=1, color = "white", fill = "blue", alpha=0.1) +
   stat_bin(aes(label = after_stat(count)), binwidth=1, geom = "text", vjust = -0.5, color = "white", size = 3) +  
   ggdark::dark_mode(verbose=FALSE)
+```
+
+### Per Year
+
+So this is very weird. For 2021, no antibody measurement is antigen-specific? Maybe this is a bug!
+
+```{r}
+exp_data$plasma_ab_titer %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
+  dplyr::group_by(dataset) %>%
+  dplyr::summarize(mean_is_antigen_specific = mean(is_antigen_specific))
 ```
 
 # Hierarchy in PBMC Frequency Data

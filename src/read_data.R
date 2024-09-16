@@ -263,14 +263,16 @@ generate_wide_experimental_data <- function(experimental_data, impute="zero", ve
       tibble::column_to_rownames(var="specimen_id") %>%
       as.matrix()
     
-    if (impute == "zero") {
-      na_frac <- mean(is.na(mtx))
-      if (verbose & na_frac > 0) {
-        message(modality, " | NA Fraction: ", na_frac, " | Imputed with zeros")
+    if (!is.null(impute)) {
+      if (impute == "zero") {
+        na_frac <- mean(is.na(mtx))
+        if (verbose & na_frac > 0) {
+          message(modality, " | NA Fraction: ", na_frac, " | Imputed with zeros")
+        }
+        mtx[is.na(mtx)] <- 0
+      } else if (impute == "median") {
+        # TODO
       }
-      mtx[is.na(mtx)] <- 0
-    } else if (impute == "median") {
-      # TODO
     }
     return(mtx)
   })

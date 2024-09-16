@@ -10,4 +10,6 @@ title: "Overview"
 
 - [Batch Effects](eda/batch_effects.qmd)
 
+- [MOFA Test](eda/mofa_test.qmd)
+
 # Models

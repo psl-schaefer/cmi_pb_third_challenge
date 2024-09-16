@@ -342,6 +342,21 @@ purrr::imap(exp_data, function(df, modality) {
   dplyr::bind_rows()
 ```
 
+## Wide format
+
+```{r}
+purrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, impute=""),
+                  function(mtx, modality) {
+                    rmeans <- rowMeans(is.na(mtx))
+                    tibble(modality=modality, 
+                           subject_id = names(rmeans), 
+                           na_frac=rmeans)
+           }) %>%
+  dplyr::group_by(modality) %>%
+  dplyr::summarise(mean_na_frac = mean(na_frac))
+```
+
+
 ## What is the fraction of NA values in the PBMC Cell Type Frequencies
 
 With the current selection of cell types, there is no specimen with NA values.
