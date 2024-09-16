@@ -2,6 +2,7 @@ data
 tmp
 .Rproj.user
 *.Rproj
+.Rhistory
 
 /.quarto/
 
