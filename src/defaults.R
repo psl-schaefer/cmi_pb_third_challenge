@@ -1,47 +1,4 @@
 
-experimental_data_settings <- list(
-  "pbmc_cell_frequency" = list(
-    "feature_col" = "cell_type_name",
-    "value_col" = "percent_live_cell",
-    "feature_subset" = c("Monocytes", # no parent, three children: Classical_Monocytes, Intermediate_Monocytes, Non-Classical_Monocytes
-                         "Classical_Monocytes", # only parent: Monocytes; no children
-                         "Intermediate_Monocytes", # only parent: Monocytes; no children
-                         "Non-Classical_Monocytes", # only parent: Monocytes; no children
-                         "CD8Tcells", # four children: NaiveCD8, TcmCD8, TemCD8, TemraCD8
-                         "CD4Tcells", # four children: NaiveCD4, TcmCD4, TemCD4, TemraCD4
-                         "Bcells", # only has one child: B cells (CD19+CD3-CD14-CD56-)
-                         "NK", # only has one child: CD56high NK cells
-                         "pDC", # has no children and no parent
-                         "Basophils", # has no children and no parent
-                         "CD56+CD3+T cells" # no children; parent: T cells (CD19-CD3+CD14-) (which is not present in the data)
-                         )
-  ),
-  "pbmc_gene_expression" = list(
-    "feature_col" = "versioned_ensembl_gene_id",
-    "value_col" = "raw_counts"
-  ),
-  "plasma_antibody_levels" = list(
-    "feature_col" = "isotype_antigen",
-    "value_col" = "MFI_normalised"
-  ),
-  "plasma_cytokine_concentrations_by_legendplex" = list(
-    "feature_col" = "protein_id",
-    "value_col" = "concentration"
-  ),
-  "plasma_cytokine_concentrations_by_olink" = list(
-    "feature_col" = "protein_id",
-    "value_col" = "concentration"
-  ),
-  "t_cell_activation" = list(
-    "feature_col" = "stimulation",
-    "value_col" = "analyte_percentages"
-  ),
-  "t_cell_polarization" = list(
-    "feature_col" = "protein_id",
-    "value_col" = "analyte_counts"
-  )
-)
-
 cytokine_uniprot_mapping <- data.frame(
   cytokine = c("CCL8", "IL33", "CXCL12", "OLR1", "IL27", "IL2", "CXCL9", "TGFA", "IL1B", "IL6", "IL4", "TNFSF12",
                "TSLP", "CCL11", "HGF", "FLT3LG", "IL17F", "IL7", "IL13", "IL18", "CCL13", "TNFSF10", "CXCL10",

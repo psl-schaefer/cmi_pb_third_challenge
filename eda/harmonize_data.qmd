@@ -1,0 +1,135 @@
+---
+title: "Batch Effects"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(ggdark)
+  library(factoextra)
+  library(FactoMineR)
+  library(magick) # formatting
+})
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "defaults.R"))
+source(file.path("..", "src", "colors.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+meta_df <- read_harmonized_meta_data(input_dir)
+data_list <- read_raw_experimental_data(input_dir)
+data_list <- filter_experimental_data(meta_data=meta_df, 
+                                      experimental_data=data_list)
+```
+
+```{r}
+((data_list$pbmc_cell_frequency %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(cell_type_name, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(cell_type_name) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(cell_type_name %in% experimental_data_settings$pbmc_cell_frequency$feature_subset) %>%
+  dplyr::pull(n)) == 4) %>%
+  all() %>%
+  stopifnot()
+
+((data_list$pbmc_gene_expression %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(versioned_ensembl_gene_id, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(versioned_ensembl_gene_id) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::pull(n)) == 4) %>%
+  all() %>%
+  stopifnot()
+
+((data_list$plasma_ab_titer %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(isotype_antigen, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(isotype_antigen) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  #dplyr::arrange(n, isotype_antigen, dataset) %>%
+  dplyr::filter(isotype_antigen %in% experimental_data_settings$plasma_antibody_levels$feature_subset) %>%
+  dplyr::pull(n)) >= 3) %>%
+  all() %>%
+  stopifnot()
+  
+((data_list$plasma_cytokine_concentration_by_legendplex %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(protein_id, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(protein_id) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::pull(n)) == 3) %>%
+  all() %>%
+  stopifnot()
+
+((data_list$plasma_cytokine_concentration_by_olink %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(protein_id, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(protein_id) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  #dplyr::arrange(n, protein_id, dataset) %>%
+  dplyr::filter(protein_id %in% experimental_data_settings$plasma_cytokine_concentration_by_olink$feature_subset) %>%
+  dplyr::pull(n)) >= 3) %>%
+  all() %>%
+  stopifnot()
+
+((data_list$t_cell_activation %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(stimulation, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(stimulation) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::pull(n)) >= 3) %>%
+  all() %>%
+  stopifnot()
+
+((data_list$t_cell_polarization %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(stimulation, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(stimulation) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::pull(n)) >= 3) %>%
+  all() %>%
+  stopifnot()
+
+((data_list$t_cell_polarization %>%
+  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::select(stimulation_protein_id, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::group_by(stimulation_protein_id) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::pull(n)) >= 3) %>%
+  all() %>%
+  stopifnot()
+```
+
+
+

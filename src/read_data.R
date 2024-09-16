@@ -74,13 +74,179 @@ filter_harmonized_meta_data <- function(meta_data, experimental_data) {
   return(meta_data)
 }
 
+experimental_data_settings <- list(
+  pbmc_cell_frequency = list(
+    feature_col = "cell_type_name",
+    value_col = "percent_live_cell",
+    feature_subset = c("Monocytes", # no parent, three children: Classical_Monocytes, Intermediate_Monocytes, Non-Classical_Monocytes
+                       "Classical_Monocytes", # only parent: Monocytes; no children
+                       "Intermediate_Monocytes", # only parent: Monocytes; no children
+                       "Non-Classical_Monocytes", # only parent: Monocytes; no children
+                       "CD8Tcells", # four children: NaiveCD8, TcmCD8, TemCD8, TemraCD8
+                       "CD4Tcells", # four children: NaiveCD4, TcmCD4, TemCD4, TemraCD4
+                       "Bcells", # only has one child: B cells (CD19+CD3-CD14-CD56-)
+                       "NK", # only has one child: CD56high NK cells
+                       "pDC", # has no children and no parent
+                       "Basophils", # has no children and no parent
+                       "CD56+CD3+T cells" # no children; parent: T cells (CD19-CD3+CD14-) (which is not present in the data)
+    )
+  ),
+  pbmc_gene_expression = list(
+    feature_col = "versioned_ensembl_gene_id",
+    value_col = "tpm"
+  ),
+  plasma_ab_titer = list(
+    feature_col = "isotype_antigen",
+    value_col = "MFI_normalised",
+    feature_subset = c(
+      "IgG_DT", "IgG_FIM2/3", "IgG_OVA", "IgG_TT", "IgG1_DT", "IgG1_FHA", 
+      "IgG1_FIM2/3", "IgG1_OVA", "IgG1_PRN", "IgG1_PT", "IgG1_TT", "IgG2_DT", 
+      "IgG2_FHA", "IgG2_FIM2/3", "IgG2_OVA", "IgG2_PRN", "IgG2_PT", "IgG2_TT", 
+      "IgG3_DT", "IgG3_FHA", "IgG3_FIM2/3", "IgG3_OVA", "IgG3_PRN", "IgG3_PT", 
+      "IgG3_TT", "IgG4_DT", "IgG4_FHA", "IgG4_FIM2/3", "IgG4_OVA", "IgG4_PRN", 
+      "IgG4_PT", "IgG4_TT", "IgG_FHA", "IgG_PRN", "IgG_PT"
+    )
+  ),
+  plasma_cytokine_concentration_by_legendplex = list(
+    feature_col = "protein_id",
+    value_col = "concentration"
+  ),
+  plasma_cytokine_concentration_by_olink = list(
+    feature_col = "protein_id",
+    value_col = "concentration",
+    feature_subset = c(
+      "P01135", "P01374", "P01584", "P03956", "P04141", 
+      "P09919", "P13725", "P40933", "P49771", "P78380", 
+      "Q16552", "Q8NEV9_Q14213", "Q969D9", "Q96PD4", "Q9P0M4", 
+      "O14625", "O43508", "O95760", "P01133", "P01375", 
+      "P01579", "P02778", "P05112", "P05231", "P09603", 
+      "P10145", "P10147", "P13232", "P13236", "P13500", 
+      "P14210", "P15692", "P22301", "P35225", "P39900", 
+      "P48061", "P50591", "P51671", "P60568", "P80075", 
+      "P80098", "Q07325", "Q14116", "Q99616", "Q99731"
+    )
+  ),
+  t_cell_activation = list(
+    feature_col = "stimulation",
+    value_col = "analyte_percentages"
+  ),
+  t_cell_polarization = list(
+    feature_col = "stimulation_protein_id",
+    value_col = "analyte_counts"
+  )
+)
 
-read_harmonized_experimental_data <- function(input_dir) {
+read_raw_experimental_data <- function(input_dir) {
+  # input_dir <- "/Users/pschafer/Projects/cmi_pb_third_challenge/data"
+  
+  all_exp_files <- list.files(path = file.path(input_dir, "raw_datasets"), 
+                              recursive=TRUE, full.names=TRUE) %>%
+    magrittr::extract(!grepl("specimen|subject", .))
+  
+  all_exp_data <- names(experimental_data_settings) %>%
+    purrr::set_names() %>%
+    purrr::map(., function(modality) {
+      # modality <- "pbmc_cell_frequency"
+      purrr::map(all_exp_files[grepl(modality, all_exp_files)],
+                 ~ readr::read_tsv(.x, show_col_types = FALSE)) %>%
+        dplyr::bind_rows()
+    })
+  
+  # recreate the isotype_antigen column from the harmonized data
+  all_exp_data$plasma_ab_titer <- all_exp_data$plasma_ab_titer %>%
+    dplyr::mutate(isotype_antigen = paste0(isotype, "_", antigen))
+  
+  # recreate the stimulation_protein_id column from the harmonized data
+  all_exp_data$t_cell_polarization <- all_exp_data$t_cell_polarization %>%
+    dplyr::mutate(stimulation_protein_id = paste0(stimulation, "_", protein_id))
+  
+  # make sure the feature names have no spaces (such that the wide format works better)
+  all_exp_data <- purrr::imap(all_exp_data, function(df, modality) {
+    # modality <- "pbmc_cell_frequency"; df <- all_exp_data$pbmc_cell_frequency
+    df %>%
+      dplyr::mutate(!!experimental_data_settings[[modality]]$feature_col := 
+                      str_replace_all(df[[experimental_data_settings[[modality]]$feature_col]], " ", "_"))
+  })
+  
+  return(all_exp_data)
+}
+
+filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE) {
+  # 1. Only keep specimen that are documented in our meta_data
+  experimental_data <- purrr::imap(experimental_data, function(df, modality) {
+    initial_count <- nrow(df)
+    filtered_data <- df %>% dplyr::filter(specimen_id %in% meta_data$specimen_id)
+    final_count <- nrow(filtered_data)
+    removed_count <- initial_count - final_count
+    if (verbose & (removed_count > 0)) {
+      message(modality, " | Removed ", removed_count, " specimens because missing in meta data")
+    }
+    return(filtered_data)
+  })
+  
+  # 2. Only keep features that are in the subset for the modality
+  experimental_data <- purrr::imap(experimental_data, function(df, modality) {
+    if ("feature_subset" %in% names(experimental_data_settings[[modality]])) {
+      feature_col <- experimental_data_settings[[modality]]$feature_col
+      initial_feature_count <- length(unique(df[[feature_col]]))
+      df <- df %>%
+        dplyr::filter(.data[[feature_col]] %in% experimental_data_settings[[modality]][["feature_subset"]])
+      final_feature_count <- length(unique(df[[feature_col]]))
+      removed_feature_count <- initial_feature_count - final_feature_count
+      
+      if (verbose) {
+        message(modality, " | Removed ", removed_feature_count, " features because not in feature subset")
+      }
+    }
+    return(df)
+  })
+  
+  # 3. TODO
+  
+  return(experimental_data)
+}
+
+generate_wide_experimental_data <- function(experimental_data, impute="zero", verbose=TRUE) {
+  wide_experimental_data <- purrr::imap(experimental_data, function(df, modality) {
+    feature_col <- experimental_data_settings[[modality]]$feature_col
+    value_col <- experimental_data_settings[[modality]]$value_col
+    mtx <- df %>%
+      .[, c("specimen_id", feature_col, value_col)] %>%
+      tidyr::pivot_wider(names_from=dplyr::all_of(feature_col), 
+                         values_from=dplyr::all_of(value_col)) %>%
+      tibble::column_to_rownames(var="specimen_id") %>%
+      as.matrix()
+    
+    if (impute == "zero") {
+      na_frac <- mean(is.na(mtx))
+      if (verbose & na_frac > 0) {
+        message(modality, " | NA Fraction: ", na_frac, " | Imputed with zeros")
+      }
+      mtx[is.na(mtx)] <- 0
+    } else if (impute == "median") {
+      # TODO
+    }
+    return(mtx)
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
+### Appendix ### 
+read_harmonized_experimental_data_depr <- function(input_dir) {
   # input_dir <- "/Users/pschafer/Projects/cmi_pb_third_challenge/data"
   experimental_data <- list.files(path = file.path(input_dir, 
                                                    "harmonized_and_processed_data",
                                                    "master_harmonized_data_TSV"), 
-                          pattern = "^training_.*_long.tsv$", full.names = TRUE) %>%
+                                  pattern = "^training_.*_long.tsv$", full.names = TRUE) %>%
     purrr::set_names() %>%
     purrr::map(~ dplyr::bind_rows(readr::read_tsv(.x, show_col_types = FALSE),
                                   readr::read_tsv(str_replace(.x, "training", "challenge"), show_col_types = FALSE)))
@@ -111,58 +277,7 @@ read_harmonized_experimental_data <- function(input_dir) {
   return(experimental_data)
 }
 
-
-read_raw_experimental_data <- function(input_dir) {
-  # input_dir <- "/Users/pschafer/Projects/cmi_pb_third_challenge/data"
-  
-  all_exp_files <- list.files(path = file.path(input_dir, "raw_datasets"), 
-                              recursive=TRUE, full.names=TRUE) %>%
-    magrittr::extract(!grepl("specimen|subject", .))
-  
-  all_exp_data <- list(
-    "pbmc_cell_frequency",
-    "pbmc_gene_expression",
-    "plasma_ab_titer",
-    "plasma_cytokine_concentration_by_legendplex",
-    "plasma_cytokine_concentration_by_olink",
-    "t_cell_activation",
-    "t_cell_polarization"
-  ) %>%
-    purrr::set_names() %>%
-    purrr::map(., function(modality) {
-      # modality <- "pbmc_cell_frequency"
-      purrr::map(all_exp_files[grepl(modality, all_exp_files)],
-                 ~ readr::read_tsv(.x, show_col_types = FALSE)) %>%
-        dplyr::bind_rows()
-    })
-  
-  # recreate the isotype_antigen column from the harmonized data
-  all_exp_data$plasma_ab_titer <- all_exp_data$plasma_ab_titer %>%
-    dplyr::mutate(isotype_antigen = paste0(isotype, "_", antigen))
-  
-  # TODO: Replace this by my defaults file or not?
-  feature_name_per_modality <- list(
-    "pbmc_cell_frequency" = "cell_type_name",
-    "pbmc_gene_expression" = "versioned_ensembl_gene_id",
-    "plasma_ab_titer" = "isotype_antigen",
-    "plasma_cytokine_concentration_by_legendplex" = "protein_id",
-    "plasma_cytokine_concentration_by_olink" = "protein_id",
-    "t_cell_activation" = "stimulation",
-    "t_cell_polarization" = "protein_id"
-  )
-  
-  # make sure the feature names have no spaces (such that the wide format works better)
-  all_exp_data <- purrr::imap(all_exp_data, function(df, modality) {
-    # modality <- "pbmc_cell_frequency"; df <- all_exp_data$pbmc_cell_frequency
-    df %>%
-      dplyr::mutate(!!feature_name_per_modality[[modality]] := str_replace_all(df[[feature_name_per_modality[[modality]]]], " ", "_"))
-  })
-  
-  return(all_exp_data)
-}
-
-
-filter_harmonized_experimental_data <- function(meta_data, experimental_data, verbose=TRUE) {
+filter_harmonized_experimental_data_depr <- function(meta_data, experimental_data, verbose=TRUE) {
   # 1. Only keep specimen that are documented in our meta_data
   experimental_data <- purrr::imap(
     experimental_data, 
@@ -180,4 +295,3 @@ filter_harmonized_experimental_data <- function(meta_data, experimental_data, ve
   
   return(experimental_data)
 }
-

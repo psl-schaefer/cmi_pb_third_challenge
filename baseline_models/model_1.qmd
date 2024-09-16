@@ -32,11 +32,11 @@ input_dir = file.path("..", "data")
 ```{r}
 # loading
 meta_df <- read_harmonized_meta_data(input_dir)
-data_list <- read_harmonized_experimental_data(input_dir)
+data_list <- read_harmonized_experimental_data_depr(input_dir)
 
 # filtering
 meta_df <- filter_harmonized_meta_data(meta_data=meta_df, experimental_data=data_list)
-data_list <- filter_harmonized_experimental_data(meta_data=meta_df, experimental_data=data_list)
+data_list <- filter_harmonized_experimental_data_depr(meta_data=meta_df, experimental_data=data_list)
 ```
 
 # Task 1
@@ -176,55 +176,4 @@ df_all %>%
   geom_smooth() +
   ggdark::dark_mode(verbose=FALSE)
 ```
-
-```{r}
-library(tidyverse)
-library(jsonlite)
-library(httr)
-
-# Base URL for the API
-base_url <- "https://www.cmi-pb.org/api/v5"
-#base_url <- "https://www.cmi-pb.org/api"
-
-# Define the endpoints you want to query
-endpoints <- c("/cell_type", "/gene")
-
-# Loop through endpoints and download JSON files
-for (endpoint in endpoints) {
-  # Construct full URL
-  url <- paste0(base_url, endpoint)
-  
-  # Make GET request
-  response <- GET(url)
-  
-  # Check if the request was successful
-  if (status_code(response) == 200) {
-    # Save the JSON content to a file
-    json_content <- content(response, as = "text", encoding = "UTF-8")
-    write(json_content, file = paste0("output_", basename(endpoint), ".json"))
-    cat("Downloaded:", endpoint, "\n")
-  } else {
-    cat("Failed to download", endpoint, "Status code:", status_code(response), "\n")
-  }
-}
-
-celltype_info <- purrr::map(jsonlite::read_json("output_cell_type.json"), function(l) {
-  as.data.frame(l)
-}) %>%
-  dplyr::bind_rows()
-
-str(jsonlite::read_json("output_gene.json")) %>% head()
-
-gene_info <- purrr::map(jsonlite::read_json("output_gene.json"), function(l) {
-  tibble::tibble(
-    versioned_ensembl_gene_id = l[["versioned_ensembl_gene_id"]],
-    gene_symbol = l[["gene_symbol"]]
-  )
-}) %>%
-  dplyr::bind_rows()
-```
-
-
-
-
 
