@@ -10,12 +10,24 @@ read_gene_meta <- function(input_dir) {
     return()
 }
 
+cytokine_uniprot_mapping <- data.frame(
+  cytokine = c("CCL8", "IL33", "CXCL12", "OLR1", "IL27", "IL2", "CXCL9", "TGFA", "IL1B", "IL6", "IL4", "TNFSF12",
+               "TSLP", "CCL11", "HGF", "FLT3LG", "IL17F", "IL7", "IL13", "IL18", "CCL13", "TNFSF10", "CXCL10",
+               "IFNG", "IL10", "CCL19", "TNF", "IL15", "CCL3", "CXCL8", "MMP12", "CSF2", "CSF3", "VEGFA", "IL17C",
+               "EGF", "CCL2", "IL17A", "OSM", "CSF1", "CCL4", "CXCL11", "LTA", "CCL7", "MMP1", "IL5"),
+  protein_id = c("P80075", "O95760", "P48061", "P78380", "Q8NEV9_Q14213", "P60568", "Q07325", "P01135", "P01584",
+                 "P05231", "P05112", "O43508", "Q969D9", "P51671", "P14210", "P49771", "Q96PD4", "P13232", "P35225",
+                 "Q14116", "Q99616", "P50591", "P02778", "P01579", "P22301", "Q99731", "P01375", "P40933", "P10147",
+                 "P10145", "P39900", "P04141", "P09919", "P15692", "Q9P0M4", "P01133", "P13500", "Q16552", "P13725",
+                 "P09603", "P13236", "O14625", "P01374", "P80098", "P03956", "P05113")
+)
+
 read_protein_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "protein.csv"), 
                     delim=";", show_col_types = FALSE) %>%
+    dplyr::left_join(cytokine_uniprot_mapping, by=c("uniprot_id" = "protein_id")) %>%
     return()
 }
-
 
 read_celltype_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "celltype.csv"), 
@@ -132,7 +144,12 @@ experimental_data_settings <- list(
   ),
   t_cell_polarization = list(
     feature_col = "stimulation_protein_id",
-    value_col = "analyte_counts"
+    value_col = "analyte_counts",
+    # all DMSO features were removed because they are constant
+    feature_subset = c(
+      "PHA_P01579", "PHA_Q16552", "PHA_P05113", 
+      "PT_P01579", "PT_Q16552", "PT_P05113"
+    )
   )
 )
 

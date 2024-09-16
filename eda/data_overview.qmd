@@ -30,14 +30,15 @@ input_dir = file.path("..", "data")
 ```
 
 ```{r}
-meta_df <- read_harmonized_meta_data(input_dir)
+meta_data <- read_harmonized_meta_data(input_dir)
 
-#data_list <- read_harmonized_experimental_data(input_dir)
-data_list <- read_raw_experimental_data(input_dir)
-data_list <- filter_experimental_data(meta_df, data_list)
+#exp_data <- read_harmonized_experimental_data(input_dir)
+exp_data <- read_raw_experimental_data(input_dir)
+exp_data <- filter_experimental_data(meta_data, exp_data)
 
 celltype_meta <- read_celltype_meta(input_dir)
 gene_meta <- read_gene_meta(input_dir)
+protein_meta <- read_protein_meta(input_dir)
 ```
 
 # Checks
@@ -45,11 +46,11 @@ gene_meta <- read_gene_meta(input_dir)
 ```{r}
 # only works due to filtering step above
 stopifnot(all(
-  purrr::map_lgl(data_list, ~ all(.x$specimen_id %in% meta_df$specimen_id)))
+  purrr::map_lgl(exp_data, ~ all(.x$specimen_id %in% meta_data$specimen_id)))
 )
 
 # no subject is recorded in more than one dataset
-(meta_df %>%
+(meta_data %>%
   dplyr::count(subject_id, dataset) %>%
   dplyr::count(subject_id) %>%
   dplyr::pull(n) == 1) %>%
@@ -57,7 +58,7 @@ stopifnot(all(
   stopifnot()
 
 # we have the baseline specimen (planned_day_relative_to_boost = 0) for every subject
-(meta_df %>%
+(meta_data %>%
   dplyr::select(subject_id, planned_day_relative_to_boost, dataset) %>%
   dplyr::distinct() %>%
   dplyr::mutate(is_baseline = (planned_day_relative_to_boost==0)) %>%
@@ -76,7 +77,7 @@ stopifnot(all(
 ## How many subjects do we have per dataset / per partition?
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::select(subject_id, dataset, partition, infancy_vac) %>%
   dplyr::distinct() %>%
   dplyr::count(dataset, partition, infancy_vac) %>%
@@ -93,7 +94,7 @@ meta_df %>%
 ## What is the age range
 
 ```{r}
-meta_df %>%
+meta_data %>%
   ggplot() + 
   geom_histogram(aes(x=age_at_boost, fill=dataset, y=after_stat(density)), 
                  color="black", position="identity", bins=30) +
@@ -107,7 +108,7 @@ meta_df %>%
 ## What is the difference between planned and actual booster administration
 
 ```{r}
-meta_df %>%
+meta_data %>%
   ggplot() +
   geom_histogram(aes(x=diff_relative_to_boost), binwidth=1) +
   facet_wrap(~dataset) +
@@ -117,7 +118,7 @@ meta_df %>%
 ## What is the difference between planned and actual for the baseline
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::filter(planned_day_relative_to_boost==0) %>%
   dplyr::mutate(`diff_>_15` = abs(actual_day_relative_to_boost) > 15) %>%
   ggplot() +
@@ -129,7 +130,7 @@ meta_df %>%
 ## How many time points do we have per subject?
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::count(dataset, subject_id) %>%
   ggplot() +
   geom_histogram(aes(x=n, fill=dataset),color="black", binwidth=1) +
@@ -142,12 +143,12 @@ meta_df %>%
 ## How many assays do we have for the baseline measurement?
 
 ```{r}
-assays_per_specimen <- purrr::imap(data_list, ~ .x %>% 
+assays_per_specimen <- purrr::imap(exp_data, ~ .x %>% 
               dplyr::select(specimen_id) %>%
               dplyr::distinct() %>%
               dplyr::mutate(assay=.y)) %>%
   dplyr::bind_rows() %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   dplyr::select(specimen_id, assay, subject_id, planned_day_relative_to_boost, infancy_vac, dataset)
 
 assays_per_specimen %>%
@@ -165,7 +166,7 @@ assays_per_specimen %>%
 ```{r fig.height=6, fig.width=12}
 for (day in c(0, 1, 3, 14)) {
   
-annotation_data <- meta_df %>%
+annotation_data <- meta_data %>%
   dplyr::select(specimen_id, planned_day_relative_to_boost, infancy_vac, 
                 dataset, biological_sex) %>%
   dplyr::filter(specimen_id %in% assays_per_specimen$specimen_id) %>%
@@ -228,7 +229,7 @@ draw(ht,
 - All but 7 people were assayed approximately 14 days after the booster administration
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::filter(planned_day_relative_to_boost==14) %>%
   ggplot(aes(x=diff_relative_to_boost)) +
   geom_histogram(binwidth=1, color = "white", fill = "blue", alpha=0.1) +
@@ -238,13 +239,13 @@ meta_df %>%
 ```
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %>%
   dplyr::distinct() %>%
   dplyr::mutate(task_1_possible = 
-                  subject_id %in% (meta_df %>%
+                  subject_id %in% (meta_data %>%
                                      dplyr::filter(planned_day_relative_to_boost==14) %>%
-                                     dplyr::left_join(data_list$plasma_ab_titer,
+                                     dplyr::left_join(exp_data$plasma_ab_titer,
                                                       by="specimen_id") %>%
                                      dplyr::filter(isotype_antigen=="IgG_PT") %>%
                                      tidyr::drop_na() %>%
@@ -260,7 +261,7 @@ meta_df %>%
 - But there is one person where it does not really make sense
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::filter(planned_day_relative_to_boost==1) %>%
   ggplot(aes(x=diff_relative_to_boost)) +
   geom_histogram(binwidth=1, color = "white", fill = "blue", alpha=0.1) +
@@ -270,13 +271,13 @@ meta_df %>%
 ```
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %>%
   dplyr::distinct() %>%
   dplyr::mutate(task_possible = 
-                  subject_id %in% (meta_df %>%
+                  subject_id %in% (meta_data %>%
                                      dplyr::filter(planned_day_relative_to_boost==1) %>%
-                                     dplyr::left_join(data_list$pbmc_cell_frequency, by="specimen_id") %>%
+                                     dplyr::left_join(exp_data$pbmc_cell_frequency, by="specimen_id") %>%
                                      dplyr::filter(cell_type_name=="Monocytes") %>%
                                      tidyr::drop_na() %>%
                                      dplyr::pull(subject_id))
@@ -291,7 +292,7 @@ meta_df %>%
 - There are 7 people for which this task does nto make sense
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::filter(planned_day_relative_to_boost==3) %>%
   ggplot(aes(x=diff_relative_to_boost)) +
   geom_histogram(binwidth=1, color = "white", fill = "blue", alpha=0.1) +
@@ -301,17 +302,17 @@ meta_df %>%
 ```
 
 ```{r}
-all_genes <- unique(data_list$pbmc_gene_expression$versioned_ensembl_gene_id)
+all_genes <- unique(exp_data$pbmc_gene_expression$versioned_ensembl_gene_id)
 ccl3_ensembl <- "ENSG00000277632"
 ccl3_ensembl_versioned <- all_genes[str_starts(all_genes, ccl3_ensembl)]
 
-meta_df %>%
+meta_data %>%
   dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %>%
   dplyr::distinct() %>%
   dplyr::mutate(task_possible = 
-                  subject_id %in% (meta_df %>%
+                  subject_id %in% (meta_data %>%
                                      dplyr::filter(planned_day_relative_to_boost==3) %>%
-                                     dplyr::left_join(data_list$pbmc_gene_expression, by="specimen_id") %>%
+                                     dplyr::left_join(exp_data$pbmc_gene_expression, by="specimen_id") %>%
                                      dplyr::filter(versioned_ensembl_gene_id==ccl3_ensembl_versioned) %>%
                                      tidyr::drop_na() %>%
                                      dplyr::pull(subject_id))
@@ -336,7 +337,7 @@ value_vars_per_modality <- list(
   "t_cell_polarization" = c("analyte_counts")
 )
 
-purrr::imap_dfr(data_list, function(df, modality) {
+purrr::imap_dfr(exp_data, function(df, modality) {
   purrr::map_dfr(value_vars_per_modality[[modality]], 
                  ~ tibble(modality = modality,
                           value_vars = .x,
@@ -349,7 +350,7 @@ purrr::imap_dfr(data_list, function(df, modality) {
 ### Per Cell Type
 
 ```{r}
-data_list$pbmc_cell_frequency %>%
+exp_data$pbmc_cell_frequency %>%
   dplyr::mutate(is_na = is.na(percent_live_cell)) %>%
   dplyr::group_by(cell_type_name) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
@@ -364,7 +365,7 @@ data_list$pbmc_cell_frequency %>%
 ### Per Cell Specimen
 
 ```{r}
-data_list$pbmc_cell_frequency %>%
+exp_data$pbmc_cell_frequency %>%
   dplyr::mutate(is_na = is.na(percent_live_cell)) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
@@ -379,18 +380,18 @@ data_list$pbmc_cell_frequency %>%
 So there are 5 specimen with more than 20% NA, which are all from the same subject!
 
 ```{r}
-data_list$pbmc_cell_frequency %>%
+exp_data$pbmc_cell_frequency %>%
   dplyr::mutate(is_na = is.na(percent_live_cell)) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
   dplyr::filter(frac_na > 0.2) %>%
-  dplyr::left_join(meta_df, by="specimen_id")
+  dplyr::left_join(meta_data, by="specimen_id")
 ```
 
 ```{r fig.width=12, include=FALSE}
-data_list$pbmc_cell_frequency %>%
+exp_data$pbmc_cell_frequency %>%
   dplyr::filter(specimen_id %in% c(537, 538, 539, 540, 541)) %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   tidyr::drop_na() %>%
   ggplot() +
   geom_line(aes(x=planned_day_relative_to_boost, y=percent_live_cell, color=cell_type_name)) +
@@ -402,7 +403,7 @@ data_list$pbmc_cell_frequency %>%
 ### Per Protein
 
 ```{r fig.height=6}
-data_list$plasma_cytokine_concentration_by_olink %>%
+exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(is_na = is.na(concentration)) %>%
   dplyr::group_by(protein_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
@@ -417,7 +418,7 @@ data_list$plasma_cytokine_concentration_by_olink %>%
 ### Per Specimen
 
 ```{r}
-data_list$plasma_cytokine_concentration_by_olink %>%
+exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(is_na = is.na(concentration)) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
@@ -430,12 +431,12 @@ data_list$plasma_cytokine_concentration_by_olink %>%
 ```
 
 ```{r}
-data_list$plasma_cytokine_concentration_by_olink %>%
+exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(is_na = is.na(concentration)) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarise(frac_na = sum(is_na) / n()) %>%
   dplyr::filter(frac_na > 0.2) %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   dplyr::select(specimen_id, frac_na, subject_id, dataset, 
                 actual_day_relative_to_boost, planned_day_relative_to_boost)
 ```
@@ -445,18 +446,18 @@ data_list$plasma_cytokine_concentration_by_olink %>%
 ## How does the quality control for Olink look like?
 
 ```{r}
-data_list$plasma_cytokine_concentration_by_olink %>%
+exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::count(quality_control)
 ```
 
 
 ```{r}
-data_list$plasma_cytokine_concentration_by_olink %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+exp_data$plasma_cytokine_concentration_by_olink %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   dplyr::count(partition, dataset)
 
-data_list$plasma_cytokine_concentration_by_legendplex %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+exp_data$plasma_cytokine_concentration_by_legendplex %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   dplyr::count(partition, dataset)
 ```
 
@@ -464,7 +465,7 @@ data_list$plasma_cytokine_concentration_by_legendplex %>%
 
 ```{r}
 # check how often is it below the limit of detection?
-data_list$plasma_cytokine_concentration_by_olink %>%
+exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
   dplyr::count(below_lod)
 ```
@@ -474,7 +475,7 @@ data_list$plasma_cytokine_concentration_by_olink %>%
 ### Per Isotype-Antigen
 
 ```{r}
-data_list$plasma_ab_titer %>%
+exp_data$plasma_ab_titer %>%
   dplyr::group_by(isotype_antigen) %>%
   dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %>%
   ggplot(aes(x=is_antigen_specific_fraction)) +
@@ -488,7 +489,7 @@ data_list$plasma_ab_titer %>%
 So in some specimen we have non-specific antibody measurements? What does that mean?
 
 ```{r}
-data_list$plasma_ab_titer %>%
+exp_data$plasma_ab_titer %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %>%
   ggplot(aes(x=is_antigen_specific_fraction)) +
@@ -522,8 +523,8 @@ And I don't know what to do with that information!
 Not sure how to fix this)
 
 ```{r}
-data_list$pbmc_cell_frequency %>%
-  dplyr::left_join((meta_df %>%
+exp_data$pbmc_cell_frequency %>%
+  dplyr::left_join((meta_data %>%
                       dplyr::select(specimen_id, dataset) %>%
                       dplyr::distinct()),
                    by="specimen_id") %>%
@@ -541,8 +542,8 @@ data_list$pbmc_cell_frequency %>%
 - Trying to take the hierarchical information into account, it still does not make sense
 
 ```{r}
-data_list$pbmc_cell_frequency %>%
-  dplyr::left_join((meta_df %>%
+exp_data$pbmc_cell_frequency %>%
+  dplyr::left_join((meta_data %>%
                       dplyr::select(specimen_id, dataset) %>%
                       dplyr::distinct()),
                    by="specimen_id") %>%
@@ -553,7 +554,7 @@ data_list$pbmc_cell_frequency %>%
   dplyr::filter(level == 0) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   ggplot() +
   geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +
   ggdark::dark_mode(verbose=FALSE)
@@ -565,8 +566,8 @@ data_list$pbmc_cell_frequency %>%
 
 ```{r}
 # first check for NAs for the levels
-data_list$pbmc_cell_frequency %>%
-  dplyr::left_join((meta_df %>%
+exp_data$pbmc_cell_frequency %>%
+  dplyr::left_join((meta_data %>%
                       dplyr::select(specimen_id, dataset) %>%
                       dplyr::distinct()),
                    by="specimen_id") %>%
@@ -578,8 +579,8 @@ data_list$pbmc_cell_frequency %>%
 ```
 
 ```{r}
-data_list$pbmc_cell_frequency %>%
-  dplyr::left_join((meta_df %>%
+exp_data$pbmc_cell_frequency %>%
+  dplyr::left_join((meta_data %>%
                       dplyr::select(specimen_id, dataset) %>%
                       dplyr::distinct()),
                    by="specimen_id") %>%
@@ -590,7 +591,7 @@ data_list$pbmc_cell_frequency %>%
   dplyr::filter(level == 0) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   ggplot() +
   geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +
   ggdark::dark_mode(verbose=FALSE)
@@ -599,8 +600,8 @@ data_list$pbmc_cell_frequency %>%
 - Especially, when completely ignoring the hierarchy in the gating information, I would expect to have more than 100% in `percelt_live_cell_sum`, but this is not true for the specimens from the 2023 dataset
 
 ```{r}
-data_list$pbmc_cell_frequency %>%
-  dplyr::left_join((meta_df %>%
+exp_data$pbmc_cell_frequency %>%
+  dplyr::left_join((meta_data %>%
                       dplyr::select(specimen_id, dataset) %>%
                       dplyr::distinct()),
                    by="specimen_id") %>%
@@ -610,7 +611,7 @@ data_list$pbmc_cell_frequency %>%
                     by=c("dataset", "cell_type_name")) %>%
   dplyr::group_by(specimen_id) %>%
   dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %>%
-  dplyr::left_join(meta_df, by="specimen_id") %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
   ggplot() +
   geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +
   ggdark::dark_mode(verbose=FALSE)
@@ -618,12 +619,74 @@ data_list$pbmc_cell_frequency %>%
 
 - Or what I use a list of predefined cell types of interest?
 
+# Features for T cell Activation Assay (AIM)
+
+```{r}
+exp_data$t_cell_activation %>%
+  dplyr::select(stimulation) %>%
+  dplyr::distinct()
+```
+
+```{r}
+exp_data$t_cell_activation %>%
+  ggplot() +
+  geom_histogram(aes(x=analyte_percentages), bins=100) +
+  facet_wrap(~stimulation) +
+  ggdark::dark_mode()
+```
+
+# Features for T cell Polarization Assay (FluoroSpot)
+
+```{r}
+exp_data$t_cell_polarization %>%
+  dplyr::left_join(protein_meta, by=c("protein_id"="uniprot_id")) %>%
+  dplyr::select(protein_id, cytokine) %>%
+  dplyr::distinct()
+```
+
+```{r}
+exp_data$t_cell_polarization %>%
+  dplyr::select(stimulation) %>%
+  dplyr::distinct()
+```
+
+where
+
+- DMSO: "Negative" Control (solvent where peptides are dissolved in)
+
+- PHA (Phytohaemagglutinin): "Postive" Control (this should elicit strong T cell response?)
+
+- PT: Bordetella Pertussis Toxin
+
+```{r}
+exp_data$t_cell_polarization %>%
+  dplyr::left_join(protein_meta, by=c("protein_id"="uniprot_id")) %>%
+  ggplot() +
+  geom_histogram(aes(x=analyte_counts), bins=100) +
+  facet_grid(rows=vars(stimulation), cols=vars(cytokine)) +
+  scale_x_log10() +
+  ggdark::dark_mode()
+
+# TODO: the assay has been normalized relative to DMSO
+exp_data$t_cell_polarization %>%
+  dplyr::filter(stimulation=="DMSO") %>%
+  dplyr::pull(analyte_counts) %>%
+  dplyr::near(., 1) %>%
+  mean()
+
+exp_data$t_cell_polarization %>%
+  dplyr::filter(stimulation!="DMSO") %>%
+  dplyr::pull(stimulation_protein_id) %>%
+  unique()
+```
+
+
 # Other Notes
 
 - Only from 2022 onwards do we have time-course baseline measurements, i.e. `-30, -14/15, 0`
 
 ```{r}
-meta_df %>%
+meta_data %>%
   dplyr::count(partition, dataset, planned_day_relative_to_boost) %>%
   dplyr::filter(planned_day_relative_to_boost < 0)
 ```
