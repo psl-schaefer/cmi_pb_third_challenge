@@ -4,7 +4,9 @@ title: "Overview"
 
 # Exploratory Data Analysis
 
-- [Data Overview](eda/data_overview.qmd)
+- [Raw Data Overview](eda/raw_data_overview.qmd)
+
+- [Filtered Data Overview](eda/filtered_data_overview.qmd)
 
 - [Batch Effects](eda/batch_effects.qmd)
 

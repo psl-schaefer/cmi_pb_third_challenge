@@ -261,15 +261,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>plasma_ab_titer | Removed 48 features because not in feature subset</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>plasma_cytokine_concentration_by_olink | Removed 233 features because not in feature subset</code></pre>
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 234 features because not in feature subset</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>t_cell_polarization | Removed 3 features because not in feature subset</code></pre>
 </div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 300 features because qc warning</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_ab_titer | Removed 10540 measurements because wrong unit used</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 2400 measurements because wrong unit used</code></pre>
+</div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -278,19 +287,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>baseline_specimen <span class="ot">&lt;-</span> meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(specimen_id)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  exp_data, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> baseline_specimen)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_wide_experimental_data</span>(., <span class="at">impute=</span><span class="st">"zero"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>baseline_specimen <span class="ot">&lt;-</span> meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(specimen_id)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  exp_data, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> baseline_specimen)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_wide_experimental_data</span>(., <span class="at">impute=</span><span class="st">"zero"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>plasma_ab_titer | NA Fraction: 0.0399311531841652 | Imputed with zeros</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>plasma_cytokine_concentration_by_olink | NA Fraction: 0.0634920634920635 | Imputed with zeros</code></pre>
+<pre><code>plasma_cytokine_concentration_by_olink | NA Fraction: 0.00391849529780564 | Imputed with zeros</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>t_cell_activation | NA Fraction: 0.0589622641509434 | Imputed with zeros</code></pre>
@@ -300,27 +306,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># filter genes and normalize the gene expression data</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>min_counts <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>min_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>genes_to_keep <span class="ot">&lt;-</span> <span class="fu">colnames</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression)[</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">&gt;=</span> min_counts) <span class="sc">&amp;</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> min_samples)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>target_sum <span class="ot">&lt;-</span> <span class="fl">1e6</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> </span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">/</span> <span class="fu">rowSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">*</span> target_sum</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(dplyr<span class="sc">::</span><span class="fu">near</span>(<span class="fu">rowSums</span>(pbmc_gene_expression_norm), target_sum, <span class="at">tol=</span><span class="fl">0.1</span>)))</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> pbmc_gene_expression_norm[ , genes_to_keep]</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_log <span class="ot">&lt;-</span> <span class="fu">log1p</span>(pbmc_gene_expression_norm)</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="ot">&lt;-</span> pbmc_gene_expression_log</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map</span>(baseline_wide_exp_data, <span class="sc">~</span> <span class="fu">dim</span>(.x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># filter genes and normalize the gene expression data</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>min_counts <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>min_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>genes_to_keep <span class="ot">&lt;-</span> <span class="fu">colnames</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression)[</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">&gt;=</span> min_counts) <span class="sc">&amp;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> min_samples)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>target_sum <span class="ot">&lt;-</span> <span class="fl">1e6</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">/</span> <span class="fu">rowSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">*</span> target_sum</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(dplyr<span class="sc">::</span><span class="fu">near</span>(<span class="fu">rowSums</span>(pbmc_gene_expression_norm), target_sum, <span class="at">tol=</span><span class="fl">0.1</span>)))</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> pbmc_gene_expression_norm[ , genes_to_keep]</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_log <span class="ot">&lt;-</span> <span class="fu">log1p</span>(pbmc_gene_expression_norm)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="ot">&lt;-</span> pbmc_gene_expression_log</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map</span>(baseline_wide_exp_data, <span class="sc">~</span> <span class="fu">dim</span>(.x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$pbmc_cell_frequency
@@ -330,13 +336,13 @@ $pbmc_gene_expression
 [1]   146 17569
 
 $plasma_ab_titer
-[1] 166  35
+[1] 108  35
 
 $plasma_cytokine_concentration_by_legendplex
 [1] 104  14
 
 $plasma_cytokine_concentration_by_olink
-[1] 105  45
+[1] 87 44
 
 $t_cell_activation
 [1] 106   4
@@ -348,78 +354,78 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>generate_pca_plots <span class="ot">&lt;-</span> <span class="cf">function</span>(wide_exp_modality, meta_data) {</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># wide_exp_modality &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  pca_out <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(wide_exp_modality, <span class="at">center=</span><span class="cn">TRUE</span>, <span class="at">retx=</span><span class="cn">TRUE</span>, <span class="at">scale.=</span><span class="cn">TRUE</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>rotation) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(wide_exp_modality)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>x) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(wide_exp_modality)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  wide_exp_modality_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(wide_exp_modality) <span class="sc">%&gt;%</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id))</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  dataset_fill <span class="ot">&lt;-</span> wide_exp_modality_df <span class="sc">%&gt;%</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(dataset)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  plot_df <span class="ot">&lt;-</span> pca_out<span class="sc">$</span>x <span class="sc">%&gt;%</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(wide_exp_modality_df, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>)</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  var_contrib <span class="ot">&lt;-</span> <span class="fu">get_pca_var</span>(pca_out)<span class="sc">$</span>contrib</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  top_variables <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(var_contrib) <span class="sc">%&gt;%</span></span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>dataset),</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>actual_day_relative_to_boost),</span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, top_variables))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(top_variables), </span>
-<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>                        <span class="at">values_to =</span> <span class="st">"values"</span>,</span>
-<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>                        <span class="at">names_to =</span> <span class="st">"features"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>values), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>features) <span class="sc">+</span></span>
-<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>  p4 <span class="ot">&lt;-</span> <span class="fu">fviz_pca_biplot</span>(pca_out, </span>
-<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>                  <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
-<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointshape =</span> <span class="dv">21</span>,</span>
-<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointsize =</span> <span class="fl">2.5</span>,</span>
-<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill.ind =</span> dataset_fill,</span>
-<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col.ind =</span> <span class="st">"black"</span>,</span>
-<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a>                  <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-65"><a href="#cb19-65" aria-hidden="true" tabindex="-1"></a>                  <span class="at">select.var =</span> <span class="fu">list</span>(<span class="at">name =</span> top_variables)</span>
-<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
-<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb19-68"><a href="#cb19-68" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb19-69"><a href="#cb19-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
-<span id="cb19-70"><a href="#cb19-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">p1=</span>p1, <span class="at">p2=</span>p2, <span class="at">p3=</span>p3, <span class="at">p4=</span>p4)</span>
-<span id="cb19-71"><a href="#cb19-71" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-72"><a href="#cb19-72" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>generate_pca_plots <span class="ot">&lt;-</span> <span class="cf">function</span>(wide_exp_modality, meta_data) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># wide_exp_modality &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  pca_out <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(wide_exp_modality, <span class="at">center=</span><span class="cn">TRUE</span>, <span class="at">retx=</span><span class="cn">TRUE</span>, <span class="at">scale.=</span><span class="cn">TRUE</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>rotation) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(wide_exp_modality)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>x) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(wide_exp_modality)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  wide_exp_modality_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(wide_exp_modality) <span class="sc">%&gt;%</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id))</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  dataset_fill <span class="ot">&lt;-</span> wide_exp_modality_df <span class="sc">%&gt;%</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(dataset)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  plot_df <span class="ot">&lt;-</span> pca_out<span class="sc">$</span>x <span class="sc">%&gt;%</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(wide_exp_modality_df, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>)</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  var_contrib <span class="ot">&lt;-</span> <span class="fu">get_pca_var</span>(pca_out)<span class="sc">$</span>contrib</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>  top_variables <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(var_contrib) <span class="sc">%&gt;%</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>dataset),</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>actual_day_relative_to_boost),</span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, top_variables))) <span class="sc">%&gt;%</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(top_variables), </span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>                        <span class="at">values_to =</span> <span class="st">"values"</span>,</span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>                        <span class="at">names_to =</span> <span class="st">"features"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>values), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>features) <span class="sc">+</span></span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a>  p4 <span class="ot">&lt;-</span> <span class="fu">fviz_pca_biplot</span>(pca_out, </span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a>                  <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointshape =</span> <span class="dv">21</span>,</span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointsize =</span> <span class="fl">2.5</span>,</span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill.ind =</span> dataset_fill,</span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col.ind =</span> <span class="st">"black"</span>,</span>
+<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>                  <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>                  <span class="at">select.var =</span> <span class="fu">list</span>(<span class="at">name =</span> top_variables)</span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">p1=</span>p1, <span class="at">p2=</span>p2, <span class="at">p3=</span>p3, <span class="at">p4=</span>p4)</span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="pbmc-fractions" class="level2" data-number="3.1">
@@ -427,15 +433,15 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_cell_frequency, </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_cell_frequency, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -448,7 +454,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -461,7 +467,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -474,7 +480,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -490,15 +496,15 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression, </span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -511,7 +517,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -524,7 +530,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -537,7 +543,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -553,15 +559,15 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_ab_titer, </span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_ab_titer, </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -574,7 +580,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -587,7 +593,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -600,7 +606,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -616,15 +622,15 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex, </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex, </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -637,7 +643,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -650,7 +656,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -663,7 +669,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -679,15 +685,15 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink, </span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink, </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -700,7 +706,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -713,7 +719,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -726,7 +732,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -742,15 +748,15 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_activation, </span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_activation, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -763,7 +769,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -776,7 +782,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -789,7 +795,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -805,15 +811,15 @@ $t_cell_polarization
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_polarization, </span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_polarization, </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -826,7 +832,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -839,7 +845,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -852,7 +858,7 @@ $t_cell_polarization
 <div class="cell" data-crop="true">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -874,7 +880,7 @@ Session Information
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.2.3 (2023-03-15)
@@ -1405,359 +1411,359 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb57" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Batch Effects"</span></span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
-<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
-<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
-<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
-<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
-<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
-<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
-<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
-<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
-<span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-26"><a href="#cb57-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-27"><a href="#cb57-27" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
-<span id="cb57-28"><a href="#cb57-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-31"><a href="#cb57-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-32"><a href="#cb57-32" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
-<span id="cb57-33"><a href="#cb57-33" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-34"><a href="#cb57-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-37"><a href="#cb57-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-38"><a href="#cb57-38" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
-<span id="cb57-39"><a href="#cb57-39" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
-<span id="cb57-40"><a href="#cb57-40" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, <span class="at">experimental_data=</span>exp_data)</span>
-<span id="cb57-41"><a href="#cb57-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-42"><a href="#cb57-42" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
-<span id="cb57-43"><a href="#cb57-43" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
-<span id="cb57-44"><a href="#cb57-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-45"><a href="#cb57-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-46"><a href="#cb57-46" aria-hidden="true" tabindex="-1"></a><span class="fu"># Baseline (planned day 0)</span></span>
-<span id="cb57-47"><a href="#cb57-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-50"><a href="#cb57-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-51"><a href="#cb57-51" aria-hidden="true" tabindex="-1"></a>baseline_specimen <span class="ot">&lt;-</span> meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb57-52"><a href="#cb57-52" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-53"><a href="#cb57-53" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(specimen_id)</span>
-<span id="cb57-54"><a href="#cb57-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-55"><a href="#cb57-55" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
-<span id="cb57-56"><a href="#cb57-56" aria-hidden="true" tabindex="-1"></a>  exp_data, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> baseline_specimen)) <span class="sc">%&gt;%</span></span>
-<span id="cb57-57"><a href="#cb57-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_wide_experimental_data</span>(., <span class="at">impute=</span><span class="st">"zero"</span>)</span>
-<span id="cb57-58"><a href="#cb57-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-59"><a href="#cb57-59" aria-hidden="true" tabindex="-1"></a><span class="co"># filter genes and normalize the gene expression data</span></span>
-<span id="cb57-60"><a href="#cb57-60" aria-hidden="true" tabindex="-1"></a>min_counts <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb57-61"><a href="#cb57-61" aria-hidden="true" tabindex="-1"></a>min_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb57-62"><a href="#cb57-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-63"><a href="#cb57-63" aria-hidden="true" tabindex="-1"></a>genes_to_keep <span class="ot">&lt;-</span> <span class="fu">colnames</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression)[</span>
-<span id="cb57-64"><a href="#cb57-64" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">&gt;=</span> min_counts) <span class="sc">&amp;</span></span>
-<span id="cb57-65"><a href="#cb57-65" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> min_samples)</span>
-<span id="cb57-66"><a href="#cb57-66" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb57-67"><a href="#cb57-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-68"><a href="#cb57-68" aria-hidden="true" tabindex="-1"></a>target_sum <span class="ot">&lt;-</span> <span class="fl">1e6</span></span>
-<span id="cb57-69"><a href="#cb57-69" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> </span>
-<span id="cb57-70"><a href="#cb57-70" aria-hidden="true" tabindex="-1"></a>  baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">/</span> <span class="fu">rowSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">*</span> target_sum</span>
-<span id="cb57-71"><a href="#cb57-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-72"><a href="#cb57-72" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(dplyr<span class="sc">::</span><span class="fu">near</span>(<span class="fu">rowSums</span>(pbmc_gene_expression_norm), target_sum, <span class="at">tol=</span><span class="fl">0.1</span>)))</span>
-<span id="cb57-73"><a href="#cb57-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-74"><a href="#cb57-74" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> pbmc_gene_expression_norm[ , genes_to_keep]</span>
-<span id="cb57-75"><a href="#cb57-75" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_log <span class="ot">&lt;-</span> <span class="fu">log1p</span>(pbmc_gene_expression_norm)</span>
-<span id="cb57-76"><a href="#cb57-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-77"><a href="#cb57-77" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="ot">&lt;-</span> pbmc_gene_expression_log</span>
-<span id="cb57-78"><a href="#cb57-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-79"><a href="#cb57-79" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map</span>(baseline_wide_exp_data, <span class="sc">~</span> <span class="fu">dim</span>(.x))</span>
-<span id="cb57-80"><a href="#cb57-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-81"><a href="#cb57-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-84"><a href="#cb57-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-85"><a href="#cb57-85" aria-hidden="true" tabindex="-1"></a>generate_pca_plots <span class="ot">&lt;-</span> <span class="cf">function</span>(wide_exp_modality, meta_data) {</span>
-<span id="cb57-86"><a href="#cb57-86" aria-hidden="true" tabindex="-1"></a>  <span class="co"># wide_exp_modality &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
-<span id="cb57-87"><a href="#cb57-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb57-88"><a href="#cb57-88" aria-hidden="true" tabindex="-1"></a>  pca_out <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(wide_exp_modality, <span class="at">center=</span><span class="cn">TRUE</span>, <span class="at">retx=</span><span class="cn">TRUE</span>, <span class="at">scale.=</span><span class="cn">TRUE</span>)</span>
-<span id="cb57-89"><a href="#cb57-89" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-90"><a href="#cb57-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>rotation) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(wide_exp_modality)</span>
-<span id="cb57-91"><a href="#cb57-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>x) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(wide_exp_modality)</span>
-<span id="cb57-92"><a href="#cb57-92" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-93"><a href="#cb57-93" aria-hidden="true" tabindex="-1"></a>  wide_exp_modality_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(wide_exp_modality) <span class="sc">%&gt;%</span></span>
-<span id="cb57-94"><a href="#cb57-94" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-95"><a href="#cb57-95" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id))</span>
-<span id="cb57-96"><a href="#cb57-96" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-97"><a href="#cb57-97" aria-hidden="true" tabindex="-1"></a>  dataset_fill <span class="ot">&lt;-</span> wide_exp_modality_df <span class="sc">%&gt;%</span></span>
-<span id="cb57-98"><a href="#cb57-98" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-99"><a href="#cb57-99" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(dataset)</span>
-<span id="cb57-100"><a href="#cb57-100" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-101"><a href="#cb57-101" aria-hidden="true" tabindex="-1"></a>  plot_df <span class="ot">&lt;-</span> pca_out<span class="sc">$</span>x <span class="sc">%&gt;%</span></span>
-<span id="cb57-102"><a href="#cb57-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb57-103"><a href="#cb57-103" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-104"><a href="#cb57-104" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id)) <span class="sc">%&gt;%</span></span>
-<span id="cb57-105"><a href="#cb57-105" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(wide_exp_modality_df, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-106"><a href="#cb57-106" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>)</span>
-<span id="cb57-107"><a href="#cb57-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-108"><a href="#cb57-108" aria-hidden="true" tabindex="-1"></a>  var_contrib <span class="ot">&lt;-</span> <span class="fu">get_pca_var</span>(pca_out)<span class="sc">$</span>contrib</span>
-<span id="cb57-109"><a href="#cb57-109" aria-hidden="true" tabindex="-1"></a>  top_variables <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(var_contrib) <span class="sc">%&gt;%</span></span>
-<span id="cb57-110"><a href="#cb57-110" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-111"><a href="#cb57-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-112"><a href="#cb57-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
-<span id="cb57-113"><a href="#cb57-113" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-114"><a href="#cb57-114" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb57-115"><a href="#cb57-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb57-116"><a href="#cb57-116" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>dataset),</span>
-<span id="cb57-117"><a href="#cb57-117" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb57-118"><a href="#cb57-118" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb57-119"><a href="#cb57-119" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb57-120"><a href="#cb57-120" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-121"><a href="#cb57-121" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb57-122"><a href="#cb57-122" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb57-123"><a href="#cb57-123" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>actual_day_relative_to_boost),</span>
-<span id="cb57-124"><a href="#cb57-124" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb57-125"><a href="#cb57-125" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb57-126"><a href="#cb57-126" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb57-127"><a href="#cb57-127" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb57-128"><a href="#cb57-128" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-129"><a href="#cb57-129" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-130"><a href="#cb57-130" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb57-131"><a href="#cb57-131" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, top_variables))) <span class="sc">%&gt;%</span></span>
-<span id="cb57-132"><a href="#cb57-132" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(top_variables), </span>
-<span id="cb57-133"><a href="#cb57-133" aria-hidden="true" tabindex="-1"></a>                        <span class="at">values_to =</span> <span class="st">"values"</span>,</span>
-<span id="cb57-134"><a href="#cb57-134" aria-hidden="true" tabindex="-1"></a>                        <span class="at">names_to =</span> <span class="st">"features"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb57-135"><a href="#cb57-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb57-136"><a href="#cb57-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>values), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb57-137"><a href="#cb57-137" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>features) <span class="sc">+</span></span>
-<span id="cb57-138"><a href="#cb57-138" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb57-139"><a href="#cb57-139" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb57-140"><a href="#cb57-140" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb57-141"><a href="#cb57-141" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb57-142"><a href="#cb57-142" aria-hidden="true" tabindex="-1"></a>  p4 <span class="ot">&lt;-</span> <span class="fu">fviz_pca_biplot</span>(pca_out, </span>
-<span id="cb57-143"><a href="#cb57-143" aria-hidden="true" tabindex="-1"></a>                  <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
-<span id="cb57-144"><a href="#cb57-144" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointshape =</span> <span class="dv">21</span>,</span>
-<span id="cb57-145"><a href="#cb57-145" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointsize =</span> <span class="fl">2.5</span>,</span>
-<span id="cb57-146"><a href="#cb57-146" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill.ind =</span> dataset_fill,</span>
-<span id="cb57-147"><a href="#cb57-147" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col.ind =</span> <span class="st">"black"</span>,</span>
-<span id="cb57-148"><a href="#cb57-148" aria-hidden="true" tabindex="-1"></a>                  <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb57-149"><a href="#cb57-149" aria-hidden="true" tabindex="-1"></a>                  <span class="at">select.var =</span> <span class="fu">list</span>(<span class="at">name =</span> top_variables)</span>
-<span id="cb57-150"><a href="#cb57-150" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
-<span id="cb57-151"><a href="#cb57-151" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb57-152"><a href="#cb57-152" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb57-153"><a href="#cb57-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
-<span id="cb57-154"><a href="#cb57-154" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">p1=</span>p1, <span class="at">p2=</span>p2, <span class="at">p3=</span>p3, <span class="at">p4=</span>p4)</span>
-<span id="cb57-155"><a href="#cb57-155" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb57-156"><a href="#cb57-156" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb57-157"><a href="#cb57-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-158"><a href="#cb57-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-159"><a href="#cb57-159" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Fractions</span></span>
-<span id="cb57-160"><a href="#cb57-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-163"><a href="#cb57-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-164"><a href="#cb57-164" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb57-165"><a href="#cb57-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_cell_frequency, </span>
-<span id="cb57-166"><a href="#cb57-166" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb57-167"><a href="#cb57-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-168"><a href="#cb57-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-171"><a href="#cb57-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-172"><a href="#cb57-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-173"><a href="#cb57-173" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb57-174"><a href="#cb57-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-175"><a href="#cb57-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-178"><a href="#cb57-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-179"><a href="#cb57-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-180"><a href="#cb57-180" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb57-181"><a href="#cb57-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-182"><a href="#cb57-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-183"><a href="#cb57-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb57-184"><a href="#cb57-184" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb57-185"><a href="#cb57-185" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb57-186"><a href="#cb57-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-187"><a href="#cb57-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-190"><a href="#cb57-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-191"><a href="#cb57-191" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-192"><a href="#cb57-192" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb57-193"><a href="#cb57-193" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-194"><a href="#cb57-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-195"><a href="#cb57-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Gene Expression</span></span>
-<span id="cb57-196"><a href="#cb57-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-199"><a href="#cb57-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-200"><a href="#cb57-200" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb57-201"><a href="#cb57-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression, </span>
-<span id="cb57-202"><a href="#cb57-202" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb57-203"><a href="#cb57-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-204"><a href="#cb57-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-207"><a href="#cb57-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-208"><a href="#cb57-208" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-209"><a href="#cb57-209" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb57-210"><a href="#cb57-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-211"><a href="#cb57-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-214"><a href="#cb57-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-215"><a href="#cb57-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-216"><a href="#cb57-216" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb57-217"><a href="#cb57-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-218"><a href="#cb57-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-219"><a href="#cb57-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb57-220"><a href="#cb57-220" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb57-221"><a href="#cb57-221" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb57-222"><a href="#cb57-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-223"><a href="#cb57-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-226"><a href="#cb57-226" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-227"><a href="#cb57-227" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-228"><a href="#cb57-228" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb57-229"><a href="#cb57-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-230"><a href="#cb57-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-231"><a href="#cb57-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Antibody Levels</span></span>
-<span id="cb57-232"><a href="#cb57-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-235"><a href="#cb57-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-236"><a href="#cb57-236" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb57-237"><a href="#cb57-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_ab_titer, </span>
-<span id="cb57-238"><a href="#cb57-238" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb57-239"><a href="#cb57-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-240"><a href="#cb57-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-243"><a href="#cb57-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-244"><a href="#cb57-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-245"><a href="#cb57-245" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb57-246"><a href="#cb57-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-247"><a href="#cb57-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-250"><a href="#cb57-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-251"><a href="#cb57-251" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-252"><a href="#cb57-252" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb57-253"><a href="#cb57-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-254"><a href="#cb57-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-255"><a href="#cb57-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb57-256"><a href="#cb57-256" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb57-257"><a href="#cb57-257" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb57-258"><a href="#cb57-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-259"><a href="#cb57-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-262"><a href="#cb57-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-263"><a href="#cb57-263" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-264"><a href="#cb57-264" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb57-265"><a href="#cb57-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-266"><a href="#cb57-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-267"><a href="#cb57-267" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Legendplex</span></span>
-<span id="cb57-268"><a href="#cb57-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-271"><a href="#cb57-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-272"><a href="#cb57-272" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb57-273"><a href="#cb57-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex, </span>
-<span id="cb57-274"><a href="#cb57-274" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb57-275"><a href="#cb57-275" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-276"><a href="#cb57-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-279"><a href="#cb57-279" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-280"><a href="#cb57-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-281"><a href="#cb57-281" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb57-282"><a href="#cb57-282" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-283"><a href="#cb57-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-286"><a href="#cb57-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-287"><a href="#cb57-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-288"><a href="#cb57-288" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb57-289"><a href="#cb57-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-290"><a href="#cb57-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-291"><a href="#cb57-291" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb57-292"><a href="#cb57-292" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb57-293"><a href="#cb57-293" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb57-294"><a href="#cb57-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-295"><a href="#cb57-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-298"><a href="#cb57-298" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-299"><a href="#cb57-299" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-300"><a href="#cb57-300" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb57-301"><a href="#cb57-301" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-302"><a href="#cb57-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-303"><a href="#cb57-303" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Olink</span></span>
-<span id="cb57-304"><a href="#cb57-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-307"><a href="#cb57-307" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-308"><a href="#cb57-308" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb57-309"><a href="#cb57-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink, </span>
-<span id="cb57-310"><a href="#cb57-310" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb57-311"><a href="#cb57-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-312"><a href="#cb57-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-315"><a href="#cb57-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-316"><a href="#cb57-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-317"><a href="#cb57-317" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb57-318"><a href="#cb57-318" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-319"><a href="#cb57-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-322"><a href="#cb57-322" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-323"><a href="#cb57-323" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-324"><a href="#cb57-324" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb57-325"><a href="#cb57-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-326"><a href="#cb57-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-327"><a href="#cb57-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb57-328"><a href="#cb57-328" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb57-329"><a href="#cb57-329" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb57-330"><a href="#cb57-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-331"><a href="#cb57-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-334"><a href="#cb57-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-335"><a href="#cb57-335" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-336"><a href="#cb57-336" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb57-337"><a href="#cb57-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-338"><a href="#cb57-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-339"><a href="#cb57-339" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Activation</span></span>
-<span id="cb57-340"><a href="#cb57-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-343"><a href="#cb57-343" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-344"><a href="#cb57-344" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb57-345"><a href="#cb57-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_activation, </span>
-<span id="cb57-346"><a href="#cb57-346" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb57-347"><a href="#cb57-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-348"><a href="#cb57-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-351"><a href="#cb57-351" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-352"><a href="#cb57-352" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-353"><a href="#cb57-353" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb57-354"><a href="#cb57-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-355"><a href="#cb57-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-358"><a href="#cb57-358" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-359"><a href="#cb57-359" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-360"><a href="#cb57-360" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb57-361"><a href="#cb57-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-362"><a href="#cb57-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-363"><a href="#cb57-363" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb57-364"><a href="#cb57-364" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb57-365"><a href="#cb57-365" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb57-366"><a href="#cb57-366" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-367"><a href="#cb57-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-370"><a href="#cb57-370" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-371"><a href="#cb57-371" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-372"><a href="#cb57-372" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb57-373"><a href="#cb57-373" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-374"><a href="#cb57-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-375"><a href="#cb57-375" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Polarization</span></span>
-<span id="cb57-376"><a href="#cb57-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-379"><a href="#cb57-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-380"><a href="#cb57-380" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb57-381"><a href="#cb57-381" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_polarization, </span>
-<span id="cb57-382"><a href="#cb57-382" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb57-383"><a href="#cb57-383" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-384"><a href="#cb57-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-387"><a href="#cb57-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-388"><a href="#cb57-388" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-389"><a href="#cb57-389" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb57-390"><a href="#cb57-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-391"><a href="#cb57-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-394"><a href="#cb57-394" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-395"><a href="#cb57-395" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-396"><a href="#cb57-396" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb57-397"><a href="#cb57-397" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-398"><a href="#cb57-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-399"><a href="#cb57-399" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb57-400"><a href="#cb57-400" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb57-401"><a href="#cb57-401" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb57-402"><a href="#cb57-402" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-403"><a href="#cb57-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-406"><a href="#cb57-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-407"><a href="#cb57-407" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb57-408"><a href="#cb57-408" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb57-409"><a href="#cb57-409" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-410"><a href="#cb57-410" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-411"><a href="#cb57-411" aria-hidden="true" tabindex="-1"></a><span class="fu"># Appendix</span></span>
-<span id="cb57-412"><a href="#cb57-412" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-413"><a href="#cb57-413" aria-hidden="true" tabindex="-1"></a>&lt;button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" &gt;Session Information&lt;/button&gt;&lt;div id="collapseOne" class="accordion-collapse collapse"&gt;&lt;div&gt;</span>
-<span id="cb57-414"><a href="#cb57-414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-417"><a href="#cb57-417" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb57-418"><a href="#cb57-418" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb57-419"><a href="#cb57-419" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb57-420"><a href="#cb57-420" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-421"><a href="#cb57-421" aria-hidden="true" tabindex="-1"></a>&lt;/div&gt;&lt;/div&gt;</span>
+<div class="sourceCode" id="cb59" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Batch Effects"</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
+<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
+<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
+<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
+<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb59-24"><a href="#cb59-24" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
+<span id="cb59-25"><a href="#cb59-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-26"><a href="#cb59-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-27"><a href="#cb59-27" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb59-28"><a href="#cb59-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-31"><a href="#cb59-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-32"><a href="#cb59-32" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
+<span id="cb59-33"><a href="#cb59-33" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-34"><a href="#cb59-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-37"><a href="#cb59-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-38"><a href="#cb59-38" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb59-39"><a href="#cb59-39" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb59-40"><a href="#cb59-40" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, <span class="at">experimental_data=</span>exp_data)</span>
+<span id="cb59-41"><a href="#cb59-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-42"><a href="#cb59-42" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb59-43"><a href="#cb59-43" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb59-44"><a href="#cb59-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-45"><a href="#cb59-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-46"><a href="#cb59-46" aria-hidden="true" tabindex="-1"></a><span class="fu"># Baseline (planned day 0)</span></span>
+<span id="cb59-47"><a href="#cb59-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-50"><a href="#cb59-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-51"><a href="#cb59-51" aria-hidden="true" tabindex="-1"></a>baseline_specimen <span class="ot">&lt;-</span> meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb59-52"><a href="#cb59-52" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-53"><a href="#cb59-53" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(specimen_id)</span>
+<span id="cb59-54"><a href="#cb59-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-55"><a href="#cb59-55" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb59-56"><a href="#cb59-56" aria-hidden="true" tabindex="-1"></a>  exp_data, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> baseline_specimen)) <span class="sc">%&gt;%</span></span>
+<span id="cb59-57"><a href="#cb59-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_wide_experimental_data</span>(., <span class="at">impute=</span><span class="st">"zero"</span>)</span>
+<span id="cb59-58"><a href="#cb59-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-59"><a href="#cb59-59" aria-hidden="true" tabindex="-1"></a><span class="co"># filter genes and normalize the gene expression data</span></span>
+<span id="cb59-60"><a href="#cb59-60" aria-hidden="true" tabindex="-1"></a>min_counts <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb59-61"><a href="#cb59-61" aria-hidden="true" tabindex="-1"></a>min_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb59-62"><a href="#cb59-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-63"><a href="#cb59-63" aria-hidden="true" tabindex="-1"></a>genes_to_keep <span class="ot">&lt;-</span> <span class="fu">colnames</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression)[</span>
+<span id="cb59-64"><a href="#cb59-64" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">&gt;=</span> min_counts) <span class="sc">&amp;</span></span>
+<span id="cb59-65"><a href="#cb59-65" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> min_samples)</span>
+<span id="cb59-66"><a href="#cb59-66" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb59-67"><a href="#cb59-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-68"><a href="#cb59-68" aria-hidden="true" tabindex="-1"></a>target_sum <span class="ot">&lt;-</span> <span class="fl">1e6</span></span>
+<span id="cb59-69"><a href="#cb59-69" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> </span>
+<span id="cb59-70"><a href="#cb59-70" aria-hidden="true" tabindex="-1"></a>  baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">/</span> <span class="fu">rowSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">*</span> target_sum</span>
+<span id="cb59-71"><a href="#cb59-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-72"><a href="#cb59-72" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(dplyr<span class="sc">::</span><span class="fu">near</span>(<span class="fu">rowSums</span>(pbmc_gene_expression_norm), target_sum, <span class="at">tol=</span><span class="fl">0.1</span>)))</span>
+<span id="cb59-73"><a href="#cb59-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-74"><a href="#cb59-74" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> pbmc_gene_expression_norm[ , genes_to_keep]</span>
+<span id="cb59-75"><a href="#cb59-75" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_log <span class="ot">&lt;-</span> <span class="fu">log1p</span>(pbmc_gene_expression_norm)</span>
+<span id="cb59-76"><a href="#cb59-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-77"><a href="#cb59-77" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="ot">&lt;-</span> pbmc_gene_expression_log</span>
+<span id="cb59-78"><a href="#cb59-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-79"><a href="#cb59-79" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map</span>(baseline_wide_exp_data, <span class="sc">~</span> <span class="fu">dim</span>(.x))</span>
+<span id="cb59-80"><a href="#cb59-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-81"><a href="#cb59-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-84"><a href="#cb59-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-85"><a href="#cb59-85" aria-hidden="true" tabindex="-1"></a>generate_pca_plots <span class="ot">&lt;-</span> <span class="cf">function</span>(wide_exp_modality, meta_data) {</span>
+<span id="cb59-86"><a href="#cb59-86" aria-hidden="true" tabindex="-1"></a>  <span class="co"># wide_exp_modality &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
+<span id="cb59-87"><a href="#cb59-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb59-88"><a href="#cb59-88" aria-hidden="true" tabindex="-1"></a>  pca_out <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(wide_exp_modality, <span class="at">center=</span><span class="cn">TRUE</span>, <span class="at">retx=</span><span class="cn">TRUE</span>, <span class="at">scale.=</span><span class="cn">TRUE</span>)</span>
+<span id="cb59-89"><a href="#cb59-89" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-90"><a href="#cb59-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>rotation) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(wide_exp_modality)</span>
+<span id="cb59-91"><a href="#cb59-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>x) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(wide_exp_modality)</span>
+<span id="cb59-92"><a href="#cb59-92" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-93"><a href="#cb59-93" aria-hidden="true" tabindex="-1"></a>  wide_exp_modality_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(wide_exp_modality) <span class="sc">%&gt;%</span></span>
+<span id="cb59-94"><a href="#cb59-94" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-95"><a href="#cb59-95" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id))</span>
+<span id="cb59-96"><a href="#cb59-96" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-97"><a href="#cb59-97" aria-hidden="true" tabindex="-1"></a>  dataset_fill <span class="ot">&lt;-</span> wide_exp_modality_df <span class="sc">%&gt;%</span></span>
+<span id="cb59-98"><a href="#cb59-98" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-99"><a href="#cb59-99" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(dataset)</span>
+<span id="cb59-100"><a href="#cb59-100" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-101"><a href="#cb59-101" aria-hidden="true" tabindex="-1"></a>  plot_df <span class="ot">&lt;-</span> pca_out<span class="sc">$</span>x <span class="sc">%&gt;%</span></span>
+<span id="cb59-102"><a href="#cb59-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb59-103"><a href="#cb59-103" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-104"><a href="#cb59-104" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id)) <span class="sc">%&gt;%</span></span>
+<span id="cb59-105"><a href="#cb59-105" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(wide_exp_modality_df, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-106"><a href="#cb59-106" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>)</span>
+<span id="cb59-107"><a href="#cb59-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-108"><a href="#cb59-108" aria-hidden="true" tabindex="-1"></a>  var_contrib <span class="ot">&lt;-</span> <span class="fu">get_pca_var</span>(pca_out)<span class="sc">$</span>contrib</span>
+<span id="cb59-109"><a href="#cb59-109" aria-hidden="true" tabindex="-1"></a>  top_variables <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(var_contrib) <span class="sc">%&gt;%</span></span>
+<span id="cb59-110"><a href="#cb59-110" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-111"><a href="#cb59-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-112"><a href="#cb59-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
+<span id="cb59-113"><a href="#cb59-113" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-114"><a href="#cb59-114" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
+<span id="cb59-115"><a href="#cb59-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb59-116"><a href="#cb59-116" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>dataset),</span>
+<span id="cb59-117"><a href="#cb59-117" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb59-118"><a href="#cb59-118" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb59-119"><a href="#cb59-119" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb59-120"><a href="#cb59-120" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-121"><a href="#cb59-121" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
+<span id="cb59-122"><a href="#cb59-122" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb59-123"><a href="#cb59-123" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>actual_day_relative_to_boost),</span>
+<span id="cb59-124"><a href="#cb59-124" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb59-125"><a href="#cb59-125" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb59-126"><a href="#cb59-126" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb59-127"><a href="#cb59-127" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
+<span id="cb59-128"><a href="#cb59-128" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-129"><a href="#cb59-129" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-130"><a href="#cb59-130" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
+<span id="cb59-131"><a href="#cb59-131" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, top_variables))) <span class="sc">%&gt;%</span></span>
+<span id="cb59-132"><a href="#cb59-132" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(top_variables), </span>
+<span id="cb59-133"><a href="#cb59-133" aria-hidden="true" tabindex="-1"></a>                        <span class="at">values_to =</span> <span class="st">"values"</span>,</span>
+<span id="cb59-134"><a href="#cb59-134" aria-hidden="true" tabindex="-1"></a>                        <span class="at">names_to =</span> <span class="st">"features"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-135"><a href="#cb59-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb59-136"><a href="#cb59-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>values), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb59-137"><a href="#cb59-137" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>features) <span class="sc">+</span></span>
+<span id="cb59-138"><a href="#cb59-138" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb59-139"><a href="#cb59-139" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb59-140"><a href="#cb59-140" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
+<span id="cb59-141"><a href="#cb59-141" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-142"><a href="#cb59-142" aria-hidden="true" tabindex="-1"></a>  p4 <span class="ot">&lt;-</span> <span class="fu">fviz_pca_biplot</span>(pca_out, </span>
+<span id="cb59-143"><a href="#cb59-143" aria-hidden="true" tabindex="-1"></a>                  <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
+<span id="cb59-144"><a href="#cb59-144" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointshape =</span> <span class="dv">21</span>,</span>
+<span id="cb59-145"><a href="#cb59-145" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointsize =</span> <span class="fl">2.5</span>,</span>
+<span id="cb59-146"><a href="#cb59-146" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill.ind =</span> dataset_fill,</span>
+<span id="cb59-147"><a href="#cb59-147" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col.ind =</span> <span class="st">"black"</span>,</span>
+<span id="cb59-148"><a href="#cb59-148" aria-hidden="true" tabindex="-1"></a>                  <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb59-149"><a href="#cb59-149" aria-hidden="true" tabindex="-1"></a>                  <span class="at">select.var =</span> <span class="fu">list</span>(<span class="at">name =</span> top_variables)</span>
+<span id="cb59-150"><a href="#cb59-150" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
+<span id="cb59-151"><a href="#cb59-151" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb59-152"><a href="#cb59-152" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb59-153"><a href="#cb59-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
+<span id="cb59-154"><a href="#cb59-154" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">p1=</span>p1, <span class="at">p2=</span>p2, <span class="at">p3=</span>p3, <span class="at">p4=</span>p4)</span>
+<span id="cb59-155"><a href="#cb59-155" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb59-156"><a href="#cb59-156" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb59-157"><a href="#cb59-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-158"><a href="#cb59-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-159"><a href="#cb59-159" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Fractions</span></span>
+<span id="cb59-160"><a href="#cb59-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-163"><a href="#cb59-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-164"><a href="#cb59-164" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb59-165"><a href="#cb59-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_cell_frequency, </span>
+<span id="cb59-166"><a href="#cb59-166" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb59-167"><a href="#cb59-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-168"><a href="#cb59-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-171"><a href="#cb59-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-172"><a href="#cb59-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-173"><a href="#cb59-173" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
+<span id="cb59-174"><a href="#cb59-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-175"><a href="#cb59-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-178"><a href="#cb59-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-179"><a href="#cb59-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-180"><a href="#cb59-180" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
+<span id="cb59-181"><a href="#cb59-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-182"><a href="#cb59-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-183"><a href="#cb59-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
+<span id="cb59-184"><a href="#cb59-184" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb59-185"><a href="#cb59-185" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
+<span id="cb59-186"><a href="#cb59-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-187"><a href="#cb59-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-190"><a href="#cb59-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-191"><a href="#cb59-191" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-192"><a href="#cb59-192" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
+<span id="cb59-193"><a href="#cb59-193" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-194"><a href="#cb59-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-195"><a href="#cb59-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Gene Expression</span></span>
+<span id="cb59-196"><a href="#cb59-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-199"><a href="#cb59-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-200"><a href="#cb59-200" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb59-201"><a href="#cb59-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression, </span>
+<span id="cb59-202"><a href="#cb59-202" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb59-203"><a href="#cb59-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-204"><a href="#cb59-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-207"><a href="#cb59-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-208"><a href="#cb59-208" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-209"><a href="#cb59-209" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
+<span id="cb59-210"><a href="#cb59-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-211"><a href="#cb59-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-214"><a href="#cb59-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-215"><a href="#cb59-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-216"><a href="#cb59-216" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
+<span id="cb59-217"><a href="#cb59-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-218"><a href="#cb59-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-219"><a href="#cb59-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
+<span id="cb59-220"><a href="#cb59-220" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb59-221"><a href="#cb59-221" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
+<span id="cb59-222"><a href="#cb59-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-223"><a href="#cb59-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-226"><a href="#cb59-226" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-227"><a href="#cb59-227" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-228"><a href="#cb59-228" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
+<span id="cb59-229"><a href="#cb59-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-230"><a href="#cb59-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-231"><a href="#cb59-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Antibody Levels</span></span>
+<span id="cb59-232"><a href="#cb59-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-235"><a href="#cb59-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-236"><a href="#cb59-236" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb59-237"><a href="#cb59-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_ab_titer, </span>
+<span id="cb59-238"><a href="#cb59-238" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb59-239"><a href="#cb59-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-240"><a href="#cb59-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-243"><a href="#cb59-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-244"><a href="#cb59-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-245"><a href="#cb59-245" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
+<span id="cb59-246"><a href="#cb59-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-247"><a href="#cb59-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-250"><a href="#cb59-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-251"><a href="#cb59-251" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-252"><a href="#cb59-252" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
+<span id="cb59-253"><a href="#cb59-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-254"><a href="#cb59-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-255"><a href="#cb59-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
+<span id="cb59-256"><a href="#cb59-256" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb59-257"><a href="#cb59-257" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
+<span id="cb59-258"><a href="#cb59-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-259"><a href="#cb59-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-262"><a href="#cb59-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-263"><a href="#cb59-263" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-264"><a href="#cb59-264" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
+<span id="cb59-265"><a href="#cb59-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-266"><a href="#cb59-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-267"><a href="#cb59-267" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Legendplex</span></span>
+<span id="cb59-268"><a href="#cb59-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-271"><a href="#cb59-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-272"><a href="#cb59-272" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb59-273"><a href="#cb59-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex, </span>
+<span id="cb59-274"><a href="#cb59-274" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb59-275"><a href="#cb59-275" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-276"><a href="#cb59-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-279"><a href="#cb59-279" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-280"><a href="#cb59-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-281"><a href="#cb59-281" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
+<span id="cb59-282"><a href="#cb59-282" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-283"><a href="#cb59-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-286"><a href="#cb59-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-287"><a href="#cb59-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-288"><a href="#cb59-288" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
+<span id="cb59-289"><a href="#cb59-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-290"><a href="#cb59-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-291"><a href="#cb59-291" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
+<span id="cb59-292"><a href="#cb59-292" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb59-293"><a href="#cb59-293" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
+<span id="cb59-294"><a href="#cb59-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-295"><a href="#cb59-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-298"><a href="#cb59-298" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-299"><a href="#cb59-299" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-300"><a href="#cb59-300" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
+<span id="cb59-301"><a href="#cb59-301" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-302"><a href="#cb59-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-303"><a href="#cb59-303" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Olink</span></span>
+<span id="cb59-304"><a href="#cb59-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-307"><a href="#cb59-307" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-308"><a href="#cb59-308" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb59-309"><a href="#cb59-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink, </span>
+<span id="cb59-310"><a href="#cb59-310" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb59-311"><a href="#cb59-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-312"><a href="#cb59-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-315"><a href="#cb59-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-316"><a href="#cb59-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-317"><a href="#cb59-317" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
+<span id="cb59-318"><a href="#cb59-318" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-319"><a href="#cb59-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-322"><a href="#cb59-322" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-323"><a href="#cb59-323" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-324"><a href="#cb59-324" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
+<span id="cb59-325"><a href="#cb59-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-326"><a href="#cb59-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-327"><a href="#cb59-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
+<span id="cb59-328"><a href="#cb59-328" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb59-329"><a href="#cb59-329" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
+<span id="cb59-330"><a href="#cb59-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-331"><a href="#cb59-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-334"><a href="#cb59-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-335"><a href="#cb59-335" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-336"><a href="#cb59-336" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
+<span id="cb59-337"><a href="#cb59-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-338"><a href="#cb59-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-339"><a href="#cb59-339" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Activation</span></span>
+<span id="cb59-340"><a href="#cb59-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-343"><a href="#cb59-343" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-344"><a href="#cb59-344" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb59-345"><a href="#cb59-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_activation, </span>
+<span id="cb59-346"><a href="#cb59-346" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb59-347"><a href="#cb59-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-348"><a href="#cb59-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-351"><a href="#cb59-351" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-352"><a href="#cb59-352" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-353"><a href="#cb59-353" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
+<span id="cb59-354"><a href="#cb59-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-355"><a href="#cb59-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-358"><a href="#cb59-358" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-359"><a href="#cb59-359" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-360"><a href="#cb59-360" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
+<span id="cb59-361"><a href="#cb59-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-362"><a href="#cb59-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-363"><a href="#cb59-363" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
+<span id="cb59-364"><a href="#cb59-364" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb59-365"><a href="#cb59-365" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
+<span id="cb59-366"><a href="#cb59-366" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-367"><a href="#cb59-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-370"><a href="#cb59-370" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-371"><a href="#cb59-371" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-372"><a href="#cb59-372" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
+<span id="cb59-373"><a href="#cb59-373" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-374"><a href="#cb59-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-375"><a href="#cb59-375" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Polarization</span></span>
+<span id="cb59-376"><a href="#cb59-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-379"><a href="#cb59-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-380"><a href="#cb59-380" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
+<span id="cb59-381"><a href="#cb59-381" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_polarization, </span>
+<span id="cb59-382"><a href="#cb59-382" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb59-383"><a href="#cb59-383" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-384"><a href="#cb59-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-387"><a href="#cb59-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-388"><a href="#cb59-388" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-389"><a href="#cb59-389" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
+<span id="cb59-390"><a href="#cb59-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-391"><a href="#cb59-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-394"><a href="#cb59-394" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-395"><a href="#cb59-395" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-396"><a href="#cb59-396" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
+<span id="cb59-397"><a href="#cb59-397" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-398"><a href="#cb59-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-399"><a href="#cb59-399" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
+<span id="cb59-400"><a href="#cb59-400" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb59-401"><a href="#cb59-401" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
+<span id="cb59-402"><a href="#cb59-402" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-403"><a href="#cb59-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-406"><a href="#cb59-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-407"><a href="#cb59-407" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
+<span id="cb59-408"><a href="#cb59-408" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
+<span id="cb59-409"><a href="#cb59-409" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-410"><a href="#cb59-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-411"><a href="#cb59-411" aria-hidden="true" tabindex="-1"></a><span class="fu"># Appendix</span></span>
+<span id="cb59-412"><a href="#cb59-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-413"><a href="#cb59-413" aria-hidden="true" tabindex="-1"></a>&lt;button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" &gt;Session Information&lt;/button&gt;&lt;div id="collapseOne" class="accordion-collapse collapse"&gt;&lt;div&gt;</span>
+<span id="cb59-414"><a href="#cb59-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-417"><a href="#cb59-417" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb59-418"><a href="#cb59-418" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb59-419"><a href="#cb59-419" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb59-420"><a href="#cb59-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-421"><a href="#cb59-421" aria-hidden="true" tabindex="-1"></a>&lt;/div&gt;&lt;/div&gt;</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -32,9 +32,8 @@ input_dir = file.path("..", "data")
 ```{r}
 meta_data <- read_harmonized_meta_data(input_dir)
 
-#exp_data <- read_harmonized_experimental_data(input_dir)
 exp_data <- read_raw_experimental_data(input_dir)
-exp_data <- filter_experimental_data(meta_data, exp_data)
+#exp_data <- filter_experimental_data(meta_data, exp_data)
 
 celltype_meta <- read_celltype_meta(input_dir)
 gene_meta <- read_gene_meta(input_dir)
@@ -44,10 +43,9 @@ protein_meta <- read_protein_meta(input_dir)
 # Checks
 
 ```{r}
-# only works due to filtering step above
-stopifnot(all(
-  purrr::map_lgl(exp_data, ~ all(.x$specimen_id %in% meta_data$specimen_id)))
-)
+# stopifnot(all(
+#   purrr::map_lgl(exp_data, ~ all(.x$specimen_id %in% meta_data$specimen_id)))
+# )
 
 # no subject is recorded in more than one dataset
 (meta_data %>%
@@ -70,6 +68,16 @@ stopifnot(all(
   pull(baseline_present_frac) == 1) %>%
   all() %>%
   stopifnot()
+
+# stopifnot(all(
+#   purrr::map_lgl(exp_data, function(df) {
+#     if ("unit" %in% colnames(df)) {
+#       return(length(unique(df[["unit"]])) == 1)
+#     } else {
+#       return(TRUE)
+#     }
+#   })
+# ))
 ```
 
 # Demography & Metadata
@@ -234,8 +242,7 @@ meta_data %>%
   ggplot(aes(x=diff_relative_to_boost)) +
   geom_histogram(binwidth=1, color = "white", fill = "blue", alpha=0.1) +
   stat_bin(aes(label = after_stat(count)), binwidth=1, geom = "text", vjust = -0.5, color = "white", size = 3) +  
-  ggdark::dark_mode(verbose=FALSE) +
-  labs(x="Fraction of NA Values per Specimen")
+  ggdark::dark_mode(verbose=FALSE)
 ```
 
 ```{r}
@@ -266,8 +273,7 @@ meta_data %>%
   ggplot(aes(x=diff_relative_to_boost)) +
   geom_histogram(binwidth=1, color = "white", fill = "blue", alpha=0.1) +
   stat_bin(aes(label = after_stat(count)), binwidth=1, geom = "text", vjust = -0.5, color = "white", size = 3) +  
-  ggdark::dark_mode(verbose=FALSE) +
-  labs(x="Fraction of NA Values per Specimen")
+  ggdark::dark_mode(verbose=FALSE)
 ```
 
 ```{r}
@@ -297,8 +303,7 @@ meta_data %>%
   ggplot(aes(x=diff_relative_to_boost)) +
   geom_histogram(binwidth=1, color = "white", fill = "blue", alpha=0.1) +
   stat_bin(aes(label = after_stat(count)), binwidth=1, geom = "text", vjust = -0.5, color = "white", size = 3) +  
-  ggdark::dark_mode(verbose=FALSE) +
-  labs(x="Fraction of NA Values per Specimen")
+  ggdark::dark_mode(verbose=FALSE)
 ```
 
 ```{r}
@@ -327,22 +332,12 @@ meta_data %>%
 ## How many NA values do we have per assay?
 
 ```{r}
-value_vars_per_modality <- list(
-  "pbmc_cell_frequency" = c("percent_live_cell"),
-  "pbmc_gene_expression" = c("raw_count", "tpm"),
-  "plasma_ab_titer" = c("MFI", "MFI_normalised"),
-  "plasma_cytokine_concentration_by_legendplex" = c("concentration"),
-  "plasma_cytokine_concentration_by_olink" = c("concentration"),
-  "t_cell_activation" = c("analyte_percentages"),
-  "t_cell_polarization" = c("analyte_counts")
-)
-
-purrr::imap_dfr(exp_data, function(df, modality) {
-  purrr::map_dfr(value_vars_per_modality[[modality]], 
-                 ~ tibble(modality = modality,
-                          value_vars = .x,
-                          sum_na = sum(is.na(df[[.x]]))))
-})
+purrr::imap(exp_data, function(df, modality) {
+  feature_col <- experimental_data_settings[[modality]]$feature_col
+  value_col <- experimental_data_settings[[modality]]$value_col
+  tibble(modality = modality, feature_col = feature_col, sum_na = sum(is.na(df[[value_col]])))
+}) %>%
+  dplyr::bind_rows()
 ```
 
 ## What is the fraction of NA values in the PBMC Cell Type Frequencies
@@ -362,7 +357,9 @@ exp_data$pbmc_cell_frequency %>%
   labs(x="Fraction of NA Values per Cell Type")
 ```
 
-### Per Cell Specimen
+### Per Specimen
+
+So there are 5 specimen with more than 20% NA, which are all from the same subject!
 
 ```{r}
 exp_data$pbmc_cell_frequency %>%
@@ -377,30 +374,11 @@ exp_data$pbmc_cell_frequency %>%
   labs(x="Fraction of NA Values per Specimen")
 ```
 
-So there are 5 specimen with more than 20% NA, which are all from the same subject!
-
-```{r}
-exp_data$pbmc_cell_frequency %>%
-  dplyr::mutate(is_na = is.na(percent_live_cell)) %>%
-  dplyr::group_by(specimen_id) %>%
-  dplyr::summarise(frac_na = sum(is_na) / n()) %>%
-  dplyr::filter(frac_na > 0.2) %>%
-  dplyr::left_join(meta_data, by="specimen_id")
-```
-
-```{r fig.width=12, include=FALSE}
-exp_data$pbmc_cell_frequency %>%
-  dplyr::filter(specimen_id %in% c(537, 538, 539, 540, 541)) %>%
-  dplyr::left_join(meta_data, by="specimen_id") %>%
-  tidyr::drop_na() %>%
-  ggplot() +
-  geom_line(aes(x=planned_day_relative_to_boost, y=percent_live_cell, color=cell_type_name)) +
-  ggdark::dark_mode(verbose=FALSE)
-```
-
 ## What is the fraction of NA values in the Olink Data?
 
 ### Per Protein
+
+After excluding Q969D9, the largest fraction of NA values is about 5% which is acceptable I guess.
 
 ```{r fig.height=6}
 exp_data$plasma_cytokine_concentration_by_olink %>%
@@ -416,6 +394,8 @@ exp_data$plasma_cytokine_concentration_by_olink %>%
 ```
 
 ### Per Specimen
+
+There are 6 specimen with more than 50% NA values, I am not sure whether I should exclude those?
 
 ```{r}
 exp_data$plasma_cytokine_concentration_by_olink %>%
@@ -441,6 +421,53 @@ exp_data$plasma_cytokine_concentration_by_olink %>%
                 actual_day_relative_to_boost, planned_day_relative_to_boost)
 ```
 
+# Different Units that are used
+
+```{r}
+purrr::map_lgl(exp_data, function(df) {
+    if ("unit" %in% colnames(df)) {
+      return(length(unique(df[["unit"]])) == 1)
+    } else {
+      return(TRUE)
+    }
+  })
+```
+
+Check if this is also the case in the harmonized data. Yes it is. So how to deal with this?
+
+```{r}
+harm_exp_data <- read_harmonized_experimental_data_depr(input_dir)
+
+purrr::map_lgl(harm_exp_data, function(df) {
+    if ("unit" %in% colnames(df)) {
+      return(length(unique(df[["unit"]])) == 1)
+    } else {
+      return(TRUE)
+    }
+  })
+
+rm(harm_exp_data)
+```
+
+
+## plasma_ab_titer
+
+- See also: https://discuss.cmi-pb.org/t/multiple-units-in-the-ab-titer-table/57/3
+
+```{r}
+exp_data$plasma_ab_titer %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
+  dplyr::count(dataset, unit)
+```
+
+## plasma_cytokine_concentration_by_olink
+
+```{r}
+exp_data$plasma_cytokine_concentration_by_olink %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
+  dplyr::count(dataset, unit)
+```
+
 # Question for Assay Metadata
 
 ## How does the quality control for Olink look like?
@@ -449,7 +476,6 @@ exp_data$plasma_cytokine_concentration_by_olink %>%
 exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::count(quality_control)
 ```
-
 
 ```{r}
 exp_data$plasma_cytokine_concentration_by_olink %>%
@@ -469,6 +495,45 @@ exp_data$plasma_cytokine_concentration_by_olink %>%
   dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
   dplyr::count(below_lod)
 ```
+
+```{r fig.width=10, fig.height=4}
+set.seed(1)
+p1 <- exp_data$plasma_cytokine_concentration_by_olink %>%
+  dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
+  dplyr::mutate(qc_warning = quality_control == "Warning") %>%
+  dplyr::group_by(protein_id) %>%
+  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),
+                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %>%
+  dplyr::left_join(cytokine_uniprot_mapping, by="protein_id") %>%
+  ggplot() +
+  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +
+  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, 
+                      label = ifelse(mean_below_lod > 0.2, protein_id, '')),
+                  max.overlaps = Inf, color="grey") + # This ensures all labels are shown
+  ggdark::dark_mode()
+
+p2 <- exp_data$plasma_cytokine_concentration_by_olink %>%
+  dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
+  dplyr::mutate(qc_warning = quality_control == "Warning") %>%
+  dplyr::group_by(protein_id) %>%
+  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),
+                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %>%
+  dplyr::left_join(cytokine_uniprot_mapping, by="protein_id") %>%
+  ggplot() +
+  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +
+  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, 
+                      label = ifelse(mean_below_lod > 0.2, cytokine, '')),
+                  max.overlaps = Inf, color="grey") + # This ensures all labels are shown
+  ggdark::dark_mode()
+
+cowplot::plot_grid(p1, p2, ncol=2)
+```
+
+```{r}
+exp_data$plasma_cytokine_concentration_by_olink %>%
+  dplyr::filter(protein_id %in% c("P60568"))
+```
+
 
 ## What is the fraction of unspecific antibody measurements
 

@@ -117,7 +117,8 @@ experimental_data_settings <- list(
       "IgG3_DT", "IgG3_FHA", "IgG3_FIM2/3", "IgG3_OVA", "IgG3_PRN", "IgG3_PT", 
       "IgG3_TT", "IgG4_DT", "IgG4_FHA", "IgG4_FIM2/3", "IgG4_OVA", "IgG4_PRN", 
       "IgG4_PT", "IgG4_TT", "IgG_FHA", "IgG_PRN", "IgG_PT"
-    )
+    ),
+    unit = "MFI"
   ),
   plasma_cytokine_concentration_by_legendplex = list(
     feature_col = "protein_id",
@@ -129,14 +130,16 @@ experimental_data_settings <- list(
     feature_subset = c(
       "P01135", "P01374", "P01584", "P03956", "P04141", 
       "P09919", "P13725", "P40933", "P49771", "P78380", 
-      "Q16552", "Q8NEV9_Q14213", "Q969D9", "Q96PD4", "Q9P0M4", 
+      "Q16552", "Q8NEV9_Q14213", "Q96PD4", "Q9P0M4", 
       "O14625", "O43508", "O95760", "P01133", "P01375", 
       "P01579", "P02778", "P05112", "P05231", "P09603", 
       "P10145", "P10147", "P13232", "P13236", "P13500", 
       "P14210", "P15692", "P22301", "P35225", "P39900", 
       "P48061", "P50591", "P51671", "P60568", "P80075", 
       "P80098", "Q07325", "Q14116", "Q99616", "Q99731"
-    )
+      #"Q969D9" # 20% NA fraction
+    ),
+    unit = "PG/ML"
   ),
   t_cell_activation = list(
     feature_col = "stimulation",
@@ -212,13 +215,39 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
       removed_feature_count <- initial_feature_count - final_feature_count
       
       if (verbose) {
-        message(modality, " | Removed ", removed_feature_count, " features because not in feature subset")
+        message(modality, " | Removed ", initial_feature_count - final_feature_count, " features because not in feature subset")
       }
     }
     return(df)
   })
   
-  # 3. TODO
+  # 3. Filter Olink measurements where QC is warn
+  initial_feature_count <- nrow(experimental_data$plasma_cytokine_concentration_by_olink)
+  
+  experimental_data$plasma_cytokine_concentration_by_olink <- 
+    experimental_data$plasma_cytokine_concentration_by_olink %>%
+    dplyr::filter(quality_control != "Warning")
+  
+  final_feature_count <- nrow(experimental_data$plasma_cytokine_concentration_by_olink)
+  if (verbose) {
+    message("plasma_cytokine_concentration_by_olink | Removed ", initial_feature_count - final_feature_count, " features because qc warning")
+  }
+  
+  # 4. Only use data with the same unit (MFI for plasma_ab_titer; PG/ML for plasma_cytokine_concentration_by_olink)
+  experimental_data <- purrr::imap(experimental_data, function(df, modality) {
+    if ("unit" %in% names(experimental_data_settings[[modality]])) {
+      initial_feature_count <- nrow(df)
+      df <- df %>%
+        dplyr::filter(.data[["unit"]] %in% experimental_data_settings[[modality]][["unit"]])
+      final_feature_count <- nrow(df)
+      if (verbose) {
+        message(modality, " | Removed ", initial_feature_count - final_feature_count, " measurements because wrong unit used")
+      }
+    }
+    return(df)
+  })
+  
+  # 5. TODO
   
   return(experimental_data)
 }
