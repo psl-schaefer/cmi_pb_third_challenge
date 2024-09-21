@@ -1,0 +1,171 @@
+---
+title: "Single-Omic Models"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(ggdark)
+  library(magick)
+})
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "colors.R"))
+source(file.path("..", "src", "generate_targets.R"))
+source(file.path("..", "src", "model.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+meta_data <- read_harmonized_meta_data(input_dir)
+
+experimental_data <- read_raw_experimental_data(input_dir)
+experimental_data <- filter_experimental_data(meta_data, experimental_data)
+
+meta_data <- filter_meta_data(meta_data, experimental_data)
+wide_experimental_data <- generate_wide_experimental_data(experimental_data=experimental_data, 
+                                                 impute="zero")
+
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+protein_meta <- read_protein_meta(input_dir)
+```
+
+```{r}
+target_list <- generate_all_targets(
+  meta_data=meta_data, 
+  experimental_data=experimental_data, 
+  experimental_data_settings=experimental_data_settings, 
+  gene_meta=gene_meta)
+str(target_list)
+```
+
+# Task 1.1
+
+Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.
+
+## Metadata Model
+
+```{r}
+meta_data_covariates <- get_metadata_covariates(meta_data)
+
+model_df <- target_list$task_11 %>%
+  dplyr::left_join(meta_data_covariates, by="subject_id")
+
+set.seed(42)
+get_oob_perf(model_df=model_df)
+get_loocv_perf(model_df=model_df)
+get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)
+get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)
+```
+
+# Task 1.2
+
+Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.
+
+## Metadata Model
+
+```{r}
+meta_data_covariates <- get_metadata_covariates(meta_data)
+
+model_df <- target_list$task_12 %>%
+  dplyr::left_join(meta_data_covariates, by="subject_id")
+
+set.seed(42)
+get_oob_perf(model_df=model_df)
+get_loocv_perf(model_df=model_df)
+get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)
+get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)
+```
+
+# Task 2.1
+
+Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.
+
+## Metadata Model
+
+```{r}
+meta_data_covariates <- get_metadata_covariates(meta_data)
+
+model_df <- target_list$task_21 %>%
+  dplyr::left_join(meta_data_covariates, by="subject_id")
+
+set.seed(42)
+get_oob_perf(model_df=model_df)
+get_loocv_perf(model_df=model_df)
+get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)
+get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)
+```
+
+# Task 2.2
+
+Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.
+
+## Metadata Model
+
+```{r}
+meta_data_covariates <- get_metadata_covariates(meta_data)
+
+model_df <- target_list$task_22 %>%
+  dplyr::left_join(meta_data_covariates, by="subject_id")
+
+set.seed(42)
+get_oob_perf(model_df=model_df)
+get_loocv_perf(model_df=model_df)
+get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)
+get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)
+```
+
+# Task 3.1
+
+Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.
+
+## Metadata Model
+
+```{r}
+meta_data_covariates <- get_metadata_covariates(meta_data)
+
+model_df <- target_list$task_31 %>%
+  dplyr::left_join(meta_data_covariates, by="subject_id")
+
+set.seed(42)
+get_oob_perf(model_df=model_df)
+get_loocv_perf(model_df=model_df)
+get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)
+get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)
+```
+
+# Task 3.2
+
+Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.
+
+## Metadata Model
+
+```{r}
+meta_data_covariates <- get_metadata_covariates(meta_data)
+
+model_df <- target_list$task_32 %>%
+  dplyr::left_join(meta_data_covariates, by="subject_id")
+
+set.seed(42)
+get_oob_perf(model_df=model_df)
+get_loocv_perf(model_df=model_df)
+get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)
+get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)
+```
+
+# Single-Omic Models
+
+# Metadata + Single-Omic Models
+

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Philipp Sven Lars Schäfer">
-<meta name="dcterms.date" content="2024-09-16">
+<meta name="dcterms.date" content="2024-09-21">
 
 <title>Baseline Models V1 – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
@@ -193,7 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 16, 2024</p>
+      <p class="date">September 21, 2024</p>
     </div>
   </div>
   
@@ -241,7 +241,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">read_harmonized_experimental_data_depr</span>(input_dir)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># filtering</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>meta_df <span class="ot">&lt;-</span> <span class="fu">filter_harmonized_meta_data</span>(<span class="at">meta_data=</span>meta_df, <span class="at">experimental_data=</span>data_list)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>meta_df <span class="ot">&lt;-</span> <span class="fu">filter_meta_data</span>(<span class="at">meta_data=</span>meta_df, <span class="at">experimental_data=</span>data_list)</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">filter_harmonized_experimental_data_depr</span>(<span class="at">meta_data=</span>meta_df, <span class="at">experimental_data=</span>data_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
@@ -1050,7 +1050,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">read_harmonized_experimental_data_depr</span>(input_dir)</span>
 <span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a><span class="co"># filtering</span></span>
-<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>meta_df <span class="ot">&lt;-</span> <span class="fu">filter_harmonized_meta_data</span>(<span class="at">meta_data=</span>meta_df, <span class="at">experimental_data=</span>data_list)</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>meta_df <span class="ot">&lt;-</span> <span class="fu">filter_meta_data</span>(<span class="at">meta_data=</span>meta_df, <span class="at">experimental_data=</span>data_list)</span>
 <span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">filter_harmonized_experimental_data_depr</span>(<span class="at">meta_data=</span>meta_df, <span class="at">experimental_data=</span>data_list)</span>
 <span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a></span>

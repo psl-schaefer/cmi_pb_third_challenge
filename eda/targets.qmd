@@ -1,0 +1,113 @@
+---
+title: "Prediction Targets"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(ggdark)
+  library(magick)
+})
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "colors.R"))
+source(file.path("..", "src", "generate_targets.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+meta_data <- read_harmonized_meta_data(input_dir)
+
+experimental_data <- read_raw_experimental_data(input_dir)
+experimental_data <- filter_experimental_data(meta_data, experimental_data)
+wide_experimental_data <- generate_wide_experimental_data(experimental_data=experimental_data, 
+                                                 impute="zero")
+
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+protein_meta <- read_protein_meta(input_dir)
+```
+
+# Time Points
+
+```{r}
+specimen_list <- get_specimen_per_day(meta_data)
+
+purrr::imap(specimen_list, ~ .x %>% dplyr::mutate(day=.y)) %>%
+  dplyr::bind_rows() %>%
+  dplyr::mutate(day = factor(day, levels=paste0("day_", c(0, 1, 3, 14)))) %>%
+  ggplot() +
+  geom_histogram(aes(x=actual_day_relative_to_boost), binwidth=1) +
+  geom_vline(xintercept=c(0,1,3,14), color="forestgreen") +
+  facet_wrap(~day, ncol=1) +
+  ggdark::dark_mode(verbose=FALSE) +
+  scale_x_continuous(breaks=seq(min(unlist(acceptable_differences)),
+                                max(unlist(acceptable_differences))))
+```
+
+# Generate Targets for each Task
+
+## Task 1) Antibody level tasks
+
+- 1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.
+
+- 1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.
+
+```{r}
+targets_task_1 <- generate_targets_task_1(meta_data=meta_data, 
+                                          experimental_data=experimental_data, 
+                                          experimental_data_settings=experimental_data_settings, 
+                                          specimen_list=specimen_list)
+```
+
+```{r}
+plot_targets(targets_task_1)
+```
+
+## Task 2) Cell frequency tasks
+
+- 2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.
+
+- 2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.
+
+```{r}
+targets_task_2 <- generate_targets_task_2(meta_data=meta_data, 
+                                          experimental_data=experimental_data, 
+                                          experimental_data_settings=experimental_data_settings,
+                                          specimen_list=specimen_list)
+targets_task_2
+```
+
+```{r}
+plot_targets(targets_task_2)
+```
+
+## Task 3) Gene expression tasks
+
+- 3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.
+
+- 3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.
+
+```{r}
+targets_task_3 <- generate_targets_task_3(meta_data=meta_data, 
+                                          experimental_data=experimental_data, 
+                                          experimental_data_settings=experimental_data_settings, 
+                                          specimen_list=specimen_list,
+                                          gene_meta=gene_meta)
+targets_task_3
+```
+
+```{r}
+plot_targets(targets_task_3)
+```

@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.45">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Philipp Sven Lars Schäfer">
+<meta name="dcterms.date" content="2024-09-21">
+
+<title>Prediction Targets – PSLS @ 3rd CMI-PB Challenge</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">PSLS @ 3rd CMI-PB Challenge</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/psl-schaefer"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/psl_schaefer"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/philipp-sl-schaefer/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#packages" id="toc-packages" class="nav-link active" data-scroll-target="#packages"><span class="header-section-number">1</span> Packages</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">2</span> Data</a></li>
+  <li><a href="#time-points" id="toc-time-points" class="nav-link" data-scroll-target="#time-points"><span class="header-section-number">3</span> Time Points</a></li>
+  <li><a href="#generate-targets-for-each-task" id="toc-generate-targets-for-each-task" class="nav-link" data-scroll-target="#generate-targets-for-each-task"><span class="header-section-number">4</span> Generate Targets for each Task</a>
+  <ul class="collapse">
+  <li><a href="#task-1-antibody-level-tasks" id="toc-task-1-antibody-level-tasks" class="nav-link" data-scroll-target="#task-1-antibody-level-tasks"><span class="header-section-number">4.1</span> Task 1) Antibody level tasks</a></li>
+  <li><a href="#task-2-cell-frequency-tasks" id="toc-task-2-cell-frequency-tasks" class="nav-link" data-scroll-target="#task-2-cell-frequency-tasks"><span class="header-section-number">4.2</span> Task 2) Cell frequency tasks</a></li>
+  <li><a href="#task-3-gene-expression-tasks" id="toc-task-3-gene-expression-tasks" class="nav-link" data-scroll-target="#task-3-gene-expression-tasks"><span class="header-section-number">4.3</span> Task 3) Gene expression tasks</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Prediction Targets</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Philipp Sven Lars Schäfer </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 21, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="packages" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Packages</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(meta_data, experimental_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>pbmc_cell_frequency | Removed 550 specimens because missing in meta data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_ab_titer | Removed 6931 specimens because missing in meta data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 495 specimens because missing in meta data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pbmc_cell_frequency | Removed 56 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_ab_titer | Removed 48 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 234 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>t_cell_polarization | Removed 3 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 300 features because qc warning</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_ab_titer | Removed 10540 measurements because wrong unit used</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 2400 measurements because wrong unit used</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>wide_experimental_data <span class="ot">&lt;-</span> <span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">impute=</span><span class="st">"zero"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | NA Fraction: 0.0110795454545455 | Imputed with zeros</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>t_cell_activation | NA Fraction: 0.0576923076923077 | Imputed with zeros</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>t_cell_polarization | NA Fraction: 0.0134099616858238 | Imputed with zeros</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="time-points" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Time Points</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>specimen_list <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(meta_data)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap</span>(specimen_list, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day=</span>.y)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">factor</span>(day, <span class="at">levels=</span><span class="fu">paste0</span>(<span class="st">"day_"</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">14</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>actual_day_relative_to_boost), <span class="at">binwidth=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">14</span>), <span class="at">color=</span><span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="fu">min</span>(<span class="fu">unlist</span>(acceptable_differences)),</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">max</span>(<span class="fu">unlist</span>(acceptable_differences))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="generate-targets-for-each-task" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Generate Targets for each Task</h1>
+<section id="task-1-antibody-level-tasks" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="task-1-antibody-level-tasks"><span class="header-section-number">4.1</span> Task 1) Antibody level tasks</h2>
+<ul>
+<li><p>1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.</p></li>
+<li><p>1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.</p></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_1</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="task-2-cell-frequency-tasks" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="task-2-cell-frequency-tasks"><span class="header-section-number">4.2</span> Task 2) Cell frequency tasks</h2>
+<ul>
+<li><p>2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.</p></li>
+<li><p>2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.</p></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_2</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>targets_task_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["subject_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["day_0"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["day_1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fc"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["baseline"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["task21"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["task22"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"5.490838","3":"7.211965","4":"1.3134544","5":"5.490838","6":"7.211965","7":"1.3134544"},{"1":"6","2":"22.793028","3":"41.380502","4":"1.8154894","5":"22.793028","6":"41.380502","7":"1.8154894"},{"1":"15","2":"15.637368","3":"10.585489","4":"0.6769355","5":"15.637368","6":"10.585489","7":"0.6769355"},{"1":"20","2":"21.399162","3":"26.605583","4":"1.2433002","5":"21.399162","6":"26.605583","7":"1.2433002"},{"1":"21","2":"15.226645","3":"34.812168","4":"2.2862664","5":"15.226645","6":"34.812168","7":"2.2862664"},{"1":"26","2":"5.532067","3":"16.108508","4":"2.9118426","5":"5.532067","6":"16.108508","7":"2.9118426"},{"1":"29","2":"16.094765","3":"25.083209","4":"1.5584700","5":"16.094765","6":"25.083209","7":"1.5584700"},{"1":"31","2":"4.879023","3":"8.545243","4":"1.7514250","5":"4.879023","6":"8.545243","7":"1.7514250"},{"1":"33","2":"7.651833","3":"17.703064","4":"2.3135717","5":"7.651833","6":"17.703064","7":"2.3135717"},{"1":"36","2":"11.243799","3":"17.446750","4":"1.5516776","5":"11.243799","6":"17.446750","7":"1.5516776"},{"1":"44","2":"23.103276","3":"35.241054","4":"1.5253704","5":"23.103276","6":"35.241054","7":"1.5253704"},{"1":"46","2":"25.504783","3":"30.018793","4":"1.1769868","5":"25.504783","6":"30.018793","7":"1.1769868"},{"1":"63","2":"15.300000","3":"18.700000","4":"1.2222222","5":"15.300000","6":"18.700000","7":"1.2222222"},{"1":"64","2":"12.900000","3":"13.800000","4":"1.0697674","5":"12.900000","6":"13.800000","7":"1.0697674"},{"1":"65","2":"15.800000","3":"20.400000","4":"1.2911392","5":"15.800000","6":"20.400000","7":"1.2911392"},{"1":"66","2":"15.800000","3":"13.900000","4":"0.8797468","5":"15.800000","6":"13.900000","7":"0.8797468"},{"1":"67","2":"34.600000","3":"31.100000","4":"0.8988439","5":"34.600000","6":"31.100000","7":"0.8988439"},{"1":"68","2":"13.500000","3":"15.500000","4":"1.1481481","5":"13.500000","6":"15.500000","7":"1.1481481"},{"1":"69","2":"13.100000","3":"18.900000","4":"1.4427481","5":"13.100000","6":"18.900000","7":"1.4427481"},{"1":"70","2":"32.300000","3":"46.100000","4":"1.4272446","5":"32.300000","6":"46.100000","7":"1.4272446"},{"1":"71","2":"12.200000","3":"18.200000","4":"1.4918033","5":"12.200000","6":"18.200000","7":"1.4918033"},{"1":"72","2":"19.900000","3":"27.500000","4":"1.3819095","5":"19.900000","6":"27.500000","7":"1.3819095"},{"1":"73","2":"15.700000","3":"23.400000","4":"1.4904459","5":"15.700000","6":"23.400000","7":"1.4904459"},{"1":"74","2":"36.300000","3":"50.000000","4":"1.3774105","5":"36.300000","6":"50.000000","7":"1.3774105"},{"1":"76","2":"18.000000","3":"22.300000","4":"1.2388889","5":"18.000000","6":"22.300000","7":"1.2388889"},{"1":"77","2":"28.800000","3":"31.000000","4":"1.0763889","5":"28.800000","6":"31.000000","7":"1.0763889"},{"1":"78","2":"29.000000","3":"35.700000","4":"1.2310345","5":"29.000000","6":"35.700000","7":"1.2310345"},{"1":"79","2":"41.500000","3":"52.600000","4":"1.2674699","5":"41.500000","6":"52.600000","7":"1.2674699"},{"1":"80","2":"21.900000","3":"26.400000","4":"1.2054795","5":"21.900000","6":"26.400000","7":"1.2054795"},{"1":"81","2":"34.900000","3":"35.600000","4":"1.0200573","5":"34.900000","6":"35.600000","7":"1.0200573"},{"1":"82","2":"22.500000","3":"20.500000","4":"0.9111111","5":"22.500000","6":"20.500000","7":"0.9111111"},{"1":"83","2":"32.400000","3":"27.700000","4":"0.8549383","5":"32.400000","6":"27.700000","7":"0.8549383"},{"1":"84","2":"18.900000","3":"25.100000","4":"1.3280423","5":"18.900000","6":"25.100000","7":"1.3280423"},{"1":"85","2":"19.700000","3":"18.700000","4":"0.9492386","5":"19.700000","6":"18.700000","7":"0.9492386"},{"1":"86","2":"23.500000","3":"25.200000","4":"1.0723404","5":"23.500000","6":"25.200000","7":"1.0723404"},{"1":"87","2":"22.900000","3":"22.500000","4":"0.9825328","5":"22.900000","6":"22.500000","7":"0.9825328"},{"1":"88","2":"17.600000","3":"20.200000","4":"1.1477273","5":"17.600000","6":"20.200000","7":"1.1477273"},{"1":"89","2":"15.700000","3":"16.600000","4":"1.0573248","5":"15.700000","6":"16.600000","7":"1.0573248"},{"1":"90","2":"20.600000","3":"21.600000","4":"1.0485437","5":"20.600000","6":"21.600000","7":"1.0485437"},{"1":"91","2":"25.400000","3":"40.400000","4":"1.5905512","5":"25.400000","6":"40.400000","7":"1.5905512"},{"1":"92","2":"40.600000","3":"33.000000","4":"0.8128079","5":"40.600000","6":"33.000000","7":"0.8128079"},{"1":"93","2":"16.300000","3":"15.000000","4":"0.9202454","5":"16.300000","6":"15.000000","7":"0.9202454"},{"1":"94","2":"26.200000","3":"39.500000","4":"1.5076336","5":"26.200000","6":"39.500000","7":"1.5076336"},{"1":"95","2":"17.300000","3":"23.500000","4":"1.3583815","5":"17.300000","6":"23.500000","7":"1.3583815"},{"1":"96","2":"34.200000","3":"35.000000","4":"1.0233918","5":"34.200000","6":"35.000000","7":"1.0233918"},{"1":"97","2":"21.000000","3":"30.800000","4":"1.4666667","5":"21.000000","6":"30.800000","7":"1.4666667"},{"1":"98","2":"14.300000","3":"11.300000","4":"0.7902098","5":"14.300000","6":"11.300000","7":"0.7902098"},{"1":"99","2":"25.800000","3":"13.300000","4":"0.5155039","5":"25.800000","6":"13.300000","7":"0.5155039"},{"1":"100","2":"22.900000","3":"23.700000","4":"1.0349345","5":"22.900000","6":"23.700000","7":"1.0349345"},{"1":"101","2":"20.300000","3":"24.400000","4":"1.2019704","5":"20.300000","6":"24.400000","7":"1.2019704"},{"1":"102","2":"29.300000","3":"26.900000","4":"0.9180887","5":"29.300000","6":"26.900000","7":"0.9180887"},{"1":"103","2":"24.800000","3":"21.200000","4":"0.8548387","5":"24.800000","6":"21.200000","7":"0.8548387"},{"1":"104","2":"17.000000","3":"11.700000","4":"0.6882353","5":"17.000000","6":"11.700000","7":"0.6882353"},{"1":"105","2":"27.500000","3":"25.200000","4":"0.9163636","5":"27.500000","6":"25.200000","7":"0.9163636"},{"1":"106","2":"18.500000","3":"16.400000","4":"0.8864865","5":"18.500000","6":"16.400000","7":"0.8864865"},{"1":"107","2":"19.600000","3":"20.500000","4":"1.0459184","5":"19.600000","6":"20.500000","7":"1.0459184"},{"1":"108","2":"22.000000","3":"15.300000","4":"0.6954545","5":"22.000000","6":"15.300000","7":"0.6954545"},{"1":"109","2":"19.400000","3":"11.900000","4":"0.6134021","5":"19.400000","6":"11.900000","7":"0.6134021"},{"1":"110","2":"28.400000","3":"16.200000","4":"0.5704225","5":"28.400000","6":"16.200000","7":"0.5704225"},{"1":"111","2":"36.200000","3":"27.800000","4":"0.7679558","5":"36.200000","6":"27.800000","7":"0.7679558"},{"1":"112","2":"22.000000","3":"23.000000","4":"1.0454545","5":"22.000000","6":"23.000000","7":"1.0454545"},{"1":"114","2":"18.500000","3":"23.700000","4":"1.2810811","5":"18.500000","6":"23.700000","7":"1.2810811"},{"1":"115","2":"18.000000","3":"15.200000","4":"0.8444444","5":"18.000000","6":"15.200000","7":"0.8444444"},{"1":"116","2":"22.200000","3":"13.100000","4":"0.5900901","5":"22.200000","6":"13.100000","7":"0.5900901"},{"1":"117","2":"11.900000","3":"9.140000","4":"0.7680672","5":"11.900000","6":"9.140000","7":"0.7680672"},{"1":"118","2":"14.100000","3":"19.100000","4":"1.3546099","5":"14.100000","6":"19.100000","7":"1.3546099"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="task-3-gene-expression-tasks" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="task-3-gene-expression-tasks"><span class="header-section-number">4.3</span> Task 3) Gene expression tasks</h2>
+<ul>
+<li><p>3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.</p></li>
+<li><p>3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.</p></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_3</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">gene_meta=</span>gene_meta)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>targets_task_3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["subject_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["day_0"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["day_3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fc"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["baseline"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["task31"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["task32"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"39.323","3":"46.410","4":"1.18022531","5":"39.323","6":"46.410","7":"1.18022531"},{"1":"3","2":"23.251","3":"26.204","4":"1.12700529","5":"23.251","6":"26.204","7":"1.12700529"},{"1":"4","2":"16.084","3":"13.353","4":"0.83020393","5":"16.084","6":"13.353","7":"0.83020393"},{"1":"5","2":"29.202","3":"20.618","4":"0.70604753","5":"29.202","6":"20.618","7":"0.70604753"},{"1":"6","2":"22.844","3":"19.606","4":"0.85825600","5":"22.844","6":"19.606","7":"0.85825600"},{"1":"9","2":"17.876","3":"37.947","4":"2.12279033","5":"17.876","6":"37.947","7":"2.12279033"},{"1":"10","2":"16.165","3":"19.222","4":"1.18911228","5":"16.165","6":"19.222","7":"1.18911228"},{"1":"13","2":"9.554","3":"86.386","4":"9.04186728","5":"9.554","6":"86.386","7":"9.04186728"},{"1":"15","2":"27.559","3":"31.757","4":"1.15232773","5":"27.559","6":"31.757","7":"1.15232773"},{"1":"20","2":"14.600","3":"43.190","4":"2.95821918","5":"14.600","6":"43.190","7":"2.95821918"},{"1":"21","2":"13.154","3":"23.983","4":"1.82324768","5":"13.154","6":"23.983","7":"1.82324768"},{"1":"22","2":"21.044","3":"9.204","4":"0.43736932","5":"21.044","6":"9.204","7":"0.43736932"},{"1":"24","2":"17.754","3":"7.315","4":"0.41201983","5":"17.754","6":"7.315","7":"0.41201983"},{"1":"25","2":"18.346","3":"11.537","4":"0.62885643","5":"18.346","6":"11.537","7":"0.62885643"},{"1":"26","2":"25.643","3":"12.699","4":"0.49522287","5":"25.643","6":"12.699","7":"0.49522287"},{"1":"27","2":"12.762","3":"20.301","4":"1.59073813","5":"12.762","6":"20.301","7":"1.59073813"},{"1":"29","2":"20.815","3":"29.779","4":"1.43065097","5":"20.815","6":"29.779","7":"1.43065097"},{"1":"31","2":"24.875","3":"49.266","4":"1.98054271","5":"24.875","6":"49.266","7":"1.98054271"},{"1":"33","2":"38.720","3":"70.682","4":"1.82546488","5":"38.720","6":"70.682","7":"1.82546488"},{"1":"35","2":"42.254","3":"23.794","4":"0.56311828","5":"42.254","6":"23.794","7":"0.56311828"},{"1":"36","2":"7.092","3":"18.522","4":"2.61167513","5":"7.092","6":"18.522","7":"2.61167513"},{"1":"38","2":"7.100","3":"6.879","4":"0.96887324","5":"7.100","6":"6.879","7":"0.96887324"},{"1":"42","2":"36.538","3":"60.332","4":"1.65121244","5":"36.538","6":"60.332","7":"1.65121244"},{"1":"43","2":"13.635","3":"32.873","4":"2.41092776","5":"13.635","6":"32.873","7":"2.41092776"},{"1":"44","2":"21.918","3":"13.573","4":"0.61926271","5":"21.918","6":"13.573","7":"0.61926271"},{"1":"50","2":"271.694","3":"1105.804","4":"4.07003467","5":"271.694","6":"1105.804","7":"4.07003467"},{"1":"61","2":"4216.989","3":"43.928","4":"0.01041691","5":"4216.989","6":"43.928","7":"0.01041691"},{"1":"62","2":"121.559","3":"171.527","4":"1.41105965","5":"121.559","6":"171.527","7":"1.41105965"},{"1":"63","2":"102.390","3":"59.573","4":"0.58182440","5":"102.390","6":"59.573","7":"0.58182440"},{"1":"64","2":"107.453","3":"85.184","4":"0.79275590","5":"107.453","6":"85.184","7":"0.79275590"},{"1":"65","2":"193.696","3":"256.283","4":"1.32311973","5":"193.696","6":"256.283","7":"1.32311973"},{"1":"66","2":"31.955","3":"67.608","4":"2.11572524","5":"31.955","6":"67.608","7":"2.11572524"},{"1":"67","2":"58.270","3":"42.548","4":"0.73018706","5":"58.270","6":"42.548","7":"0.73018706"},{"1":"68","2":"56.838","3":"43.420","4":"0.76392554","5":"56.838","6":"43.420","7":"0.76392554"},{"1":"69","2":"45.152","3":"76.050","4":"1.68431077","5":"45.152","6":"76.050","7":"1.68431077"},{"1":"70","2":"55.304","3":"33.555","4":"0.60673731","5":"55.304","6":"33.555","7":"0.60673731"},{"1":"71","2":"62.457","3":"91.358","4":"1.46273436","5":"62.457","6":"91.358","7":"1.46273436"},{"1":"72","2":"57.928","3":"34.720","4":"0.59936473","5":"57.928","6":"34.720","7":"0.59936473"},{"1":"73","2":"22.090","3":"41.249","4":"1.86731553","5":"22.090","6":"41.249","7":"1.86731553"},{"1":"74","2":"13.639","3":"26.991","4":"1.97895740","5":"13.639","6":"26.991","7":"1.97895740"},{"1":"75","2":"50.226","3":"31.656","4":"0.63027117","5":"50.226","6":"31.656","7":"0.63027117"},{"1":"76","2":"24.348","3":"25.604","4":"1.05158535","5":"24.348","6":"25.604","7":"1.05158535"},{"1":"77","2":"296.634","3":"233.656","4":"0.78769123","5":"296.634","6":"233.656","7":"0.78769123"},{"1":"78","2":"141.206","3":"28.977","4":"0.20521083","5":"141.206","6":"28.977","7":"0.20521083"},{"1":"79","2":"124.305","3":"300.363","4":"2.41633884","5":"124.305","6":"300.363","7":"2.41633884"},{"1":"80","2":"143.819","3":"419.884","4":"2.91953080","5":"143.819","6":"419.884","7":"2.91953080"},{"1":"81","2":"1693.435","3":"229.550","4":"0.13555289","5":"1693.435","6":"229.550","7":"0.13555289"},{"1":"82","2":"680.992","3":"868.176","4":"1.27486960","5":"680.992","6":"868.176","7":"1.27486960"},{"1":"83","2":"383.865","3":"17.958","4":"0.04678207","5":"383.865","6":"17.958","7":"0.04678207"},{"1":"84","2":"192.089","3":"56.412","4":"0.29367637","5":"192.089","6":"56.412","7":"0.29367637"},{"1":"85","2":"29.651","3":"51.472","4":"1.73592796","5":"29.651","6":"51.472","7":"1.73592796"},{"1":"86","2":"40.133","3":"58.762","4":"1.46418160","5":"40.133","6":"58.762","7":"1.46418160"},{"1":"87","2":"38.278","3":"160.230","4":"4.18595538","5":"38.278","6":"160.230","7":"4.18595538"},{"1":"88","2":"46.434","3":"441.348","4":"9.50484559","5":"46.434","6":"441.348","7":"9.50484559"},{"1":"89","2":"34.032","3":"69.206","4":"2.03355665","5":"34.032","6":"69.206","7":"2.03355665"},{"1":"90","2":"27.584","3":"38.313","4":"1.38895737","5":"27.584","6":"38.313","7":"1.38895737"},{"1":"91","2":"16.635","3":"23.802","4":"1.43083859","5":"16.635","6":"23.802","7":"1.43083859"},{"1":"92","2":"23.642","3":"26.316","4":"1.11310380","5":"23.642","6":"26.316","7":"1.11310380"},{"1":"93","2":"23.535","3":"32.281","4":"1.37161674","5":"23.535","6":"32.281","7":"1.37161674"},{"1":"94","2":"26.578","3":"18.308","4":"0.68884039","5":"26.578","6":"18.308","7":"0.68884039"},{"1":"95","2":"28.410","3":"25.533","4":"0.89873284","5":"28.410","6":"25.533","7":"0.89873284"},{"1":"96","2":"19.483","3":"22.314","4":"1.14530616","5":"19.483","6":"22.314","7":"1.14530616"},{"1":"97","2":"11.587","3":"91.090","4":"7.86139639","5":"11.587","6":"91.090","7":"7.86139639"},{"1":"98","2":"55.946","3":"188.483","4":"3.36901655","5":"55.946","6":"188.483","7":"3.36901655"},{"1":"99","2":"5.593","3":"19.960","4":"3.56874665","5":"5.593","6":"19.960","7":"3.56874665"},{"1":"100","2":"214.395","3":"25.114","4":"0.11713893","5":"214.395","6":"25.114","7":"0.11713893"},{"1":"101","2":"36.064","3":"16.242","4":"0.45036602","5":"36.064","6":"16.242","7":"0.45036602"},{"1":"102","2":"17.053","3":"27.037","4":"1.58546883","5":"17.053","6":"27.037","7":"1.58546883"},{"1":"103","2":"29.391","3":"11.453","4":"0.38967711","5":"29.391","6":"11.453","7":"0.38967711"},{"1":"104","2":"37.713","3":"35.754","4":"0.94805505","5":"37.713","6":"35.754","7":"0.94805505"},{"1":"105","2":"56.263","3":"239.265","4":"4.25261717","5":"56.263","6":"239.265","7":"4.25261717"},{"1":"106","2":"14.078","3":"20.814","4":"1.47847706","5":"14.078","6":"20.814","7":"1.47847706"},{"1":"107","2":"15.573","3":"15.884","4":"1.01997046","5":"15.573","6":"15.884","7":"1.01997046"},{"1":"108","2":"50.023","3":"301.599","4":"6.02920656","5":"50.023","6":"301.599","7":"6.02920656"},{"1":"109","2":"46.490","3":"171.492","4":"3.68879329","5":"46.490","6":"171.492","7":"3.68879329"},{"1":"110","2":"168.362","3":"205.582","4":"1.22107126","5":"168.362","6":"205.582","7":"1.22107126"},{"1":"111","2":"65.510","3":"145.757","4":"2.22495802","5":"65.510","6":"145.757","7":"2.22495802"},{"1":"112","2":"74.236","3":"75.190","4":"1.01285091","5":"74.236","6":"75.190","7":"1.01285091"},{"1":"114","2":"34.335","3":"39.771","4":"1.15832241","5":"34.335","6":"39.771","7":"1.15832241"},{"1":"115","2":"311.565","3":"74.769","4":"0.23997882","5":"311.565","6":"74.769","7":"0.23997882"},{"1":"116","2":"51.657","3":"285.175","4":"5.52054901","5":"51.657","6":"285.175","7":"5.52054901"},{"1":"117","2":"21.689","3":"54.262","4":"2.50182120","5":"21.689","6":"54.262","7":"2.50182120"},{"1":"118","2":"24.207","3":"20.468","4":"0.84554055","5":"24.207","6":"20.468","7":"0.84554055"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Prediction Targets"</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(meta_data, experimental_data)</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>wide_experimental_data <span class="ot">&lt;-</span> <span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">impute=</span><span class="st">"zero"</span>)</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a><span class="fu"># Time Points</span></span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a>specimen_list <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(meta_data)</span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap</span>(specimen_list, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day=</span>.y)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">factor</span>(day, <span class="at">levels=</span><span class="fu">paste0</span>(<span class="st">"day_"</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">14</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>actual_day_relative_to_boost), <span class="at">binwidth=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">14</span>), <span class="at">color=</span><span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb26-63"><a href="#cb26-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="fu">min</span>(<span class="fu">unlist</span>(acceptable_differences)),</span>
+<span id="cb26-64"><a href="#cb26-64" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">max</span>(<span class="fu">unlist</span>(acceptable_differences))))</span>
+<span id="cb26-65"><a href="#cb26-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-66"><a href="#cb26-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a><span class="fu"># Generate Targets for each Task</span></span>
+<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 1) Antibody level tasks</span></span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.</span>
+<span id="cb26-72"><a href="#cb26-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-73"><a href="#cb26-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.</span>
+<span id="cb26-74"><a href="#cb26-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-77"><a href="#cb26-77" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-78"><a href="#cb26-78" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_1</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb26-79"><a href="#cb26-79" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb26-80"><a href="#cb26-80" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
+<span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
+<span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-87"><a href="#cb26-87" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_1)</span>
+<span id="cb26-88"><a href="#cb26-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-89"><a href="#cb26-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-90"><a href="#cb26-90" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 2) Cell frequency tasks</span></span>
+<span id="cb26-91"><a href="#cb26-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-92"><a href="#cb26-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.</span>
+<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-94"><a href="#cb26-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.</span>
+<span id="cb26-95"><a href="#cb26-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-98"><a href="#cb26-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-99"><a href="#cb26-99" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_2</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb26-100"><a href="#cb26-100" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb26-101"><a href="#cb26-101" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings,</span>
+<span id="cb26-102"><a href="#cb26-102" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
+<span id="cb26-103"><a href="#cb26-103" aria-hidden="true" tabindex="-1"></a>targets_task_2</span>
+<span id="cb26-104"><a href="#cb26-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-105"><a href="#cb26-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-108"><a href="#cb26-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-109"><a href="#cb26-109" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_2)</span>
+<span id="cb26-110"><a href="#cb26-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-111"><a href="#cb26-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-112"><a href="#cb26-112" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 3) Gene expression tasks</span></span>
+<span id="cb26-113"><a href="#cb26-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-114"><a href="#cb26-114" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.</span>
+<span id="cb26-115"><a href="#cb26-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-116"><a href="#cb26-116" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.</span>
+<span id="cb26-117"><a href="#cb26-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-120"><a href="#cb26-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-121"><a href="#cb26-121" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_3</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb26-122"><a href="#cb26-122" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb26-123"><a href="#cb26-123" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
+<span id="cb26-124"><a href="#cb26-124" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list,</span>
+<span id="cb26-125"><a href="#cb26-125" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">gene_meta=</span>gene_meta)</span>
+<span id="cb26-126"><a href="#cb26-126" aria-hidden="true" tabindex="-1"></a>targets_task_3</span>
+<span id="cb26-127"><a href="#cb26-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-128"><a href="#cb26-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-131"><a href="#cb26-131" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-132"><a href="#cb26-132" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_3)</span>
+<span id="cb26-133"><a href="#cb26-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

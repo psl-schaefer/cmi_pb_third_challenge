@@ -10,6 +10,10 @@ title: "Overview"
 
 - [Batch Effects](eda/batch_effects.qmd)
 
+- [Prediction Targets](eda/targets.qmd)
+
 - [MOFA Test](eda/mofa_test.qmd)
 
 # Models
+
+- [Baseline Models]()

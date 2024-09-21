@@ -65,11 +65,12 @@ read_harmonized_meta_data <- function(input_dir) {
   return(meta_data)
 }
 
-filter_harmonized_meta_data <- function(meta_data, experimental_data) {
-  # 1. Only keep subjects where we have some baseline measurement (planned day 0) before the booster administration
+filter_meta_data <- function(meta_data, experimental_data) {
+  # 1. Only keep subjects where we have at least one baseline measurement (actual day <= 0) before the booster administration
   subject_ids_to_remove <- meta_data %>%
-    dplyr::filter(planned_day_relative_to_boost==0) %>%
-    dplyr::filter(actual_day_relative_to_boost > 0) %>%
+    dplyr::group_by(subject_id) %>%
+    dplyr::summarise(min_actual_day_relative_to_boost = min(actual_day_relative_to_boost)) %>%
+    dplyr::filter(min_actual_day_relative_to_boost > 0) %>% 
     dplyr::pull(subject_id)
   meta_data <- meta_data %>% dplyr::filter(!(subject_id %in% subject_ids_to_remove))
   

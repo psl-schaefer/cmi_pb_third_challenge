@@ -35,7 +35,7 @@ meta_df <- read_harmonized_meta_data(input_dir)
 data_list <- read_harmonized_experimental_data_depr(input_dir)
 
 # filtering
-meta_df <- filter_harmonized_meta_data(meta_data=meta_df, experimental_data=data_list)
+meta_df <- filter_meta_data(meta_data=meta_df, experimental_data=data_list)
 data_list <- filter_harmonized_experimental_data_depr(meta_data=meta_df, experimental_data=data_list)
 ```
 
