@@ -19,6 +19,11 @@ get_mse <- function(target, pred) {
   return(mse)
 }
 
+get_spearman <- function(target, pred) {
+  spearman <- cor(x=target, y=pred, method="spearman")
+  return(spearman)
+}
+
 get_oob_perf <- function(model_df) {
   stopifnot(all(c("target", "subject_id", "baseline") %in% colnames(model_df)))
   
@@ -28,7 +33,8 @@ get_oob_perf <- function(model_df) {
   tibble::tibble(
     mode = "oob",
     mse = get_mse(model_df$target, model$predictions),
-    r2 = get_r2(model_df$target, model$predictions)
+    r2 = get_r2(model_df$target, model$predictions),
+    srho = get_spearman(model_df$target, model$predictions)
   )
 }
 
@@ -42,14 +48,15 @@ get_loocv_perf <- function(model_df) {
                             data = train_df, 
                             num.trees = 500)
     predictions <- predict(model, test_df)$predictions
-    tibble::tibble(idx=idx, target = test_df$target, pred=predictions)
+    tibble::tibble(idx=idx, target = test_df$target, prediction=predictions)
   }) %>%
     dplyr::bind_rows()
   
   tibble::tibble(
     mode = "loocv",
-    mse = get_mse(loocv_out$target, loocv_out$pred),
-    r2 = get_r2(loocv_out$target, loocv_out$pred)
+    mse = get_mse(loocv_out$target, loocv_out$prediction),
+    r2 = get_r2(loocv_out$target, loocv_out$prediction),
+    srho = get_spearman(loocv_out$target, loocv_out$prediction)
   )
 }
 
@@ -93,6 +100,7 @@ get_cross_cohort_perf_combinations <- function(model_df, meta_data) {
     dplyr::summarise(
       mse = get_mse(target, prediction),
       r2 = get_r2(target, prediction),
+      srho = get_spearman(target, prediction),
       mse_same_cohort = get_mse(target, testset_mean),
       r2_same_cohort = get_r2(target, testset_mean),
       .groups = "drop"
@@ -109,6 +117,10 @@ get_cross_cohort_perf_single <- function(model_df, meta_data) {
                      by="subject_id")
   
   all_datasets <- unique(model_dataset_df$dataset)
+  
+  n_per_dataset <- model_dataset_df %>%
+    dplyr::count(dataset) %>%
+    dplyr::pull(n, dataset)
   
   cross_dataset_out <- purrr::map(all_datasets, function(test_dataset) {
     
@@ -141,10 +153,14 @@ get_cross_cohort_perf_single <- function(model_df, meta_data) {
     dplyr::summarise(
       mse = get_mse(target, prediction),
       r2 = get_r2(target, prediction),
-      mse_same_cohort = get_mse(target, testset_mean),
-      r2_same_cohort = get_r2(target, testset_mean),
+      srho = get_spearman(target, prediction),
+      mse_tmean = get_mse(target, testset_mean),
       .groups = "drop"
-    )
+    ) %>%
+    dplyr::mutate(train_n = n_per_dataset[trainset]) %>%
+    dplyr::mutate(test_n = n_per_dataset[testset]) %>%
+    dplyr::mutate(trainset = str_remove_all(trainset, "_dataset")) %>%
+    dplyr::mutate(testset = str_remove_all(testset, "_dataset"))
 }
 
 get_metadata_covariates <- function(meta_data) {

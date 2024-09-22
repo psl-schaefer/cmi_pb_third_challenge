@@ -16,4 +16,4 @@ title: "Overview"
 
 # Models
 
-- [Baseline Models]()
+- [Metadata Models](models/metadata_model.qmd)

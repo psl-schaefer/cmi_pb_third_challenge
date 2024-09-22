@@ -75,6 +75,27 @@ targets_task_1 <- generate_targets_task_1(meta_data=meta_data,
 plot_targets(targets_task_1)
 ```
 
+```{r}
+targets_task_1 %>%
+  dplyr::left_join((meta_data %>% dplyr::select(subject_id, dataset) %>% dplyr::distinct()),
+                   by="subject_id") %>%
+  ggplot() +
+  geom_histogram(aes(x=task11), bins=50, color="black") +
+  facet_wrap(~dataset, ncol=1) + 
+  ggdark::dark_mode()
+```
+
+```{r}
+targets_task_1 %>%
+  dplyr::left_join((meta_data %>% dplyr::select(subject_id, dataset) %>% dplyr::distinct()),
+                   by="subject_id") %>%
+  ggplot() +
+  geom_histogram(aes(x=task12), bins=50, color="black") +
+  facet_wrap(~dataset, ncol=1) + 
+  ggdark::dark_mode()
+```
+
+
 ## Task 2) Cell frequency tasks
 
 - 2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.
@@ -91,6 +112,26 @@ targets_task_2
 
 ```{r}
 plot_targets(targets_task_2)
+```
+
+```{r}
+targets_task_2 %>%
+  dplyr::left_join((meta_data %>% dplyr::select(subject_id, dataset) %>% dplyr::distinct()),
+                   by="subject_id") %>%
+  ggplot() +
+  geom_histogram(aes(x=task21), bins=50, color="black") +
+  facet_wrap(~dataset, ncol=1) + 
+  ggdark::dark_mode()
+```
+
+```{r}
+targets_task_2 %>%
+  dplyr::left_join((meta_data %>% dplyr::select(subject_id, dataset) %>% dplyr::distinct()),
+                   by="subject_id") %>%
+  ggplot() +
+  geom_histogram(aes(x=task22), bins=50, color="black") +
+  facet_wrap(~dataset, ncol=1) + 
+  ggdark::dark_mode()
 ```
 
 ## Task 3) Gene expression tasks
@@ -111,3 +152,31 @@ targets_task_3
 ```{r}
 plot_targets(targets_task_3)
 ```
+
+```{r}
+targets_task_3 %>%
+  dplyr::left_join((meta_data %>% dplyr::select(subject_id, dataset) %>% dplyr::distinct()),
+                   by="subject_id") %>%
+  ggplot() +
+  geom_histogram(aes(x=task31), bins=50, color="black") +
+  facet_wrap(~dataset, ncol=1) + 
+  ggdark::dark_mode()
+```
+
+```{r}
+targets_task_3 %>%
+  dplyr::left_join((meta_data %>% dplyr::select(subject_id, dataset) %>% dplyr::distinct()),
+                   by="subject_id") %>%
+  ggplot() +
+  geom_histogram(aes(x=task32), bins=50, color="black") +
+  facet_wrap(~dataset, ncol=1) + 
+  ggdark::dark_mode()
+```
+
+# Conclusions
+
+- Task 1: Substantial differences in the marginal distributions of the target variables between the cohorts / years.
+
+- Task 2: Substantial differences in the marginal distributions of the target variables between the cohorts / years.
+
+- Task 3: Small differences in the marginal distributions of the target variables between the cohorts / years.
