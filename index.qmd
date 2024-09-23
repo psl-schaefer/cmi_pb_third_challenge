@@ -8,7 +8,11 @@ title: "Overview"
 
 - [Filtered Data Overview](eda/filtered_data_overview.qmd)
 
-- [Batch Effects](eda/batch_effects.qmd)
+- [Batch Effects Raw Data](eda/batch_effects_raw_data.qmd)
+
+- [Batch Effects After Normalization](eda/batch_effects_raw_data.qmd)
+
+- [Batch Effects After Batch Correction / Integration](eda/batch_effects_raw_data.qmd)
 
 - [Prediction Targets](eda/targets.qmd)
 

@@ -110,7 +110,7 @@ experimental_data_settings <- list(
   ),
   plasma_ab_titer = list(
     feature_col = "isotype_antigen",
-    value_col = "MFI_normalised",
+    value_col = "MFI",
     feature_subset = c(
       "IgG_DT", "IgG_FIM2/3", "IgG_OVA", "IgG_TT", "IgG1_DT", "IgG1_FHA", 
       "IgG1_FIM2/3", "IgG1_OVA", "IgG1_PRN", "IgG1_PT", "IgG1_TT", "IgG2_DT", 
@@ -123,7 +123,11 @@ experimental_data_settings <- list(
   ),
   plasma_cytokine_concentration_by_legendplex = list(
     feature_col = "protein_id",
-    value_col = "concentration"
+    value_col = "concentration",
+    outliers = c(661, 657, # day 0
+                 658, 689, 903, # day 1
+                 638, 659, # day 3
+                 661) # day 14
   ),
   plasma_cytokine_concentration_by_olink = list(
     feature_col = "protein_id",
@@ -253,7 +257,18 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
   })
   cat("\n")
   
-  # 5. TODO
+  # 5. Remove outlier specimen if exist
+  experimental_data <- purrr::imap(experimental_data, function(df, modality) {
+    if ("outliers" %in% names(experimental_data_settings[[modality]])) {
+      df <- df %>%
+        dplyr::filter(!specimen_id %in% experimental_data_settings[[modality]][["outliers"]])
+      if (verbose) {
+        message(modality, " | Removed ", length(experimental_data_settings[[modality]][["outliers"]]), " because specimen is outlier")
+      }
+    }
+    return(df)
+  })
+  cat("\n")
   
   return(experimental_data)
 }

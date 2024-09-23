@@ -157,7 +157,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="1">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -1058,7 +1058,7 @@ $p2</code></pre>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["modality"],"name":[1],"type":["chr"],"align":["left"]},{"label":["feature_col"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum_na"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"pbmc_cell_frequency","2":"cell_type_name","3":"54"},{"1":"pbmc_gene_expression","2":"versioned_ensembl_gene_id","3":"0"},{"1":"plasma_ab_titer","2":"isotype_antigen","3":"0"},{"1":"plasma_cytokine_concentration_by_legendplex","2":"protein_id","3":"0"},{"1":"plasma_cytokine_concentration_by_olink","2":"protein_id","3":"468"},{"1":"t_cell_activation","2":"stimulation","3":"0"},{"1":"t_cell_polarization","2":"stimulation_protein_id","3":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["modality"],"name":[1],"type":["chr"],"align":["left"]},{"label":["feature_col"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum_na"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"pbmc_cell_frequency","2":"cell_type_name","3":"54"},{"1":"pbmc_gene_expression","2":"versioned_ensembl_gene_id","3":"0"},{"1":"plasma_ab_titer","2":"isotype_antigen","3":"1"},{"1":"plasma_cytokine_concentration_by_legendplex","2":"protein_id","3":"0"},{"1":"plasma_cytokine_concentration_by_olink","2":"protein_id","3":"468"},{"1":"t_cell_activation","2":"stimulation","3":"0"},{"1":"t_cell_polarization","2":"stimulation_protein_id","3":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -1080,8 +1080,7 @@ $p2</code></pre>
 <span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean_na_frac =</span> <span class="fu">mean</span>(na_frac))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Values from `MFI_normalised` are not uniquely identified; output will contain
-list-cols.
+<pre><code>Warning: Values from `MFI` are not uniquely identified; output will contain list-cols.
 * Use `values_fn = list` to suppress this warning.
 * Use `values_fn = {summary_fun}` to summarise duplicates.
 * Use the following dplyr code to identify duplicates.
@@ -1092,7 +1091,7 @@ list-cols.
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["modality"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean_na_frac"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"pbmc_cell_frequency","2":"0.32014036"},{"1":"pbmc_gene_expression","2":"0.00000000"},{"1":"plasma_ab_titer","2":"0.00000000"},{"1":"plasma_cytokine_concentration_by_legendplex","2":"0.00000000"},{"1":"plasma_cytokine_concentration_by_olink","2":"0.70062034"},{"1":"t_cell_activation","2":"0.05769231"},{"1":"t_cell_polarization","2":"0.01653944"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["modality"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean_na_frac"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"pbmc_cell_frequency","2":"3.201404e-01"},{"1":"pbmc_gene_expression","2":"0.000000e+00"},{"1":"plasma_ab_titer","2":"1.209658e-05"},{"1":"plasma_cytokine_concentration_by_legendplex","2":"0.000000e+00"},{"1":"plasma_cytokine_concentration_by_olink","2":"7.006203e-01"},{"1":"t_cell_activation","2":"5.769231e-02"},{"1":"t_cell_polarization","2":"1.653944e-02"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
