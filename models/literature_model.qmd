@@ -11,6 +11,7 @@ engine: knitr
 ```{r}
 suppressPackageStartupMessages({
   library(tidyverse)
+  library(DESeq2)
   library(flextable)
   library(ggdark)
   library(magick)
@@ -70,7 +71,6 @@ specimen_per_day$day_0 <- specimen_per_day$day_0 %>%
   dplyr::mutate(specimen_id = as.character(specimen_id))
 
 pbmc_gex <- wide_experimental_data$pbmc_gene_expression[specimen_per_day$day_0$specimen_id, ]
-stopifnot(all(dplyr::near(rowSums(pbmc_gex), 1e6, tol=1)))
 str(pbmc_gex)
 
 # filter genes and normalize the gene expression data
@@ -83,7 +83,6 @@ genes_to_keep <- colnames(pbmc_gex)[
 ]
 
 pbmc_gex <- pbmc_gex[ , genes_to_keep]
-pbmc_gex <- log1p(pbmc_gex)
 
 str(pbmc_gex)
 
@@ -103,6 +102,21 @@ colnames(pbmc_gex) <- ensemble_to_gene$gene_symbol
 
 stopifnot(length(colnames(pbmc_gex)) == length(unique(colnames(pbmc_gex))))
 
+str(pbmc_gex)
+
+# variance stabilizing transformation, log transform or vst from DESEQ2?
+# pbmc_gex <- log1p(pbmc_gex)
+
+# Create DESeq dataset object
+dds <- DESeq2::DESeqDataSetFromMatrix(countData = t(pbmc_gex),
+                                      colData = tibble::tibble(subject_id=rownames(pbmc_gex)),
+                                      design = ~ 1)
+
+# DESeq2 normalization with variance stabilizing transformation (vst)
+dds <- DESeq2::estimateSizeFactors(dds) ## estimate size factor
+dds <- DESeq2::estimateDispersions(dds)
+dds <- DESeq2::varianceStabilizingTransformation(dds, blind=TRUE)
+pbmc_gex <- t(assay(dds))
 str(pbmc_gex)
 ```
 
@@ -149,15 +163,21 @@ signatures_oi <- c(
   "inflammatory response (M33)",
   "platelet activation (III) (M42)",
   "BCR signaling (M54)",
-  "Random"
+  "Random_1",
+  "Random_2",
+  "Random_3"
 )
 
 #random_signatures <- sample(names(gene_set), 3)
 set.seed(42)
-gene_set[["Random"]] <- sample(colnames(pbmc_gex), 20)
+gene_set[["Random_1"]] <- sample(colnames(pbmc_gex), 20)
+gene_set[["Random_2"]] <- sample(colnames(pbmc_gex), 20)
+gene_set[["Random_3"]] <- sample(colnames(pbmc_gex), 20)
 
 sign_scores <- purrr::map(signatures_oi, function(signature_name) {
-  score_signature_ulm(gex_mtx=pbmc_gex, 
+  # score_signature_mean(gex_mtx=pbmc_gex, 
+  #                     signature=gene_set[[signature_name]]) %>%
+  score_signature_ulm(gex_mtx=pbmc_gex,
                       signature=gene_set[[signature_name]]) %>%
     dplyr::mutate(signature = signature_name)
 }) %>%
@@ -215,6 +235,7 @@ make_flextable <- function(x) {
 }
 
 for (task in task_meta) {
+  # task <- task_meta[[2]]
 
   cat(task$header)
   cat("\n\n")
@@ -222,6 +243,7 @@ for (task in task_meta) {
   cat("\n\n")
   
   for (signature in signatures_oi) {
+    # signature <- signatures_oi[[1]]
     
     cat(paste0("### ", signature))
     cat("\n\n")
@@ -235,7 +257,8 @@ for (task in task_meta) {
       dplyr::group_by(dataset) %>%
       dplyr::summarise(
         "srho_baseline" = round(get_spearman(.data$target, .data$baseline), 2),
-        "srho_signature" = round(get_spearman(.data$target, .data[[signature]]), 2)
+        "srho_signature" = round(get_spearman(.data$target, .data[[signature]]), 2),
+        "srho_pval_signature" = get_spearman_pval(.data$target, .data[[signature]])
       ) %>%
       make_flextable()
   }

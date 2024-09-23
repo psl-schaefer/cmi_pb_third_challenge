@@ -64,6 +64,7 @@ pvca_run <- function (abatch, batch.factors, threshold)
   #theDataMatrixCentered = t(theDataMatrixCentered_transposed)
   
   theDataMatrixCentered <- t(apply(abatch, 1, scale, center=TRUE, scale=FALSE))
+  # matrix is features x instances!
   
   theDataCor <- cor(theDataMatrixCentered)
   eigenData <- eigen(theDataCor)
@@ -390,7 +391,9 @@ pvca_analysis = function(mat_data, subject_specimen, batch.factors, plot_title =
   exprset = ExpressionSet(as.matrix(counts_data), 
                           phenoData = phenoData)
   
-  pvcaObj_after <- pvca_run(exprset, batch.factors = batch.factors, threshold =0.6) 
+  pvcaObj_after <- pvca_run(abatch=exprset, 
+                            batch.factors=batch.factors, 
+                            threshold=0.6) 
   
   print(plot_pvca(pvcaObj_after, paste0(plot_title)))
   

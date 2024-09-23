@@ -93,7 +93,10 @@ tcellpol_wide_before_wide_imputed = tcellpol_wide_before_wide[rowMeans(is.na(tce
     impute.knn() %>%
     .$data
 
-pvca_analysis(tcellpol_wide_before_wide_imputed, subject_specimen, batch.factors, plot_title = "T cell polarization:  Raw data")
+pvca_analysis(mat_data=tcellpol_wide_before_wide_imputed, 
+              subject_specimen=subject_specimen, 
+              batch.factors=batch.factors, 
+              plot_title = "T cell polarization:  Raw data")
 
 
 tcell_polarization_processed_data = list(

@@ -24,6 +24,14 @@ get_spearman <- function(target, pred) {
   return(spearman)
 }
 
+get_spearman_pval <- function(target, pred, nperm=1000) {
+  true_cor <- cor(x=target, y=pred, method="spearman")
+  permut_cor <- 
+    purrr::map_dbl(1:nperm, ~ cor(x=target, y=sample(pred), method="spearman"))
+  pval <- mean(permut_cor > true_cor)
+  return(pval)
+}
+
 get_oob_perf <- function(model_df) {
   stopifnot(all(c("target", "subject_id", "baseline") %in% colnames(model_df)))
   
@@ -169,7 +177,6 @@ get_metadata_covariates <- function(meta_data) {
   specimen_list <- get_specimen_per_day(meta_data)
   
   meta_data_covariates <- meta_data %>%
-    dplyr::filter(specimen_id %in% specimen_list$day_0$specimen_id)  %>%
     dplyr::select(subject_id, infancy_vac, biological_sex, ethnicity, age_at_boost) %>%
     dplyr::distinct() %>%
     dplyr::mutate(infancy_vac_value=1, biological_sex_value=1, ethnicity_value=1) %>%

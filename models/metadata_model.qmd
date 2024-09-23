@@ -19,7 +19,6 @@ suppressPackageStartupMessages({
 knitr::opts_knit$set(output.dir = "./")
 
 source(file.path("..", "src", "read_data.R"))
-source(file.path("..", "src", "colors.R"))
 source(file.path("..", "src", "generate_targets.R"))
 source(file.path("..", "src", "model.R"))
 ```
@@ -104,6 +103,7 @@ task_meta <- list(
 ```
 
 ```{r results="asis"}
+#| crop: true
 RENDER <- TRUE
 
 make_flextable <- function(x) {

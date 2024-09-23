@@ -1,383 +1,5 @@
 [
   {
-    "objectID": "eda/batch_effects.html",
-    "href": "eda/batch_effects.html",
-    "title": "Batch Effects",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick) # formatting\n})\nknitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))"
-  },
-  {
-    "objectID": "eda/batch_effects.html#pbmc-fractions",
-    "href": "eda/batch_effects.html#pbmc-fractions",
-    "title": "Batch Effects",
-    "section": "3.1 PBMC Fractions",
-    "text": "3.1 PBMC Fractions\n\n\nCode\npca_plots &lt;- \n  generate_pca_plots(baseline_wide_exp_data$pbmc_cell_frequency, \n                     meta_data=meta_data)\n\n\n\n\nCode\npca_plots$p1\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p2\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p3\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p4"
-  },
-  {
-    "objectID": "eda/batch_effects.html#pbmc-gene-expression",
-    "href": "eda/batch_effects.html#pbmc-gene-expression",
-    "title": "Batch Effects",
-    "section": "3.2 PBMC Gene Expression",
-    "text": "3.2 PBMC Gene Expression\n\n\nCode\npca_plots &lt;- \n  generate_pca_plots(baseline_wide_exp_data$pbmc_gene_expression, \n                     meta_data=meta_data)\n\n\n\n\nCode\npca_plots$p1\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p2\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p3\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p4"
-  },
-  {
-    "objectID": "eda/batch_effects.html#plasma-antibody-levels",
-    "href": "eda/batch_effects.html#plasma-antibody-levels",
-    "title": "Batch Effects",
-    "section": "3.3 Plasma Antibody Levels",
-    "text": "3.3 Plasma Antibody Levels\n\n\nCode\npca_plots &lt;- \n  generate_pca_plots(baseline_wide_exp_data$plasma_ab_titer, \n                     meta_data=meta_data)\n\n\n\n\nCode\npca_plots$p1\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p2\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p3\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p4"
-  },
-  {
-    "objectID": "eda/batch_effects.html#plasma-cytokine-concentration-by-legendplex",
-    "href": "eda/batch_effects.html#plasma-cytokine-concentration-by-legendplex",
-    "title": "Batch Effects",
-    "section": "3.4 Plasma Cytokine Concentration by Legendplex",
-    "text": "3.4 Plasma Cytokine Concentration by Legendplex\n\n\nCode\npca_plots &lt;- \n  generate_pca_plots(baseline_wide_exp_data$plasma_cytokine_concentration_by_legendplex, \n                     meta_data=meta_data)\n\n\n\n\nCode\npca_plots$p1\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p2\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p3\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p4"
-  },
-  {
-    "objectID": "eda/batch_effects.html#plasma-cytokine-concentration-by-olink",
-    "href": "eda/batch_effects.html#plasma-cytokine-concentration-by-olink",
-    "title": "Batch Effects",
-    "section": "3.5 Plasma Cytokine Concentration by Olink",
-    "text": "3.5 Plasma Cytokine Concentration by Olink\n\n\nCode\npca_plots &lt;- \n  generate_pca_plots(baseline_wide_exp_data$plasma_cytokine_concentration_by_olink, \n                     meta_data=meta_data)\n\n\n\n\nCode\npca_plots$p1\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p2\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p3\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p4"
-  },
-  {
-    "objectID": "eda/batch_effects.html#t-cell-activation",
-    "href": "eda/batch_effects.html#t-cell-activation",
-    "title": "Batch Effects",
-    "section": "3.6 T Cell Activation",
-    "text": "3.6 T Cell Activation\n\n\nCode\npca_plots &lt;- \n  generate_pca_plots(baseline_wide_exp_data$t_cell_activation, \n                     meta_data=meta_data)\n\n\n\n\nCode\npca_plots$p1\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p2\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p3\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p4"
-  },
-  {
-    "objectID": "eda/batch_effects.html#t-cell-polarization",
-    "href": "eda/batch_effects.html#t-cell-polarization",
-    "title": "Batch Effects",
-    "section": "3.7 T Cell Polarization",
-    "text": "3.7 T Cell Polarization\n\n\nCode\npca_plots &lt;- \n  generate_pca_plots(baseline_wide_exp_data$t_cell_polarization, \n                     meta_data=meta_data)\n\n\n\n\nCode\npca_plots$p1\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p2\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p3\n\n\n\n\n\n\n\n\n\n\n\nCode\npca_plots$p4"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html",
-    "href": "eda/filtered_data_overview.html",
-    "title": "Data Overview",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick)\n  library(ComplexHeatmap)\n  library(circlize)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#how-many-subjects-do-we-have-per-dataset-per-partition",
-    "href": "eda/filtered_data_overview.html#how-many-subjects-do-we-have-per-dataset-per-partition",
-    "title": "Data Overview",
-    "section": "4.1 How many subjects do we have per dataset / per partition?",
-    "text": "4.1 How many subjects do we have per dataset / per partition?\n\n\nCode\nmeta_data %&gt;%\n  dplyr::select(subject_id, dataset, partition, infancy_vac) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::count(dataset, partition, infancy_vac) %&gt;%\n  ggplot(aes(x = n, y = dataset, fill = infancy_vac, color = partition)) +\n  geom_col(position = position_dodge(width = 0.9), width = 0.7, alpha=0.5) +  \n  geom_text(aes(label = n), \n            position = position_dodge(width = 0.9),  \n            hjust = -0.2, vjust = 0.5, size = 3, color = \"white\") +\n  scale_fill_manual(values = infancy_vac_colors) +\n  scale_color_manual(values = partition_colors) +\n  ggdark::dark_mode(verbose = FALSE)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#what-is-the-age-range",
-    "href": "eda/filtered_data_overview.html#what-is-the-age-range",
-    "title": "Data Overview",
-    "section": "4.2 What is the age range",
-    "text": "4.2 What is the age range\n\n\nCode\nmeta_data %&gt;%\n  ggplot() + \n  geom_histogram(aes(x=age_at_boost, fill=dataset, y=after_stat(density)), \n                 color=\"black\", position=\"identity\", bins=30) +\n  facet_wrap(~dataset) +\n  scale_fill_manual(values=dataset_colors) +\n  ggdark::dark_mode(verbose=FALSE)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-booster-administration",
-    "href": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-booster-administration",
-    "title": "Data Overview",
-    "section": "5.1 What is the difference between planned and actual booster administration",
-    "text": "5.1 What is the difference between planned and actual booster administration\n\n\nCode\nmeta_data %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=diff_relative_to_boost), binwidth=1) +\n  facet_wrap(~dataset) +\n  ggdark::dark_mode(verbose=FALSE)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-for-the-baseline",
-    "href": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-for-the-baseline",
-    "title": "Data Overview",
-    "section": "5.2 What is the difference between planned and actual for the baseline",
-    "text": "5.2 What is the difference between planned and actual for the baseline\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%\n  dplyr::mutate(`diff_&gt;_15` = abs(actual_day_relative_to_boost) &gt; 15) %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=actual_day_relative_to_boost, fill=`diff_&gt;_15`), binwidth=1) +\n  facet_wrap(~dataset) +\n  ggdark::dark_mode(verbose=FALSE)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#how-many-time-points-do-we-have-per-subject",
-    "href": "eda/filtered_data_overview.html#how-many-time-points-do-we-have-per-subject",
-    "title": "Data Overview",
-    "section": "5.3 How many time points do we have per subject?",
-    "text": "5.3 How many time points do we have per subject?\n\n\nCode\nmeta_data %&gt;%\n  dplyr::count(dataset, subject_id) %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=n, fill=dataset),color=\"black\", binwidth=1) +\n  facet_wrap(~dataset, ncol=2) +\n  ggdark::dark_mode(verbose=FALSE) +\n  scale_x_continuous(breaks=seq(0, 8, 1)) +\n  scale_fill_manual(values=dataset_colors)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#how-many-assays-do-we-have-for-the-baseline-measurement",
-    "href": "eda/filtered_data_overview.html#how-many-assays-do-we-have-for-the-baseline-measurement",
-    "title": "Data Overview",
-    "section": "5.4 How many assays do we have for the baseline measurement?",
-    "text": "5.4 How many assays do we have for the baseline measurement?\n\n\nCode\nassays_per_specimen &lt;- purrr::imap(exp_data, ~ .x %&gt;% \n              dplyr::select(specimen_id) %&gt;%\n              dplyr::distinct() %&gt;%\n              dplyr::mutate(assay=.y)) %&gt;%\n  dplyr::bind_rows() %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::select(specimen_id, assay, subject_id, planned_day_relative_to_boost, infancy_vac, dataset)\n\nassays_per_specimen %&gt;%\n  dplyr::count(subject_id, planned_day_relative_to_boost, dataset, specimen_id) %&gt;%\n  dplyr::filter(!is.na(subject_id)) %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=n, fill=dataset), color=\"black\", binwidth=1) +\n  facet_wrap(~dataset, ncol=2) +\n  ggdark::dark_mode(verbose=FALSE) +\n  scale_x_continuous(breaks=seq(0, 8, 1)) +\n  scale_fill_manual(values=dataset_colors)\n\n\n\n\n\n\n\n\n\n\n\nCode\nfor (day in c(0, 1, 3, 14)) {\n  \nannotation_data &lt;- meta_data %&gt;%\n  dplyr::select(specimen_id, planned_day_relative_to_boost, infancy_vac, \n                dataset, biological_sex) %&gt;%\n  dplyr::filter(specimen_id %in% assays_per_specimen$specimen_id) %&gt;%\n  dplyr::filter(planned_day_relative_to_boost == !!day) %&gt;% \n  dplyr::select(- planned_day_relative_to_boost) %&gt;%\n  dplyr::arrange(dataset, infancy_vac, biological_sex) %&gt;%\n  tibble::column_to_rownames(\"specimen_id\") %&gt;%\n  dplyr::select(dataset, infancy_vac, biological_sex)\n\nheatmap_data &lt;- assays_per_specimen %&gt;%\n  dplyr::select(specimen_id, assay) %&gt;%\n  dplyr::mutate(value = 1) %&gt;%\n  tidyr::pivot_wider(names_from=\"assay\", values_from=\"value\") %&gt;%\n  mutate(across(everything(), .fns = ~replace_na(.,0))) %&gt;%\n  tibble::column_to_rownames(\"specimen_id\") %&gt;%\n  as.matrix() %&gt;%\n  t()\n\ncolnames(heatmap_data) &lt;- as.character(colnames(heatmap_data))\nheatmap_data &lt;- heatmap_data[, rownames(annotation_data)]\n\n# Create the heatmap\nht &lt;- Heatmap(heatmap_data, \n              name = \"heatmap\", \n              row_title = \"\", \n              column_title = paste0(\"Specimens for Planned Day \", day),\n              col = colorRamp2(c(0, 1), c(\"white\", \"black\")),\n              cluster_rows = FALSE,\n              cluster_columns = FALSE,\n              show_row_names = TRUE, \n              show_column_names = FALSE,\n              width = unit(16, \"cm\"),\n              top_annotation = ComplexHeatmap::HeatmapAnnotation(df = annotation_data,\n                                    col = list(\n                                      \"dataset\" = dataset_colors,\n                                      \"infancy_vac\" = infancy_vac_colors,\n                                      \"biological_sex\" = sex_colors\n                                    ),\n                                    which=\"column\")\n)\n\ndraw(ht, \n     heatmap_legend_side = \"top\",\n     annotation_legend_side = \"top\",\n     show_heatmap_legend = FALSE # don't show colorbar\n     )\n}"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#how-many-subjects-can-we-use-to-construct-training-data",
-    "href": "eda/filtered_data_overview.html#how-many-subjects-can-we-use-to-construct-training-data",
-    "title": "Data Overview",
-    "section": "6.1 How many subjects can we use to construct training data?",
-    "text": "6.1 How many subjects can we use to construct training data?\n\n6.1.1 1) Antibody Level Tasks (anti-PT 14 days after booster)\n\nAll but 7 people were assayed approximately 14 days after the booster administration\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==14) %&gt;%\n  ggplot(aes(x=diff_relative_to_boost)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(task_1_possible = \n                  subject_id %in% (meta_data %&gt;%\n                                     dplyr::filter(planned_day_relative_to_boost==14) %&gt;%\n                                     dplyr::left_join(exp_data$plasma_ab_titer,\n                                                      by=\"specimen_id\") %&gt;%\n                                     dplyr::filter(isotype_antigen==\"IgG_PT\") %&gt;%\n                                     tidyr::drop_na() %&gt;%\n                                     dplyr::pull(subject_id))\n  ) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarise(task_1_possible_total = sum(task_1_possible), \n                   task_1_possible_fraction = mean(task_1_possible))\n\n\n\n  \n\n\n\n\n\n6.1.2 2) Cell Frequency Tasks (Monocytes 1 day after booster)\n\nBut there is one person where it does not really make sense\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==1) %&gt;%\n  ggplot(aes(x=diff_relative_to_boost)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(task_possible = \n                  subject_id %in% (meta_data %&gt;%\n                                     dplyr::filter(planned_day_relative_to_boost==1) %&gt;%\n                                     dplyr::left_join(exp_data$pbmc_cell_frequency, by=\"specimen_id\") %&gt;%\n                                     dplyr::filter(cell_type_name==\"Monocytes\") %&gt;%\n                                     tidyr::drop_na() %&gt;%\n                                     dplyr::pull(subject_id))\n  ) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarise(task_possible_total = sum(task_possible), \n                   task_possible_fraction = mean(task_possible))\n\n\n\n  \n\n\n\n\n\n6.1.3 3) Gene Expression Tasks (CCL3 expression 3 days after booster)\n\nThere are 7 people for which this task does nto make sense\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==3) %&gt;%\n  ggplot(aes(x=diff_relative_to_boost)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\nCode\nall_genes &lt;- unique(exp_data$pbmc_gene_expression$versioned_ensembl_gene_id)\nccl3_ensembl &lt;- \"ENSG00000277632\"\nccl3_ensembl_versioned &lt;- all_genes[str_starts(all_genes, ccl3_ensembl)]\n\nmeta_data %&gt;%\n  dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(task_possible = \n                  subject_id %in% (meta_data %&gt;%\n                                     dplyr::filter(planned_day_relative_to_boost==3) %&gt;%\n                                     dplyr::left_join(exp_data$pbmc_gene_expression, by=\"specimen_id\") %&gt;%\n                                     dplyr::filter(versioned_ensembl_gene_id==ccl3_ensembl_versioned) %&gt;%\n                                     tidyr::drop_na() %&gt;%\n                                     dplyr::pull(subject_id))\n  ) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarise(task_possible_total = sum(task_possible), \n                   task_possible_fraction = mean(task_possible))"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#how-many-na-values-do-we-have-per-assay",
-    "href": "eda/filtered_data_overview.html#how-many-na-values-do-we-have-per-assay",
-    "title": "Data Overview",
-    "section": "7.1 How many NA values do we have per assay?",
-    "text": "7.1 How many NA values do we have per assay?\n\n\nCode\npurrr::imap(exp_data, function(df, modality) {\n  feature_col &lt;- experimental_data_settings[[modality]]$feature_col\n  value_col &lt;- experimental_data_settings[[modality]]$value_col\n  tibble(modality = modality, feature_col = feature_col, sum_na = sum(is.na(df[[value_col]])))\n}) %&gt;%\n  dplyr::bind_rows()"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#wide-format",
-    "href": "eda/filtered_data_overview.html#wide-format",
-    "title": "Data Overview",
-    "section": "7.2 Wide format",
-    "text": "7.2 Wide format\n\n\nCode\npurrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, impute=\"\"),\n                  function(mtx, modality) {\n                    rmeans &lt;- rowMeans(is.na(mtx))\n                    tibble(modality=modality, \n                           subject_id = names(rmeans), \n                           na_frac=rmeans)\n           }) %&gt;%\n  dplyr::group_by(modality) %&gt;%\n  dplyr::summarise(mean_na_frac = mean(na_frac))"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-pbmc-cell-type-frequencies",
-    "href": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-pbmc-cell-type-frequencies",
-    "title": "Data Overview",
-    "section": "7.3 What is the fraction of NA values in the PBMC Cell Type Frequencies",
-    "text": "7.3 What is the fraction of NA values in the PBMC Cell Type Frequencies\nWith the current selection of cell types, there is no specimen with NA values.\n\n7.3.1 Per Cell Type\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::mutate(is_na = is.na(percent_live_cell)) %&gt;%\n  dplyr::group_by(cell_type_name) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  dplyr::arrange(desc(frac_na)) %&gt;%\n  dplyr::mutate(cell_type_name = factor(cell_type_name, levels=rev(cell_type_name))) %&gt;%\n  ggplot() +\n  geom_col(aes(y=cell_type_name, x=frac_na)) +\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Cell Type\")\n\n\n\n\n\n\n\n\n\n\n\n7.3.2 Per Cell Specimen\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::mutate(is_na = is.na(percent_live_cell)) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  ggplot(aes(x = frac_na)) +\n  geom_histogram(bins = 20, color = \"white\", fill = \"blue\", alpha=0.1) +  # Add color for better visibility\n  stat_bin(aes(label = after_stat(count)), bins = 20, geom = \"text\", \n           vjust = -0.5, color = \"white\", size = 3) +  # Display bin counts at the top\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Specimen\")"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-olink-data",
-    "href": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-olink-data",
-    "title": "Data Overview",
-    "section": "7.4 What is the fraction of NA values in the Olink Data?",
-    "text": "7.4 What is the fraction of NA values in the Olink Data?\n\n7.4.1 Per Protein\nAfter excluding Q969D9, the largest fraction of NA values is about 5% which is acceptable I guess.\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(is_na = is.na(concentration)) %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  dplyr::arrange(desc(frac_na)) %&gt;%\n  dplyr::mutate(protein_id = factor(protein_id, levels=rev(protein_id))) %&gt;%\n  ggplot() +\n  geom_col(aes(y=protein_id, x=frac_na)) +\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Protein\")\n\n\n\n\n\n\n\n\n\n\n\n7.4.2 Per Specimen\nThere are 6 specimen with more than 50% NA values, I am not sure whether I should exlcude those?\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(is_na = is.na(concentration)) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  ggplot(aes(x = frac_na)) +\n  geom_histogram(bins = 20, color = \"white\", fill = \"blue\", alpha=0.1) +  # Add color for better visibility\n  stat_bin(aes(label = after_stat(count)), bins = 20, geom = \"text\", \n           vjust = -0.5, color = \"white\", size = 3) +  # Display bin counts at the top\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Specimen\")\n\n\n\n\n\n\n\n\n\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(is_na = is.na(concentration)) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  dplyr::filter(frac_na &gt; 0.2) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::select(specimen_id, frac_na, subject_id, dataset, \n                actual_day_relative_to_boost, planned_day_relative_to_boost)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#how-does-the-quality-control-for-olink-look-like",
-    "href": "eda/filtered_data_overview.html#how-does-the-quality-control-for-olink-look-like",
-    "title": "Data Overview",
-    "section": "8.1 How does the quality control for Olink look like?",
-    "text": "8.1 How does the quality control for Olink look like?\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::count(quality_control)\n\n\n\n  \n\n\n\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::count(partition, dataset)\n\n\n\n  \n\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_legendplex %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::count(partition, dataset)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#how-often-is-the-cytokine-concentration-below-the-lod-in-olink",
-    "href": "eda/filtered_data_overview.html#how-often-is-the-cytokine-concentration-below-the-lod-in-olink",
-    "title": "Data Overview",
-    "section": "8.2 How often is the Cytokine Concentration below the LOD in Olink",
-    "text": "8.2 How often is the Cytokine Concentration below the LOD in Olink\n\n\nCode\n# check how often is it below the limit of detection?\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%\n  dplyr::count(below_lod)\n\n\n\n  \n\n\n\n\n\nCode\nset.seed(1)\np1 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%\n  dplyr::mutate(qc_warning = quality_control == \"Warning\") %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),\n                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(cytokine_uniprot_mapping, by=\"protein_id\") %&gt;%\n  ggplot() +\n  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +\n  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, \n                      label = ifelse(mean_below_lod &gt; 0.2, protein_id, '')),\n                  max.overlaps = Inf, color=\"grey\") + # This ensures all labels are shown\n  ggdark::dark_mode()\n\np2 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%\n  dplyr::mutate(qc_warning = quality_control == \"Warning\") %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),\n                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(cytokine_uniprot_mapping, by=\"protein_id\") %&gt;%\n  ggplot() +\n  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +\n  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, \n                      label = ifelse(mean_below_lod &gt; 0.2, cytokine, '')),\n                  max.overlaps = Inf, color=\"grey\") + # This ensures all labels are shown\n  ggdark::dark_mode()\n\ncowplot::plot_grid(p1, p2, ncol=2)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#what-is-the-fraction-of-unspecific-antibody-measurements",
-    "href": "eda/filtered_data_overview.html#what-is-the-fraction-of-unspecific-antibody-measurements",
-    "title": "Data Overview",
-    "section": "8.3 What is the fraction of unspecific antibody measurements",
-    "text": "8.3 What is the fraction of unspecific antibody measurements\n\n8.3.1 Per Isotype-Antigen\n\n\nCode\nexp_data$plasma_ab_titer %&gt;%\n  dplyr::group_by(isotype_antigen) %&gt;%\n  dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %&gt;%\n  ggplot(aes(x=is_antigen_specific_fraction)) +\n  geom_histogram(bins=30, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), bins=30, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\n8.3.2 Per Specimen\nSo in some specimen we have non-specific antibody measurements? What does that mean?\n\n\nCode\nexp_data$plasma_ab_titer %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %&gt;%\n  ggplot(aes(x=is_antigen_specific_fraction)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#nk",
-    "href": "eda/filtered_data_overview.html#nk",
-    "title": "Data Overview",
-    "section": "9.1 NK",
-    "text": "9.1 NK\nThere are 3 types of NK cells:\n\nNK cells (CD3-CD19-CD56+): CD19-CD3-CD56+/++\nNK: CD19-CD3-CD56+\nCD56high NK cells: CD19-CD3-CD56++\n\nAnd I don’t know what to do with that information!"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#no-gating-info-for-2023",
-    "href": "eda/filtered_data_overview.html#no-gating-info-for-2023",
-    "title": "Data Overview",
-    "section": "9.2 No Gating Info for 2023",
-    "text": "9.2 No Gating Info for 2023\n\nI just assume it is the same as in 2022, but this might not be true since the data look so different"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#no-gating-info-for-basophils-and-cd19-in-2020",
-    "href": "eda/filtered_data_overview.html#no-gating-info-for-basophils-and-cd19-in-2020",
-    "title": "Data Overview",
-    "section": "9.3 No Gating Info for Basophils and CD19 in 2020",
-    "text": "9.3 No Gating Info for Basophils and CD19 in 2020\n\nI just assume it is the same as in 2021 and 2022"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#no-gating-info-for-non-pdcs-at-all",
-    "href": "eda/filtered_data_overview.html#no-gating-info-for-non-pdcs-at-all",
-    "title": "Data Overview",
-    "section": "9.4 No Gating Info for non-pDCs at all",
-    "text": "9.4 No Gating Info for non-pDCs at all\nNot sure how to fix this)\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(is.na(level)) %&gt;%\n  dplyr::select(dataset, cell_type_name) %&gt;%\n  dplyr::distinct()"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#should-the-proportions-sum-up-to-1-at-level-0",
-    "href": "eda/filtered_data_overview.html#should-the-proportions-sum-up-to-1-at-level-0",
-    "title": "Data Overview",
-    "section": "9.5 Should the Proportions sum up to 1 at level 0?",
-    "text": "9.5 Should the Proportions sum up to 1 at level 0?\n\nTrying to take the hierarchical information into account, it still does not make sense\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(level == 0) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)"
-  },
-  {
-    "objectID": "eda/filtered_data_overview.html#difference-in-2023-dataset",
-    "href": "eda/filtered_data_overview.html#difference-in-2023-dataset",
-    "title": "Data Overview",
-    "section": "9.6 Difference in 2023 Dataset",
-    "text": "9.6 Difference in 2023 Dataset\n\nIt seems like the 2023 data are very very different, which makes me hesitant to use it for any kind of predictions on the challenge data. E.g. just looking at level 0 which should make sense I get the following\n\n\n\nCode\n# first check for NAs for the levels\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(is.na(level))\n\n\n\n  \n\n\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(level == 0) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nEspecially, when completely ignoring the hierarchy in the gating information, I would expect to have more than 100% in percelt_live_cell_sum, but this is not true for the specimens from the 2023 dataset\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nOr what I use a list of predefined cell types of interest?"
-  },
-  {
-    "objectID": "eda/mofa_test.html",
-    "href": "eda/mofa_test.html",
-    "title": "MOFA Test",
-    "section": "",
-    "text": "1 Packages\n\n\nCode\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick)\n  library(reticulate)\n  reticulate::use_condaenv(\"scanpy\")\n  library(MOFA2)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\n\n\n\n\n2 Data\n\n\nCode\ninput_dir = file.path(\"..\", \"data\")\n\n\n\n\nCode\nmeta_data &lt;- read_harmonized_meta_data(input_dir)\n\n#exp_data &lt;- read_harmonized_experimental_data(input_dir)\nexp_data &lt;- read_raw_experimental_data(input_dir)\nexp_data &lt;- filter_experimental_data(meta_data, exp_data)\n\n\npbmc_cell_frequency | Removed 550 specimens because missing in meta data\n\n\nplasma_ab_titer | Removed 6931 specimens because missing in meta data\n\n\nplasma_cytokine_concentration_by_olink | Removed 495 specimens because missing in meta data\n\n\npbmc_cell_frequency | Removed 56 features because not in feature subset\n\n\nplasma_ab_titer | Removed 48 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 234 features because not in feature subset\n\n\nt_cell_polarization | Removed 3 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 300 features because qc warning\n\n\nplasma_ab_titer | Removed 10540 measurements because wrong unit used\n\n\nplasma_cytokine_concentration_by_olink | Removed 2400 measurements because wrong unit used\n\n\nCode\nwide_exp_data &lt;- generate_wide_experimental_data(experimental_data=exp_data, impute=NULL)\n\ncelltype_meta &lt;- read_celltype_meta(input_dir)\ngene_meta &lt;- read_gene_meta(input_dir)\nprotein_meta &lt;- read_protein_meta(input_dir)\n\n\n\n\n3 Checks\n\n\nCode\n# only works due to filtering step above\nstopifnot(all(\n  purrr::map_lgl(exp_data, ~ all(.x$specimen_id %in% meta_data$specimen_id)))\n)\n\n# no subject is recorded in more than one dataset\n(meta_data %&gt;%\n  dplyr::count(subject_id, dataset) %&gt;%\n  dplyr::count(subject_id) %&gt;%\n  dplyr::pull(n) == 1) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n# we have the baseline specimen (planned_day_relative_to_boost = 0) for every subject\n(meta_data %&gt;%\n  dplyr::select(subject_id, planned_day_relative_to_boost, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(is_baseline = (planned_day_relative_to_boost==0)) %&gt;%\n  dplyr::group_by(subject_id) %&gt;%\n  dplyr::summarize(baseline_present = any(is_baseline),\n                   dataset = first(dataset)) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarize(baseline_present_frac = mean(baseline_present)) %&gt;%\n  pull(baseline_present_frac) == 1) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\nstopifnot(all(\n  purrr::map_lgl(exp_data, function(df) {\n    if (\"unit\" %in% colnames(df)) {\n      return(length(unique(df[[\"unit\"]])) == 1)\n    } else {\n      return(TRUE)\n    }\n  })\n))\n\n\n\n\n4 MOFA\n\nhttps://biofam.github.io/MOFA2/index.html\nhttps://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/getting_started_R.html\nhttps://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/downstream_analysis.html\n\n\n\nCode\n# filter genes and normalize the gene expression data\nmin_counts &lt;- 200\nmin_samples &lt;- 20\ngenes_to_keep &lt;- colnames(wide_exp_data$pbmc_gene_expression)[\n  (colSums(wide_exp_data$pbmc_gene_expression) &gt;= min_counts) &\n    (colSums(wide_exp_data$pbmc_gene_expression &gt; 0) &gt;= min_samples)\n]\ntarget_sum &lt;- 1e6\npbmc_gene_expression_norm &lt;- \n  wide_exp_data$pbmc_gene_expression / rowSums(wide_exp_data$pbmc_gene_expression) * target_sum\nstopifnot(all(dplyr::near(rowSums(pbmc_gene_expression_norm), target_sum, tol=0.1)))\npbmc_gene_expression_norm &lt;- pbmc_gene_expression_norm[ , genes_to_keep]\npbmc_gene_expression_log &lt;- log1p(pbmc_gene_expression_norm)\nwide_exp_data$pbmc_gene_expression &lt;- pbmc_gene_expression_log\n\nbaseline_specimen &lt;- meta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%\n  dplyr::pull(specimen_id)\n\nassay_specimen &lt;- purrr::map(wide_exp_data, ~ rownames(.x)) %&gt;% \n  unlist() %&gt;% \n  unique()\n\nintersect_specimen &lt;- dplyr::intersect(baseline_specimen, assay_specimen)\n\ngroup_vec &lt;- (meta_data %&gt;% column_to_rownames(var=\"specimen_id\"))[intersect_specimen, ]$dataset\ngroup_vec &lt;- str_replace(group_vec, \"_dataset\", \"_d\")\n\nmofa_data &lt;- purrr::imap(wide_exp_data, function(mtx, modality) {\n  # mtx &lt;- wide_exp_data$pbmc_cell_frequency\n  specimen_in_modality &lt;- intersect_specimen[intersect_specimen %in% rownames(mtx)]\n  out_mtx &lt;- matrix(data=NA, nrow=ncol(mtx), ncol=length(intersect_specimen))\n  rownames(out_mtx) &lt;- colnames(mtx)\n  colnames(out_mtx) &lt;- intersect_specimen\n  out_mtx[, specimen_in_modality] &lt;- t(mtx[specimen_in_modality, ])\n  print(paste0(modality, \" | Fraction of NAs: \", mean(is.na(out_mtx))))\n  return(out_mtx)\n})\n\n\n[1] \"pbmc_cell_frequency | Fraction of NAs: 0.19205298013245\"\n[1] \"pbmc_gene_expression | Fraction of NAs: 0.033112582781457\"\n[1] \"plasma_ab_titer | Fraction of NAs: 0.28476821192053\"\n[1] \"plasma_cytokine_concentration_by_legendplex | Fraction of NAs: 0.311258278145695\"\n[1] \"plasma_cytokine_concentration_by_olink | Fraction of NAs: 0.426098735701385\"\n[1] \"t_cell_activation | Fraction of NAs: 0.339403973509934\"\n[1] \"t_cell_polarization | Fraction of NAs: 0.384105960264901\"\n\n\nCode\nMOFAobject &lt;- MOFA2::create_mofa_from_matrix(mofa_data, groups=group_vec)\n\n\nWarning in .rename_duplicated_features(object): There are duplicated features names across different views. We will add the suffix *_view* only for those features \n            Example: if you have both TP53 in mRNA and mutation data it will be renamed to TP53_mRNA, TP53_mutation\n\n\nCode\nplot_data_overview(MOFAobject) + ggdark::dark_mode()\n\n\nInverted geom defaults of fill and color/colour.\nTo change them back, use invert_geom_defaults().\n\n\n\n\n\n\n\n\n\n\nDefine data options\n\nscale_groups: if groups have different ranges/variances, it is good practice to scale each group to unit variance. Default is FALSE\nscale_views: if views have different ranges/variances, it is good practice to scale each view to unit variance. Default is FALSE\n\n\n\n\nCode\ndata_opts &lt;- get_default_data_options(MOFAobject)\nhead(data_opts)\n\n\n$scale_views\n[1] FALSE\n\n$scale_groups\n[1] FALSE\n\n$center_groups\n[1] TRUE\n\n$use_float32\n[1] TRUE\n\n$views\n[1] \"pbmc_cell_frequency\"                        \n[2] \"pbmc_gene_expression\"                       \n[3] \"plasma_ab_titer\"                            \n[4] \"plasma_cytokine_concentration_by_legendplex\"\n[5] \"plasma_cytokine_concentration_by_olink\"     \n[6] \"t_cell_activation\"                          \n[7] \"t_cell_polarization\"                        \n\n$groups\n[1] \"2020_d\" \"2021_d\" \"2022_d\" \"2023_d\"\n\n\n\nDefine model options\n\nnum_factors: number of factors\nlikelihoods: likelihood per view (options are “gaussian”, “poisson”, “bernoulli”). By default they are learnt automatically. We advise users to use “gaussian” whenever possible!\nspikeslab_factors: use spike-slab sparsity prior in the factors? default is FALSE.\nspikeslab_weights: use spike-slab sparsity prior in the weights? default is TRUE.\nard_factors: use ARD prior in the factors? Default is TRUE if using multiple groups.\nard_weights: use ARD prior in the weights? Default is TRUE if using multiple views.\n\n\n\n\nCode\nmodel_opts &lt;- get_default_model_options(MOFAobject)\nhead(model_opts)\n\n\n$likelihoods\n                        pbmc_cell_frequency \n                                 \"gaussian\" \n                       pbmc_gene_expression \n                                 \"gaussian\" \n                            plasma_ab_titer \n                                 \"gaussian\" \nplasma_cytokine_concentration_by_legendplex \n                                 \"gaussian\" \n     plasma_cytokine_concentration_by_olink \n                                 \"gaussian\" \n                          t_cell_activation \n                                 \"gaussian\" \n                        t_cell_polarization \n                                 \"gaussian\" \n\n$num_factors\n[1] 15\n\n$spikeslab_factors\n[1] FALSE\n\n$spikeslab_weights\n[1] FALSE\n\n$ard_factors\n[1] TRUE\n\n$ard_weights\n[1] TRUE\n\n\n\nDefine train options\n\nmaxiter: number of iterations. Default is 1000.\nconvergence_mode: “fast”, “medium”, “slow”. For exploration, the fast mode is good enough.\nstartELBO: initial iteration to compute the ELBO (the objective function used to assess convergence).\nfreqELBO: frequency of computations of the ELBO.\ngpu_mode: use GPU mode? (needs cupy installed and a functional GPU).\nstochastic: use stochastic inference? (default is FALSE).\nverbose: verbose mode?\nseed: random seed\n\n\n\n\nCode\ntrain_opts &lt;- get_default_training_options(MOFAobject)\nhead(train_opts)\n\n\n$maxiter\n[1] 1000\n\n$convergence_mode\n[1] \"fast\"\n\n$drop_factor_threshold\n[1] -1\n\n$verbose\n[1] FALSE\n\n$startELBO\n[1] 1\n\n$freqELBO\n[1] 5\n\n\n\n\nCode\nMOFAobject &lt;- prepare_mofa(\n  object = MOFAobject,\n  data_options = data_opts,\n  model_options = model_opts,\n  training_options = train_opts\n)\n\n\nWarning in prepare_mofa(object = MOFAobject, data_options = data_opts,\nmodel_options = model_opts, : Some view(s) have less than 15 features, MOFA\nwill have little power to to learn meaningful factors for these view(s)....\n\n\nWarning in prepare_mofa(object = MOFAobject, data_options = data_opts,\nmodel_options = model_opts, : Some view(s) have a lot of features, it is\nrecommended to perform a more stringent feature selection before creating the\nMOFA object....\n\n\n\n# Multi-group mode requested.\n\n\n\nThis is an advanced option, if this is the first time that you are running MOFA, we suggest that you try do some exploration first without specifying groups. Two important remarks:\n\n\n\n - The aim of the multi-group framework is to identify the sources of variability *within* the groups. If your aim is to find a factor that 'separates' the groups, you DO NOT want to use the multi-group framework. Please see the FAQ on the MOFA2 webpage.\n\n\n\n - It is important to account for the group effect before selecting highly variable features (HVFs). We suggest that either you calculate HVFs per group and then take the union, or regress out the group effect before HVF selection\n\n\nChecking data options...\n\n\nChecking training options...\n\n\nChecking model options...\n\n\n\n\nCode\noutfile = file.path(getwd(), \"model.hdf5\")\nMOFAobject.trained &lt;- run_mofa(MOFAobject, outfile)\n\n\nWarning: Output file /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5 already exists, it will be replaced\n\n\nConnecting to the mofapy2 python package using reticulate (use_basilisk = FALSE)... \n    Please make sure to manually specify the right python binary when loading R with reticulate::use_python(..., force=TRUE) or the right conda environment with reticulate::use_condaenv(..., force=TRUE)\n    If you prefer to let us automatically install a conda environment with 'mofapy2' installed using the 'basilisk' package, please use the argument 'use_basilisk = TRUE'\n\n\nWarning in run_mofa(MOFAobject, outfile): The latest mofapy2 version is 0.7.0,\nyou are using 0.7.1. Please upgrade with 'pip install mofapy2'\n\n\n\n        #########################################################\n        ###           __  __  ____  ______                    ### \n        ###          |  \\/  |/ __ \\|  ____/\\    _             ### \n        ###          | \\  / | |  | | |__ /  \\ _| |_           ### \n        ###          | |\\/| | |  | |  __/ /\\ \\_   _|          ###\n        ###          | |  | | |__| | | / ____ \\|_|            ###\n        ###          |_|  |_|\\____/|_|/_/    \\_\\              ###\n        ###                                                   ### \n        ######################################################### \n       \n \n        \nuse_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...\n\nSuccessfully loaded view='pbmc_cell_frequency' group='2020_d' with N=40 samples and D=10 features...\nSuccessfully loaded view='pbmc_cell_frequency' group='2021_d' with N=36 samples and D=10 features...\nSuccessfully loaded view='pbmc_cell_frequency' group='2022_d' with N=21 samples and D=10 features...\nSuccessfully loaded view='pbmc_cell_frequency' group='2023_d' with N=54 samples and D=10 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2020_d' with N=40 samples and D=25280 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2021_d' with N=36 samples and D=25280 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2022_d' with N=21 samples and D=25280 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2023_d' with N=54 samples and D=25280 features...\nSuccessfully loaded view='plasma_ab_titer' group='2020_d' with N=40 samples and D=35 features...\nSuccessfully loaded view='plasma_ab_titer' group='2021_d' with N=36 samples and D=35 features...\nSuccessfully loaded view='plasma_ab_titer' group='2022_d' with N=21 samples and D=35 features...\nSuccessfully loaded view='plasma_ab_titer' group='2023_d' with N=54 samples and D=35 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2020_d' with N=40 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2021_d' with N=36 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2022_d' with N=21 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2023_d' with N=54 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2020_d' with N=40 samples and D=44 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2021_d' with N=36 samples and D=44 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2022_d' with N=21 samples and D=44 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2023_d' with N=54 samples and D=44 features...\nSuccessfully loaded view='t_cell_activation' group='2020_d' with N=40 samples and D=4 features...\nSuccessfully loaded view='t_cell_activation' group='2021_d' with N=36 samples and D=4 features...\nSuccessfully loaded view='t_cell_activation' group='2022_d' with N=21 samples and D=4 features...\nSuccessfully loaded view='t_cell_activation' group='2023_d' with N=54 samples and D=4 features...\nSuccessfully loaded view='t_cell_polarization' group='2020_d' with N=40 samples and D=6 features...\nSuccessfully loaded view='t_cell_polarization' group='2021_d' with N=36 samples and D=6 features...\nSuccessfully loaded view='t_cell_polarization' group='2022_d' with N=21 samples and D=6 features...\nSuccessfully loaded view='t_cell_polarization' group='2023_d' with N=54 samples and D=6 features...\n\n\nModel options:\n- Automatic Relevance Determination prior on the factors: True\n- Automatic Relevance Determination prior on the weights: True\n- Spike-and-slab prior on the factors: False\n- Spike-and-slab prior on the weights: False\nLikelihoods:\n- View 0 (pbmc_cell_frequency): gaussian\n- View 1 (pbmc_gene_expression): gaussian\n- View 2 (plasma_ab_titer): gaussian\n- View 3 (plasma_cytokine_concentration_by_legendplex): gaussian\n- View 4 (plasma_cytokine_concentration_by_olink): gaussian\n- View 5 (t_cell_activation): gaussian\n- View 6 (t_cell_polarization): gaussian\n\n\n\nWarning: some view(s) have less than 15 features, MOFA won't be able to learn meaningful factors for these view(s)...\n\n\n\n######################################\n## Training the model with seed 42 ##\n######################################\n\n\nELBO before training: -426993606.81 \n\nIteration 1: time=0.32, ELBO=-4524627.26, deltaELBO=422468979.551 (98.94035246%), Factors=15\nIteration 2: time=0.32, Factors=15\nIteration 3: time=0.32, Factors=15\nIteration 4: time=0.32, Factors=15\nIteration 5: time=0.31, Factors=15\nIteration 6: time=0.33, ELBO=-1064740.40, deltaELBO=3459886.861 (0.81029009%), Factors=15\nIteration 7: time=0.32, Factors=15\nIteration 8: time=0.32, Factors=15\nIteration 9: time=0.32, Factors=15\nIteration 10: time=0.32, Factors=15\nIteration 11: time=0.33, ELBO=-974285.59, deltaELBO=90454.814 (0.02118411%), Factors=15\nIteration 12: time=0.32, Factors=15\nIteration 13: time=0.31, Factors=15\nIteration 14: time=0.32, Factors=15\nIteration 15: time=0.31, Factors=15\nIteration 16: time=0.33, ELBO=-958884.82, deltaELBO=15400.769 (0.00360679%), Factors=15\nIteration 17: time=0.32, Factors=15\nIteration 18: time=0.32, Factors=15\nIteration 19: time=0.31, Factors=15\nIteration 20: time=0.33, Factors=15\nIteration 21: time=0.37, ELBO=-953107.93, deltaELBO=5776.891 (0.00135292%), Factors=15\nIteration 22: time=0.32, Factors=15\nIteration 23: time=0.32, Factors=15\nIteration 24: time=0.31, Factors=15\nIteration 25: time=0.32, Factors=15\nIteration 26: time=0.33, ELBO=-950365.42, deltaELBO=2742.504 (0.00064228%), Factors=15\nIteration 27: time=0.32, Factors=15\nIteration 28: time=0.32, Factors=15\nIteration 29: time=0.32, Factors=15\nIteration 30: time=0.31, Factors=15\nIteration 31: time=0.32, ELBO=-948372.16, deltaELBO=1993.264 (0.00046681%), Factors=15\nIteration 32: time=0.31, Factors=15\nIteration 33: time=0.31, Factors=15\nIteration 34: time=0.31, Factors=15\nIteration 35: time=0.32, Factors=15\nIteration 36: time=0.31, ELBO=-946666.86, deltaELBO=1705.302 (0.00039937%), Factors=15\n\nConverged!\n\n\n\n#######################\n## Training finished ##\n#######################\n\n\nWarning: Output file /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5 already exists, it will be replaced\nSaving model in /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5...\n\n\nWarning in .quality_control(object, verbose = verbose): Factor(s) 1 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.\n\n\n\n\nCode\nmodel &lt;- load_model(outfile)\n\n\nWarning in .quality_control(object, verbose = verbose): Factor(s) 1 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.\n\n\n\n\nCode\nplot_variance_explained(model, x=\"view\", y=\"factor\") +\n  ggdark::dark_mode(verbose=FALSE) +\n  theme(axis.text.x = element_text(angle=90, hjust=1))\n\n\n\n\n\n\n\n\n\n\n\nCode\nplot_variance_explained(model, x=\"group\", y=\"factor\", plot_total = T)[[2]] +\n  ggdark::dark_mode(verbose=FALSE)\n\n\nWarning: Removed 5 rows containing missing values or values outside the scale range\n(`geom_bar()`)."
-  },
-  {
-    "objectID": "models/single_omic.html",
-    "href": "models/single_omic.html",
-    "title": "Single-Omic Models",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(magick)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))\nsource(file.path(\"..\", \"src\", \"model.R\"))"
-  },
-  {
-    "objectID": "models/single_omic.html#metadata-model",
-    "href": "models/single_omic.html#metadata-model",
-    "title": "Single-Omic Models",
-    "section": "3.1 Metadata Model",
-    "text": "3.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_11 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
-  },
-  {
-    "objectID": "models/single_omic.html#metadata-model-1",
-    "href": "models/single_omic.html#metadata-model-1",
-    "title": "Single-Omic Models",
-    "section": "4.1 Metadata Model",
-    "text": "4.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_12 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
-  },
-  {
-    "objectID": "models/single_omic.html#metadata-model-2",
-    "href": "models/single_omic.html#metadata-model-2",
-    "title": "Single-Omic Models",
-    "section": "5.1 Metadata Model",
-    "text": "5.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_21 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
-  },
-  {
-    "objectID": "models/single_omic.html#metadata-model-3",
-    "href": "models/single_omic.html#metadata-model-3",
-    "title": "Single-Omic Models",
-    "section": "6.1 Metadata Model",
-    "text": "6.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_22 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
-  },
-  {
-    "objectID": "models/single_omic.html#metadata-model-4",
-    "href": "models/single_omic.html#metadata-model-4",
-    "title": "Single-Omic Models",
-    "section": "7.1 Metadata Model",
-    "text": "7.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_31 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
-  },
-  {
-    "objectID": "models/single_omic.html#metadata-model-5",
-    "href": "models/single_omic.html#metadata-model-5",
-    "title": "Single-Omic Models",
-    "section": "8.1 Metadata Model",
-    "text": "8.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_32 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
-  },
-  {
-    "objectID": "eda/harmonize_data.html",
-    "href": "eda/harmonize_data.html",
-    "title": "Batch Effects",
-    "section": "",
-    "text": "1 Packages\n\n\nCode\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick) # formatting\n})\nknitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\n\n\n\n\n2 Data\n\n\nCode\ninput_dir = file.path(\"..\", \"data\")\n\n\n\n\nCode\nmeta_df &lt;- read_harmonized_meta_data(input_dir)\ndata_list &lt;- read_raw_experimental_data(input_dir)\ndata_list &lt;- filter_experimental_data(meta_data=meta_df, \n                                      experimental_data=data_list)\n\n\npbmc_cell_frequency | Removed 550 specimens because missing in meta data\n\n\nplasma_ab_titer | Removed 6931 specimens because missing in meta data\n\n\nplasma_cytokine_concentration_by_olink | Removed 495 specimens because missing in meta data\n\n\npbmc_cell_frequency | Removed 56 features because not in feature subset\n\n\nplasma_ab_titer | Removed 48 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 234 features because not in feature subset\n\n\nt_cell_polarization | Removed 3 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 300 features because qc warning\n\n\nplasma_ab_titer | Removed 10540 measurements because wrong unit used\n\n\nplasma_cytokine_concentration_by_olink | Removed 2400 measurements because wrong unit used\n\n\n\n\nCode\n((data_list$pbmc_cell_frequency %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(cell_type_name, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(cell_type_name) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::filter(cell_type_name %in% experimental_data_settings$pbmc_cell_frequency$feature_subset) %&gt;%\n  dplyr::pull(n)) == 4) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$pbmc_gene_expression %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(versioned_ensembl_gene_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(versioned_ensembl_gene_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) == 4) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$plasma_ab_titer %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(isotype_antigen, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(isotype_antigen) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  #dplyr::arrange(n, isotype_antigen, dataset) %&gt;%\n  dplyr::filter(isotype_antigen %in% experimental_data_settings$plasma_antibody_levels$feature_subset) %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n  \n((data_list$plasma_cytokine_concentration_by_legendplex %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(protein_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) == 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(protein_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  #dplyr::arrange(n, protein_id, dataset) %&gt;%\n  dplyr::filter(protein_id %in% experimental_data_settings$plasma_cytokine_concentration_by_olink$feature_subset) %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$t_cell_activation %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(stimulation, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(stimulation) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$t_cell_polarization %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(stimulation, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(stimulation) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$t_cell_polarization %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(stimulation_protein_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(stimulation_protein_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Overview",
-    "section": "",
-    "text": "1 Exploratory Data Analysis\n\nRaw Data Overview\nFiltered Data Overview\nBatch Effects\nPrediction Targets\nMOFA Test\n\n\n\n2 Models\n\nMetadata Models\nLiterature Models"
-  },
-  {
-    "objectID": "eda/test.html",
-    "href": "eda/test.html",
-    "title": "",
-    "section": "",
-    "text": "CodeShow All CodeHide All CodeView Source\n\n\n\n\nDifference between harmonized and raw data for PBMC cell frequency data\n\n\nCode\n# source(\"../src/read_data.R\")\n# \n# input_dir &lt;- \"../data\"\n# \n# meta_df &lt;- read_harmonized_meta_data(input_dir)\n# \n# raw_data &lt;- read_raw_experimental_data(input_dir)\n# harm_data &lt;- read_harmonized_experimental_data(input_dir)\n# \n# celltype_meta &lt;- read_celltype_meta(input_dir)\n# \n# raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n#   tidyr::drop_na() %&gt;%\n#   dplyr::select(dataset, cell_type_name) %&gt;%\n#   dplyr::distinct() %&gt;%\n#   dplyr::left_join(celltype_meta, by=c(\"cell_type_name\", \"dataset\")) %&gt;%\n#   View()\n# \n# raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n#   tidyr::drop_na() %&gt;%\n#   dplyr::filter(cell_type_name == \"CD45+\")\n# \n# raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n#   tidyr::drop_na() %&gt;%\n#   dplyr::filter(dataset == \"2023_dataset\") %&gt;%\n#   dplyr::arrange(desc(percent_live_cell)) %&gt;%\n#   dplyr::left_join(celltype_meta, by=c(\"cell_type_name\", \"dataset\")) %&gt;%\n#   View()\n# \n# df_1 &lt;- raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::select(cell_type_name) %&gt;%\n#   dplyr::distinct() %&gt;%\n#   dplyr::mutate(\n#     in_harm_data = cell_type_name %in% harm_data$pbmc_cell_frequency$cell_type_name\n#     ) %&gt;%\n#   dplyr::arrange(in_harm_data)\n# \n# View(df_1)\n# \n# View(celltype_meta)"
-  },
-  {
-    "objectID": "models/metadata_model.html",
-    "href": "models/metadata_model.html",
-    "title": "Metadata Models",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(flextable)\n  library(ggdark)\n  library(magick)\n})\n\nknitr::opts_knit$set(output.dir = \"./\")\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))\nsource(file.path(\"..\", \"src\", \"model.R\"))"
-  },
-  {
-    "objectID": "models/metadata_model.html#task-1.1",
-    "href": "models/metadata_model.html#task-1.1",
-    "title": "Metadata Models",
-    "section": "5.1 Task 1.1",
-    "text": "5.1 Task 1.1\nRank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.\n\n\nmodemser2srhooob16.310.390.44\n\n\n\n\nmodemser2srholoocv17.770.340.41\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n2021202233.25-320.28-0.060.440.1033202022202166.69-1.320.410.6428.772033"
-  },
-  {
-    "objectID": "models/metadata_model.html#task-1.2",
-    "href": "models/metadata_model.html#task-1.2",
-    "title": "Metadata Models",
-    "section": "5.2 Task 1.2",
-    "text": "5.2 Task 1.2\nRank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.\n\n\nmodemser2srhooob30.330.360.61\n\n\n\n\nmodemser2srholoocv30.570.360.61\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n2021202236.04-10.870.77-0.893.0433202022202188.83-0.540.52-0.7357.732033"
-  },
-  {
-    "objectID": "models/metadata_model.html#task-2.1",
-    "href": "models/metadata_model.html#task-2.1",
-    "title": "Metadata Models",
-    "section": "5.3 Task 2.1",
-    "text": "5.3 Task 2.1\nRank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.\n\n\nmodemser2srhooob64.450.340.59\n\n\n\n\nmodemser2srholoocv63.730.340.59\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n2020202191.140.120.490.88103.4712332020202277.97-1.090.140.5537.3412212021202088.440.250.730.81117.5233122021202287.76-1.350.480.5537.34332120222020134.60-0.150.190.81117.52211220222021135.87-0.310.590.88103.472133"
-  },
-  {
-    "objectID": "models/metadata_model.html#task-2.2",
-    "href": "models/metadata_model.html#task-2.2",
-    "title": "Metadata Models",
-    "section": "5.4 Task 2.2",
-    "text": "5.4 Task 2.2\nRank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.\n\n\nmodemser2srhooob0.170.050.03\n\n\n\n\nmodemser2srholoocv0.170.050.04\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n202020210.18-2.99-0.06-0.220.051233202020220.43-5.51-0.30-0.210.071221202120200.54-0.630.48-0.430.333312202120220.17-1.49-0.40-0.210.073321202220200.99-2.02-0.31-0.430.332112202220210.14-1.980.00-0.220.052133"
-  },
-  {
-    "objectID": "models/metadata_model.html#task-3.1",
-    "href": "models/metadata_model.html#task-3.1",
-    "title": "Metadata Models",
-    "section": "5.5 Task 3.1",
-    "text": "5.5 Task 3.1\nRank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.\n\n\nmodemser2srhooob29,891.3-0.060.55\n\n\n\n\nmodemser2srholoocv30,131.44-0.070.54\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n2020202131,052.25-0.120.020.5627,845.4226362020202233,729.40-2.86-0.080.548,737.8226212021202040,204.780.070.400.3643,229.9036262021202210,603.03-0.210.190.548,737.8236212022202042,396.010.020.050.3643,229.9021262022202127,244.820.020.390.5627,845.422136"
-  },
-  {
-    "objectID": "models/metadata_model.html#task-3.2",
-    "href": "models/metadata_model.html#task-3.2",
-    "title": "Metadata Models",
-    "section": "5.6 Task 3.2",
-    "text": "5.6 Task 3.2\nRank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.\n\n\nmodemser2srhooob2.920.10.15\n\n\n\n\nmodemser2srholoocv30.070.12\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n202020212.340.080.02-0.432.542636202020225.57-0.29-0.25-0.244.322621202120202.760.05-0.09-0.242.893626202120226.20-0.440.07-0.244.323621202220203.41-0.18-0.01-0.242.892126202220214.02-0.58-0.07-0.432.542136"
-  },
-  {
-    "objectID": "models/literature_model.html",
-    "href": "models/literature_model.html",
-    "title": "Literature Models",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(flextable)\n  library(ggdark)\n  library(magick)\n})\n\nknitr::opts_knit$set(output.dir = \"./\")\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))\nsource(file.path(\"..\", \"src\", \"model.R\"))"
-  },
-  {
-    "objectID": "models/literature_model.html#task-1.1",
-    "href": "models/literature_model.html#task-1.1",
-    "title": "Literature Models",
-    "section": "4.1 Task 1.1",
-    "text": "4.1 Task 1.1\nRank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.\n\n4.1.1 inflammatory response (M33)\n\n\ndatasetsrho_baselinesrho_signature2021_dataset0.640.122022_dataset0.440.48\n\n\n\n\n4.1.2 platelet activation (III) (M42)\n\n\ndatasetsrho_baselinesrho_signature2021_dataset0.640.032022_dataset0.44-0.01\n\n\n\n\n4.1.3 BCR signaling (M54)\n\n\ndatasetsrho_baselinesrho_signature2021_dataset0.64-0.162022_dataset0.44-0.01\n\n\n\n\n4.1.4 Random\n\n\ndatasetsrho_baselinesrho_signature2021_dataset0.64-0.202022_dataset0.44-0.56"
-  },
-  {
-    "objectID": "models/literature_model.html#task-1.2",
-    "href": "models/literature_model.html#task-1.2",
-    "title": "Literature Models",
-    "section": "4.2 Task 1.2",
-    "text": "4.2 Task 1.2\nRank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.\n\n4.2.1 inflammatory response (M33)\n\n\ndatasetsrho_baselinesrho_signature2021_dataset-0.730.082022_dataset-0.890.01\n\n\n\n\n4.2.2 platelet activation (III) (M42)\n\n\ndatasetsrho_baselinesrho_signature2021_dataset-0.730.162022_dataset-0.890.26\n\n\n\n\n4.2.3 BCR signaling (M54)\n\n\ndatasetsrho_baselinesrho_signature2021_dataset-0.73-0.082022_dataset-0.89-0.03\n\n\n\n\n4.2.4 Random\n\n\ndatasetsrho_baselinesrho_signature2021_dataset-0.730.182022_dataset-0.890.00"
-  },
-  {
-    "objectID": "eda/targets.html",
-    "href": "eda/targets.html",
-    "title": "Prediction Targets",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(magick)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))"
-  },
-  {
-    "objectID": "eda/targets.html#task-1-antibody-level-tasks",
-    "href": "eda/targets.html#task-1-antibody-level-tasks",
-    "title": "Prediction Targets",
-    "section": "4.1 Task 1) Antibody level tasks",
-    "text": "4.1 Task 1) Antibody level tasks\n\n1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.\n1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.\n\n\n\nCode\ntargets_task_1 &lt;- generate_targets_task_1(meta_data=meta_data, \n                                          experimental_data=experimental_data, \n                                          experimental_data_settings=experimental_data_settings, \n                                          specimen_list=specimen_list)\n\n\n\n\nCode\nplot_targets(targets_task_1)\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_1 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task11), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_1 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task12), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()"
-  },
-  {
-    "objectID": "eda/targets.html#task-2-cell-frequency-tasks",
-    "href": "eda/targets.html#task-2-cell-frequency-tasks",
-    "title": "Prediction Targets",
-    "section": "4.2 Task 2) Cell frequency tasks",
-    "text": "4.2 Task 2) Cell frequency tasks\n\n2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.\n2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.\n\n\n\nCode\ntargets_task_2 &lt;- generate_targets_task_2(meta_data=meta_data, \n                                          experimental_data=experimental_data, \n                                          experimental_data_settings=experimental_data_settings,\n                                          specimen_list=specimen_list)\ntargets_task_2\n\n\n\n  \n\n\n\n\n\nCode\nplot_targets(targets_task_2)\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_2 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task21), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_2 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task22), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()"
-  },
-  {
-    "objectID": "eda/targets.html#task-3-gene-expression-tasks",
-    "href": "eda/targets.html#task-3-gene-expression-tasks",
-    "title": "Prediction Targets",
-    "section": "4.3 Task 3) Gene expression tasks",
-    "text": "4.3 Task 3) Gene expression tasks\n\n3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.\n3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.\n\n\n\nCode\ntargets_task_3 &lt;- generate_targets_task_3(meta_data=meta_data, \n                                          experimental_data=experimental_data, \n                                          experimental_data_settings=experimental_data_settings, \n                                          specimen_list=specimen_list,\n                                          gene_meta=gene_meta)\ntargets_task_3\n\n\n\n  \n\n\n\n\n\nCode\nplot_targets(targets_task_3)\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_3 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task31), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_3 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task32), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()"
-  },
-  {
     "objectID": "eda/raw_data_overview.html",
     "href": "eda/raw_data_overview.html",
     "title": "Data Overview",
@@ -544,5 +166,411 @@
     "title": "Data Overview",
     "section": "10.6 Difference in 2023 Dataset",
     "text": "10.6 Difference in 2023 Dataset\n\nIt seems like the 2023 data are very very different, which makes me hesitant to use it for any kind of predictions on the challenge data. E.g. just looking at level 0 which should make sense I get the following\n\n\n\nCode\n# first check for NAs for the levels\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(is.na(level))\n\n\n\n  \n\n\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(level == 0) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nEspecially, when completely ignoring the hierarchy in the gating information, I would expect to have more than 100% in percelt_live_cell_sum, but this is not true for the specimens from the 2023 dataset\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nOr what I use a list of predefined cell types of interest?"
+  },
+  {
+    "objectID": "eda/targets.html",
+    "href": "eda/targets.html",
+    "title": "Prediction Targets",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(magick)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))"
+  },
+  {
+    "objectID": "eda/targets.html#task-1-antibody-level-tasks",
+    "href": "eda/targets.html#task-1-antibody-level-tasks",
+    "title": "Prediction Targets",
+    "section": "4.1 Task 1) Antibody level tasks",
+    "text": "4.1 Task 1) Antibody level tasks\n\n1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.\n1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.\n\n\n\nCode\ntargets_task_1 &lt;- generate_targets_task_1(meta_data=meta_data, \n                                          experimental_data=experimental_data, \n                                          experimental_data_settings=experimental_data_settings, \n                                          specimen_list=specimen_list)\n\n\n\n\nCode\nplot_targets(targets_task_1)\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_1 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task11), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_1 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task12), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()"
+  },
+  {
+    "objectID": "eda/targets.html#task-2-cell-frequency-tasks",
+    "href": "eda/targets.html#task-2-cell-frequency-tasks",
+    "title": "Prediction Targets",
+    "section": "4.2 Task 2) Cell frequency tasks",
+    "text": "4.2 Task 2) Cell frequency tasks\n\n2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.\n2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.\n\n\n\nCode\ntargets_task_2 &lt;- generate_targets_task_2(meta_data=meta_data, \n                                          experimental_data=experimental_data, \n                                          experimental_data_settings=experimental_data_settings,\n                                          specimen_list=specimen_list)\ntargets_task_2\n\n\n\n  \n\n\n\n\n\nCode\nplot_targets(targets_task_2)\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_2 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task21), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_2 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task22), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()"
+  },
+  {
+    "objectID": "eda/targets.html#task-3-gene-expression-tasks",
+    "href": "eda/targets.html#task-3-gene-expression-tasks",
+    "title": "Prediction Targets",
+    "section": "4.3 Task 3) Gene expression tasks",
+    "text": "4.3 Task 3) Gene expression tasks\n\n3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.\n3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.\n\n\n\nCode\ntargets_task_3 &lt;- generate_targets_task_3(meta_data=meta_data, \n                                          experimental_data=experimental_data, \n                                          experimental_data_settings=experimental_data_settings, \n                                          specimen_list=specimen_list,\n                                          gene_meta=gene_meta)\ntargets_task_3\n\n\n\n  \n\n\n\n\n\nCode\nplot_targets(targets_task_3)\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_3 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task31), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()\n\n\n\n\n\n\n\n\n\n\n\nCode\ntargets_task_3 %&gt;%\n  dplyr::left_join((meta_data %&gt;% dplyr::select(subject_id, dataset) %&gt;% dplyr::distinct()),\n                   by=\"subject_id\") %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=task32), bins=50, color=\"black\") +\n  facet_wrap(~dataset, ncol=1) + \n  ggdark::dark_mode()"
+  },
+  {
+    "objectID": "models/literature_model.html",
+    "href": "models/literature_model.html",
+    "title": "Literature Models",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(DESeq2)\n  library(flextable)\n  library(ggdark)\n  library(magick)\n})\n\nknitr::opts_knit$set(output.dir = \"./\")\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))\nsource(file.path(\"..\", \"src\", \"model.R\"))"
+  },
+  {
+    "objectID": "models/literature_model.html#task-1.1",
+    "href": "models/literature_model.html#task-1.1",
+    "title": "Literature Models",
+    "section": "4.1 Task 1.1",
+    "text": "4.1 Task 1.1\nRank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.\n\n4.1.1 inflammatory response (M33)\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset0.640.060.3662022_dataset0.440.480.013\n\n\n\n\n4.1.2 platelet activation (III) (M42)\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset0.64-0.040.5862022_dataset0.44-0.030.546\n\n\n\n\n4.1.3 BCR signaling (M54)\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset0.64-0.180.8502022_dataset0.44-0.100.677\n\n\n\n\n4.1.4 Random_1\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset0.640.010.5042022_dataset0.440.000.493\n\n\n\n\n4.1.5 Random_2\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset0.64-0.220.8832022_dataset0.44-0.330.923\n\n\n\n\n4.1.6 Random_3\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset0.640.320.0272022_dataset0.44-0.260.876"
+  },
+  {
+    "objectID": "models/literature_model.html#task-1.2",
+    "href": "models/literature_model.html#task-1.2",
+    "title": "Literature Models",
+    "section": "4.2 Task 1.2",
+    "text": "4.2 Task 1.2\nRank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.\n\n4.2.1 inflammatory response (M33)\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset-0.730.110.2582022_dataset-0.89-0.070.620\n\n\n\n\n4.2.2 platelet activation (III) (M42)\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset-0.730.060.3542022_dataset-0.890.270.136\n\n\n\n\n4.2.3 BCR signaling (M54)\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset-0.73-0.070.6632022_dataset-0.890.000.492\n\n\n\n\n4.2.4 Random_1\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset-0.73-0.010.5222022_dataset-0.89-0.210.811\n\n\n\n\n4.2.5 Random_2\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset-0.73-0.300.9562022_dataset-0.89-0.230.862\n\n\n\n\n4.2.6 Random_3\n\n\ndatasetsrho_baselinesrho_signaturesrho_pval_signature2021_dataset-0.730.190.1402022_dataset-0.890.330.071"
+  },
+  {
+    "objectID": "models/metadata_model.html",
+    "href": "models/metadata_model.html",
+    "title": "Metadata Models",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(flextable)\n  library(ggdark)\n  library(magick)\n})\n\nknitr::opts_knit$set(output.dir = \"./\")\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))\nsource(file.path(\"..\", \"src\", \"model.R\"))"
+  },
+  {
+    "objectID": "models/metadata_model.html#task-1.1",
+    "href": "models/metadata_model.html#task-1.1",
+    "title": "Metadata Models",
+    "section": "5.1 Task 1.1",
+    "text": "5.1 Task 1.1\nRank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.\n\n\nmodemser2srhooob16.310.390.44\n\n\n\n\nmodemser2srholoocv17.770.340.41\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n2021202233.25-320.28-0.060.440.1033202022202166.69-1.320.410.6428.772033"
+  },
+  {
+    "objectID": "models/metadata_model.html#task-1.2",
+    "href": "models/metadata_model.html#task-1.2",
+    "title": "Metadata Models",
+    "section": "5.2 Task 1.2",
+    "text": "5.2 Task 1.2\nRank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.\n\n\nmodemser2srhooob30.330.360.61\n\n\n\n\nmodemser2srholoocv30.570.360.61\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n2021202236.04-10.870.77-0.893.0433202022202188.83-0.540.52-0.7357.732033"
+  },
+  {
+    "objectID": "models/metadata_model.html#task-2.1",
+    "href": "models/metadata_model.html#task-2.1",
+    "title": "Metadata Models",
+    "section": "5.3 Task 2.1",
+    "text": "5.3 Task 2.1\nRank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.\n\n\nmodemser2srhooob64.450.340.59\n\n\n\n\nmodemser2srholoocv63.730.340.59\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n2020202191.140.120.490.88103.4712332020202277.97-1.090.140.5537.3412212021202088.440.250.730.81117.5233122021202287.76-1.350.480.5537.34332120222020134.60-0.150.190.81117.52211220222021135.87-0.310.590.88103.472133"
+  },
+  {
+    "objectID": "models/metadata_model.html#task-2.2",
+    "href": "models/metadata_model.html#task-2.2",
+    "title": "Metadata Models",
+    "section": "5.4 Task 2.2",
+    "text": "5.4 Task 2.2\nRank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.\n\n\nmodemser2srhooob0.170.050.03\n\n\n\n\nmodemser2srholoocv0.170.050.04\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n202020210.18-2.99-0.06-0.220.051233202020220.43-5.51-0.30-0.210.071221202120200.54-0.630.48-0.430.333312202120220.17-1.49-0.40-0.210.073321202220200.99-2.02-0.31-0.430.332112202220210.14-1.980.00-0.220.052133"
+  },
+  {
+    "objectID": "models/metadata_model.html#task-3.1",
+    "href": "models/metadata_model.html#task-3.1",
+    "title": "Metadata Models",
+    "section": "5.5 Task 3.1",
+    "text": "5.5 Task 3.1\nRank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.\n\n\nmodemser2srhooob1,913,9540.030.36\n\n\n\n\nmodemser2srholoocv1,948,1160.010.41\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n202020212,309,497.30.030.040.572,375,813.9263620202022325,813.4-0.69-0.280.53192,477.32621202120202,474,358.40.050.260.272,613,984.7362620212022437,363.2-1.270.060.53192,477.33621202220202,786,607.3-0.07-0.010.272,613,984.72126202220212,641,188.9-0.110.400.572,375,813.92136"
+  },
+  {
+    "objectID": "models/metadata_model.html#task-3.2",
+    "href": "models/metadata_model.html#task-3.2",
+    "title": "Metadata Models",
+    "section": "5.6 Task 3.2",
+    "text": "5.6 Task 3.2\nRank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.\n\n\nmodemser2srhooob4.04-0.020.12\n\n\n\n\nmodemser2srholoocv4.06-0.030.13\n\n\n\n\ntrainsettestsetmser2srhosrho_baselinemse_tmeantrain_ntest_n202020211.940.230.22-0.432.502636202020227.48-0.31-0.18-0.195.692621202120203.750.060.03-0.333.983626202120227.25-0.270.21-0.195.693621202220207.66-0.92-0.31-0.333.982126202220214.27-0.71-0.02-0.432.502136"
+  },
+  {
+    "objectID": "eda/harmonize_data.html",
+    "href": "eda/harmonize_data.html",
+    "title": "Batch Effects",
+    "section": "",
+    "text": "1 Packages\n\n\nCode\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick) # formatting\n})\nknitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\n\n\n\n\n2 Data\n\n\nCode\ninput_dir = file.path(\"..\", \"data\")\n\n\n\n\nCode\nmeta_df &lt;- read_harmonized_meta_data(input_dir)\ndata_list &lt;- read_raw_experimental_data(input_dir)\ndata_list &lt;- filter_experimental_data(meta_data=meta_df, \n                                      experimental_data=data_list)\n\n\npbmc_cell_frequency | Removed 550 specimens because missing in meta data\n\n\nplasma_ab_titer | Removed 6931 specimens because missing in meta data\n\n\nplasma_cytokine_concentration_by_olink | Removed 495 specimens because missing in meta data\n\n\npbmc_cell_frequency | Removed 56 features because not in feature subset\n\n\nplasma_ab_titer | Removed 48 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 234 features because not in feature subset\n\n\nt_cell_polarization | Removed 3 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 300 features because qc warning\n\n\nplasma_ab_titer | Removed 10540 measurements because wrong unit used\n\n\nplasma_cytokine_concentration_by_olink | Removed 2400 measurements because wrong unit used\n\n\n\n\nCode\n((data_list$pbmc_cell_frequency %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(cell_type_name, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(cell_type_name) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::filter(cell_type_name %in% experimental_data_settings$pbmc_cell_frequency$feature_subset) %&gt;%\n  dplyr::pull(n)) == 4) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$pbmc_gene_expression %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(versioned_ensembl_gene_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(versioned_ensembl_gene_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) == 4) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$plasma_ab_titer %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(isotype_antigen, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(isotype_antigen) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  #dplyr::arrange(n, isotype_antigen, dataset) %&gt;%\n  dplyr::filter(isotype_antigen %in% experimental_data_settings$plasma_antibody_levels$feature_subset) %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n  \n((data_list$plasma_cytokine_concentration_by_legendplex %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(protein_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) == 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(protein_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  #dplyr::arrange(n, protein_id, dataset) %&gt;%\n  dplyr::filter(protein_id %in% experimental_data_settings$plasma_cytokine_concentration_by_olink$feature_subset) %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$t_cell_activation %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(stimulation, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(stimulation) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$t_cell_polarization %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(stimulation, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(stimulation) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n((data_list$t_cell_polarization %&gt;%\n  dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n  dplyr::select(stimulation_protein_id, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::group_by(stimulation_protein_id) %&gt;%\n  dplyr::mutate(n = n()) %&gt;%\n  dplyr::ungroup() %&gt;%\n  dplyr::pull(n)) &gt;= 3) %&gt;%\n  all() %&gt;%\n  stopifnot()"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Overview",
+    "section": "",
+    "text": "1 Exploratory Data Analysis\n\nRaw Data Overview\nFiltered Data Overview\nBatch Effects\nPrediction Targets\nMOFA Test\n\n\n\n2 Models\n\nMetadata Models\nLiterature Models"
+  },
+  {
+    "objectID": "eda/test.html",
+    "href": "eda/test.html",
+    "title": "",
+    "section": "",
+    "text": "CodeShow All CodeHide All CodeView Source\n\n\n\n\nDifference between harmonized and raw data for PBMC cell frequency data\n\n\nCode\n# source(\"../src/read_data.R\")\n# \n# input_dir &lt;- \"../data\"\n# \n# meta_df &lt;- read_harmonized_meta_data(input_dir)\n# \n# raw_data &lt;- read_raw_experimental_data(input_dir)\n# harm_data &lt;- read_harmonized_experimental_data(input_dir)\n# \n# celltype_meta &lt;- read_celltype_meta(input_dir)\n# \n# raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n#   tidyr::drop_na() %&gt;%\n#   dplyr::select(dataset, cell_type_name) %&gt;%\n#   dplyr::distinct() %&gt;%\n#   dplyr::left_join(celltype_meta, by=c(\"cell_type_name\", \"dataset\")) %&gt;%\n#   View()\n# \n# raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n#   tidyr::drop_na() %&gt;%\n#   dplyr::filter(cell_type_name == \"CD45+\")\n# \n# raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::left_join(meta_df, by=\"specimen_id\") %&gt;%\n#   tidyr::drop_na() %&gt;%\n#   dplyr::filter(dataset == \"2023_dataset\") %&gt;%\n#   dplyr::arrange(desc(percent_live_cell)) %&gt;%\n#   dplyr::left_join(celltype_meta, by=c(\"cell_type_name\", \"dataset\")) %&gt;%\n#   View()\n# \n# df_1 &lt;- raw_data$pbmc_cell_frequency %&gt;%\n#   dplyr::select(cell_type_name) %&gt;%\n#   dplyr::distinct() %&gt;%\n#   dplyr::mutate(\n#     in_harm_data = cell_type_name %in% harm_data$pbmc_cell_frequency$cell_type_name\n#     ) %&gt;%\n#   dplyr::arrange(in_harm_data)\n# \n# View(df_1)\n# \n# View(celltype_meta)"
+  },
+  {
+    "objectID": "eda/batch_effects.html",
+    "href": "eda/batch_effects.html",
+    "title": "Batch Effects",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(vsn)\n  library(lme4)\n  library(DESeq2)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick) # formatting\n})\nknitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))\nsource(file.path(\"..\", \"src\", \"model.R\"))\nsource(file.path(\"..\", \"src\", \"batch_effects.R\"))"
+  },
+  {
+    "objectID": "eda/batch_effects.html#pbmc-fractions",
+    "href": "eda/batch_effects.html#pbmc-fractions",
+    "title": "Batch Effects",
+    "section": "3.1 PBMC Fractions",
+    "text": "3.1 PBMC Fractions\n\nFor the baseline specimen (day 0), we see a very strong batch effect, because the 2023 dataset is very different"
+  },
+  {
+    "objectID": "eda/batch_effects.html#pbmc-gene-expression",
+    "href": "eda/batch_effects.html#pbmc-gene-expression",
+    "title": "Batch Effects",
+    "section": "3.2 PBMC Gene Expression",
+    "text": "3.2 PBMC Gene Expression\n\nVery strong cohort-specific effects for baseline specimen and post-booster specimen"
+  },
+  {
+    "objectID": "eda/batch_effects.html#plasma-antibody-levels",
+    "href": "eda/batch_effects.html#plasma-antibody-levels",
+    "title": "Batch Effects",
+    "section": "3.3 Plasma Antibody Levels",
+    "text": "3.3 Plasma Antibody Levels"
+  },
+  {
+    "objectID": "eda/batch_effects.html#plasma-cytokine-concentration-by-legendplex",
+    "href": "eda/batch_effects.html#plasma-cytokine-concentration-by-legendplex",
+    "title": "Batch Effects",
+    "section": "3.4 Plasma Cytokine Concentration by Legendplex",
+    "text": "3.4 Plasma Cytokine Concentration by Legendplex"
+  },
+  {
+    "objectID": "eda/batch_effects.html#plasma-cytokine-concentration-by-olink",
+    "href": "eda/batch_effects.html#plasma-cytokine-concentration-by-olink",
+    "title": "Batch Effects",
+    "section": "3.5 Plasma Cytokine Concentration by Olink",
+    "text": "3.5 Plasma Cytokine Concentration by Olink"
+  },
+  {
+    "objectID": "eda/batch_effects.html#t-cell-activation",
+    "href": "eda/batch_effects.html#t-cell-activation",
+    "title": "Batch Effects",
+    "section": "3.6 T Cell Activation",
+    "text": "3.6 T Cell Activation\n\nNo cohort-specific effect"
+  },
+  {
+    "objectID": "eda/batch_effects.html#t-cell-polarization",
+    "href": "eda/batch_effects.html#t-cell-polarization",
+    "title": "Batch Effects",
+    "section": "3.7 T Cell Polarization",
+    "text": "3.7 T Cell Polarization"
+  },
+  {
+    "objectID": "eda/batch_effects.html#day_0",
+    "href": "eda/batch_effects.html#day_0",
+    "title": "Batch Effects",
+    "section": "4.1 day_0",
+    "text": "4.1 day_0\n\n4.1.1 pbmc_cell_frequency\n\n\n\n4.1.2 pbmc_gene_expression\nconverting counts to integer mode\n\n\n\n4.1.3 plasma_ab_titer\n\n\n\n4.1.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.1.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 0.0039\n\n\n4.1.6 t_cell_activation\nNon-zero fraction of NAs: 0.059\n\n\n4.1.7 t_cell_polarization\nNon-zero fraction of NAs: 0.0106"
+  },
+  {
+    "objectID": "eda/batch_effects.html#day_1",
+    "href": "eda/batch_effects.html#day_1",
+    "title": "Batch Effects",
+    "section": "4.2 day_1",
+    "text": "4.2 day_1\n\n4.2.1 pbmc_cell_frequency\n\n\n\n4.2.2 pbmc_gene_expression\nconverting counts to integer mode\n\n\n\n4.2.3 plasma_ab_titer\n\n\n\n4.2.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.2.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 0.014\n\n\n4.2.6 t_cell_activation\nNo specimen for this combination of assay and day available\n\n\n4.2.7 t_cell_polarization\nNo specimen for this combination of assay and day available"
+  },
+  {
+    "objectID": "eda/batch_effects.html#day_3",
+    "href": "eda/batch_effects.html#day_3",
+    "title": "Batch Effects",
+    "section": "4.3 day_3",
+    "text": "4.3 day_3\n\n4.3.1 pbmc_cell_frequency\n\n\n\n4.3.2 pbmc_gene_expression\nconverting counts to integer mode\n\n\n\n4.3.3 plasma_ab_titer\n\n\n\n4.3.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.3.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 0.0199\n\n\n4.3.6 t_cell_activation\nNo specimen for this combination of assay and day available\n\n\n4.3.7 t_cell_polarization\nNo specimen for this combination of assay and day available"
+  },
+  {
+    "objectID": "eda/batch_effects.html#day_14",
+    "href": "eda/batch_effects.html#day_14",
+    "title": "Batch Effects",
+    "section": "4.4 day_14",
+    "text": "4.4 day_14\n\n4.4.1 pbmc_cell_frequency\n\n\n\n4.4.2 pbmc_gene_expression\nconverting counts to integer mode\n\n\n\n4.4.3 plasma_ab_titer\n\n\n\n4.4.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.4.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 0.0025\n\n\n4.4.6 t_cell_activation\nNo specimen for this combination of assay and day available\n\n\n4.4.7 t_cell_polarization\nNo specimen for this combination of assay and day available"
+  },
+  {
+    "objectID": "models/single_omic.html",
+    "href": "models/single_omic.html",
+    "title": "Single-Omic Models",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(magick)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\nsource(file.path(\"..\", \"src\", \"generate_targets.R\"))\nsource(file.path(\"..\", \"src\", \"model.R\"))"
+  },
+  {
+    "objectID": "models/single_omic.html#metadata-model",
+    "href": "models/single_omic.html#metadata-model",
+    "title": "Single-Omic Models",
+    "section": "3.1 Metadata Model",
+    "text": "3.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_11 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
+  },
+  {
+    "objectID": "models/single_omic.html#metadata-model-1",
+    "href": "models/single_omic.html#metadata-model-1",
+    "title": "Single-Omic Models",
+    "section": "4.1 Metadata Model",
+    "text": "4.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_12 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
+  },
+  {
+    "objectID": "models/single_omic.html#metadata-model-2",
+    "href": "models/single_omic.html#metadata-model-2",
+    "title": "Single-Omic Models",
+    "section": "5.1 Metadata Model",
+    "text": "5.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_21 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
+  },
+  {
+    "objectID": "models/single_omic.html#metadata-model-3",
+    "href": "models/single_omic.html#metadata-model-3",
+    "title": "Single-Omic Models",
+    "section": "6.1 Metadata Model",
+    "text": "6.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_22 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
+  },
+  {
+    "objectID": "models/single_omic.html#metadata-model-4",
+    "href": "models/single_omic.html#metadata-model-4",
+    "title": "Single-Omic Models",
+    "section": "7.1 Metadata Model",
+    "text": "7.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_31 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
+  },
+  {
+    "objectID": "models/single_omic.html#metadata-model-5",
+    "href": "models/single_omic.html#metadata-model-5",
+    "title": "Single-Omic Models",
+    "section": "8.1 Metadata Model",
+    "text": "8.1 Metadata Model\n\n\nCode\nmeta_data_covariates &lt;- get_metadata_covariates(meta_data)\n\nmodel_df &lt;- target_list$task_32 %&gt;%\n  dplyr::left_join(meta_data_covariates, by=\"subject_id\")\n\nset.seed(42)\nget_oob_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_loocv_perf(model_df=model_df)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data)\n\n\n\n  \n\n\n\nCode\nget_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data)"
+  },
+  {
+    "objectID": "eda/mofa_test.html",
+    "href": "eda/mofa_test.html",
+    "title": "MOFA Test",
+    "section": "",
+    "text": "1 Packages\n\n\nCode\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick)\n  library(reticulate)\n  reticulate::use_condaenv(\"scanpy\")\n  library(MOFA2)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))\n\n\n\n\n2 Data\n\n\nCode\ninput_dir = file.path(\"..\", \"data\")\n\n\n\n\nCode\nmeta_data &lt;- read_harmonized_meta_data(input_dir)\n\n#exp_data &lt;- read_harmonized_experimental_data(input_dir)\nexp_data &lt;- read_raw_experimental_data(input_dir)\nexp_data &lt;- filter_experimental_data(meta_data, exp_data)\n\n\npbmc_cell_frequency | Removed 550 specimens because missing in meta data\n\n\nplasma_ab_titer | Removed 6931 specimens because missing in meta data\n\n\nplasma_cytokine_concentration_by_olink | Removed 495 specimens because missing in meta data\n\n\npbmc_cell_frequency | Removed 56 features because not in feature subset\n\n\nplasma_ab_titer | Removed 48 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 234 features because not in feature subset\n\n\nt_cell_polarization | Removed 3 features because not in feature subset\n\n\nplasma_cytokine_concentration_by_olink | Removed 300 features because qc warning\n\n\nplasma_ab_titer | Removed 10540 measurements because wrong unit used\n\n\nplasma_cytokine_concentration_by_olink | Removed 2400 measurements because wrong unit used\n\n\nCode\nwide_exp_data &lt;- generate_wide_experimental_data(experimental_data=exp_data, impute=NULL)\n\ncelltype_meta &lt;- read_celltype_meta(input_dir)\ngene_meta &lt;- read_gene_meta(input_dir)\nprotein_meta &lt;- read_protein_meta(input_dir)\n\n\n\n\n3 Checks\n\n\nCode\n# only works due to filtering step above\nstopifnot(all(\n  purrr::map_lgl(exp_data, ~ all(.x$specimen_id %in% meta_data$specimen_id)))\n)\n\n# no subject is recorded in more than one dataset\n(meta_data %&gt;%\n  dplyr::count(subject_id, dataset) %&gt;%\n  dplyr::count(subject_id) %&gt;%\n  dplyr::pull(n) == 1) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\n# we have the baseline specimen (planned_day_relative_to_boost = 0) for every subject\n(meta_data %&gt;%\n  dplyr::select(subject_id, planned_day_relative_to_boost, dataset) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(is_baseline = (planned_day_relative_to_boost==0)) %&gt;%\n  dplyr::group_by(subject_id) %&gt;%\n  dplyr::summarize(baseline_present = any(is_baseline),\n                   dataset = first(dataset)) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarize(baseline_present_frac = mean(baseline_present)) %&gt;%\n  pull(baseline_present_frac) == 1) %&gt;%\n  all() %&gt;%\n  stopifnot()\n\nstopifnot(all(\n  purrr::map_lgl(exp_data, function(df) {\n    if (\"unit\" %in% colnames(df)) {\n      return(length(unique(df[[\"unit\"]])) == 1)\n    } else {\n      return(TRUE)\n    }\n  })\n))\n\n\n\n\n4 MOFA\n\nhttps://biofam.github.io/MOFA2/index.html\nhttps://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/getting_started_R.html\nhttps://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/downstream_analysis.html\n\n\n\nCode\n# filter genes and normalize the gene expression data\nmin_counts &lt;- 200\nmin_samples &lt;- 20\ngenes_to_keep &lt;- colnames(wide_exp_data$pbmc_gene_expression)[\n  (colSums(wide_exp_data$pbmc_gene_expression) &gt;= min_counts) &\n    (colSums(wide_exp_data$pbmc_gene_expression &gt; 0) &gt;= min_samples)\n]\ntarget_sum &lt;- 1e6\npbmc_gene_expression_norm &lt;- \n  wide_exp_data$pbmc_gene_expression / rowSums(wide_exp_data$pbmc_gene_expression) * target_sum\nstopifnot(all(dplyr::near(rowSums(pbmc_gene_expression_norm), target_sum, tol=0.1)))\npbmc_gene_expression_norm &lt;- pbmc_gene_expression_norm[ , genes_to_keep]\npbmc_gene_expression_log &lt;- log1p(pbmc_gene_expression_norm)\nwide_exp_data$pbmc_gene_expression &lt;- pbmc_gene_expression_log\n\nbaseline_specimen &lt;- meta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%\n  dplyr::pull(specimen_id)\n\nassay_specimen &lt;- purrr::map(wide_exp_data, ~ rownames(.x)) %&gt;% \n  unlist() %&gt;% \n  unique()\n\nintersect_specimen &lt;- dplyr::intersect(baseline_specimen, assay_specimen)\n\ngroup_vec &lt;- (meta_data %&gt;% column_to_rownames(var=\"specimen_id\"))[intersect_specimen, ]$dataset\ngroup_vec &lt;- str_replace(group_vec, \"_dataset\", \"_d\")\n\nmofa_data &lt;- purrr::imap(wide_exp_data, function(mtx, modality) {\n  # mtx &lt;- wide_exp_data$pbmc_cell_frequency\n  specimen_in_modality &lt;- intersect_specimen[intersect_specimen %in% rownames(mtx)]\n  out_mtx &lt;- matrix(data=NA, nrow=ncol(mtx), ncol=length(intersect_specimen))\n  rownames(out_mtx) &lt;- colnames(mtx)\n  colnames(out_mtx) &lt;- intersect_specimen\n  out_mtx[, specimen_in_modality] &lt;- t(mtx[specimen_in_modality, ])\n  print(paste0(modality, \" | Fraction of NAs: \", mean(is.na(out_mtx))))\n  return(out_mtx)\n})\n\n\n[1] \"pbmc_cell_frequency | Fraction of NAs: 0.19205298013245\"\n[1] \"pbmc_gene_expression | Fraction of NAs: 0.033112582781457\"\n[1] \"plasma_ab_titer | Fraction of NAs: 0.28476821192053\"\n[1] \"plasma_cytokine_concentration_by_legendplex | Fraction of NAs: 0.311258278145695\"\n[1] \"plasma_cytokine_concentration_by_olink | Fraction of NAs: 0.426098735701385\"\n[1] \"t_cell_activation | Fraction of NAs: 0.339403973509934\"\n[1] \"t_cell_polarization | Fraction of NAs: 0.384105960264901\"\n\n\nCode\nMOFAobject &lt;- MOFA2::create_mofa_from_matrix(mofa_data, groups=group_vec)\n\n\nWarning in .rename_duplicated_features(object): There are duplicated features names across different views. We will add the suffix *_view* only for those features \n            Example: if you have both TP53 in mRNA and mutation data it will be renamed to TP53_mRNA, TP53_mutation\n\n\nCode\nplot_data_overview(MOFAobject) + ggdark::dark_mode()\n\n\nInverted geom defaults of fill and color/colour.\nTo change them back, use invert_geom_defaults().\n\n\n\n\n\n\n\n\n\n\nDefine data options\n\nscale_groups: if groups have different ranges/variances, it is good practice to scale each group to unit variance. Default is FALSE\nscale_views: if views have different ranges/variances, it is good practice to scale each view to unit variance. Default is FALSE\n\n\n\n\nCode\ndata_opts &lt;- get_default_data_options(MOFAobject)\nhead(data_opts)\n\n\n$scale_views\n[1] FALSE\n\n$scale_groups\n[1] FALSE\n\n$center_groups\n[1] TRUE\n\n$use_float32\n[1] TRUE\n\n$views\n[1] \"pbmc_cell_frequency\"                        \n[2] \"pbmc_gene_expression\"                       \n[3] \"plasma_ab_titer\"                            \n[4] \"plasma_cytokine_concentration_by_legendplex\"\n[5] \"plasma_cytokine_concentration_by_olink\"     \n[6] \"t_cell_activation\"                          \n[7] \"t_cell_polarization\"                        \n\n$groups\n[1] \"2020_d\" \"2021_d\" \"2022_d\" \"2023_d\"\n\n\n\nDefine model options\n\nnum_factors: number of factors\nlikelihoods: likelihood per view (options are “gaussian”, “poisson”, “bernoulli”). By default they are learnt automatically. We advise users to use “gaussian” whenever possible!\nspikeslab_factors: use spike-slab sparsity prior in the factors? default is FALSE.\nspikeslab_weights: use spike-slab sparsity prior in the weights? default is TRUE.\nard_factors: use ARD prior in the factors? Default is TRUE if using multiple groups.\nard_weights: use ARD prior in the weights? Default is TRUE if using multiple views.\n\n\n\n\nCode\nmodel_opts &lt;- get_default_model_options(MOFAobject)\nhead(model_opts)\n\n\n$likelihoods\n                        pbmc_cell_frequency \n                                 \"gaussian\" \n                       pbmc_gene_expression \n                                 \"gaussian\" \n                            plasma_ab_titer \n                                 \"gaussian\" \nplasma_cytokine_concentration_by_legendplex \n                                 \"gaussian\" \n     plasma_cytokine_concentration_by_olink \n                                 \"gaussian\" \n                          t_cell_activation \n                                 \"gaussian\" \n                        t_cell_polarization \n                                 \"gaussian\" \n\n$num_factors\n[1] 15\n\n$spikeslab_factors\n[1] FALSE\n\n$spikeslab_weights\n[1] FALSE\n\n$ard_factors\n[1] TRUE\n\n$ard_weights\n[1] TRUE\n\n\n\nDefine train options\n\nmaxiter: number of iterations. Default is 1000.\nconvergence_mode: “fast”, “medium”, “slow”. For exploration, the fast mode is good enough.\nstartELBO: initial iteration to compute the ELBO (the objective function used to assess convergence).\nfreqELBO: frequency of computations of the ELBO.\ngpu_mode: use GPU mode? (needs cupy installed and a functional GPU).\nstochastic: use stochastic inference? (default is FALSE).\nverbose: verbose mode?\nseed: random seed\n\n\n\n\nCode\ntrain_opts &lt;- get_default_training_options(MOFAobject)\nhead(train_opts)\n\n\n$maxiter\n[1] 1000\n\n$convergence_mode\n[1] \"fast\"\n\n$drop_factor_threshold\n[1] -1\n\n$verbose\n[1] FALSE\n\n$startELBO\n[1] 1\n\n$freqELBO\n[1] 5\n\n\n\n\nCode\nMOFAobject &lt;- prepare_mofa(\n  object = MOFAobject,\n  data_options = data_opts,\n  model_options = model_opts,\n  training_options = train_opts\n)\n\n\nWarning in prepare_mofa(object = MOFAobject, data_options = data_opts,\nmodel_options = model_opts, : Some view(s) have less than 15 features, MOFA\nwill have little power to to learn meaningful factors for these view(s)....\n\n\nWarning in prepare_mofa(object = MOFAobject, data_options = data_opts,\nmodel_options = model_opts, : Some view(s) have a lot of features, it is\nrecommended to perform a more stringent feature selection before creating the\nMOFA object....\n\n\n\n# Multi-group mode requested.\n\n\n\nThis is an advanced option, if this is the first time that you are running MOFA, we suggest that you try do some exploration first without specifying groups. Two important remarks:\n\n\n\n - The aim of the multi-group framework is to identify the sources of variability *within* the groups. If your aim is to find a factor that 'separates' the groups, you DO NOT want to use the multi-group framework. Please see the FAQ on the MOFA2 webpage.\n\n\n\n - It is important to account for the group effect before selecting highly variable features (HVFs). We suggest that either you calculate HVFs per group and then take the union, or regress out the group effect before HVF selection\n\n\nChecking data options...\n\n\nChecking training options...\n\n\nChecking model options...\n\n\n\n\nCode\noutfile = file.path(getwd(), \"model.hdf5\")\nMOFAobject.trained &lt;- run_mofa(MOFAobject, outfile)\n\n\nWarning: Output file /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5 already exists, it will be replaced\n\n\nConnecting to the mofapy2 python package using reticulate (use_basilisk = FALSE)... \n    Please make sure to manually specify the right python binary when loading R with reticulate::use_python(..., force=TRUE) or the right conda environment with reticulate::use_condaenv(..., force=TRUE)\n    If you prefer to let us automatically install a conda environment with 'mofapy2' installed using the 'basilisk' package, please use the argument 'use_basilisk = TRUE'\n\n\nWarning in run_mofa(MOFAobject, outfile): The latest mofapy2 version is 0.7.0,\nyou are using 0.7.1. Please upgrade with 'pip install mofapy2'\n\n\n\n        #########################################################\n        ###           __  __  ____  ______                    ### \n        ###          |  \\/  |/ __ \\|  ____/\\    _             ### \n        ###          | \\  / | |  | | |__ /  \\ _| |_           ### \n        ###          | |\\/| | |  | |  __/ /\\ \\_   _|          ###\n        ###          | |  | | |__| | | / ____ \\|_|            ###\n        ###          |_|  |_|\\____/|_|/_/    \\_\\              ###\n        ###                                                   ### \n        ######################################################### \n       \n \n        \nuse_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...\n\nSuccessfully loaded view='pbmc_cell_frequency' group='2020_d' with N=40 samples and D=10 features...\nSuccessfully loaded view='pbmc_cell_frequency' group='2021_d' with N=36 samples and D=10 features...\nSuccessfully loaded view='pbmc_cell_frequency' group='2022_d' with N=21 samples and D=10 features...\nSuccessfully loaded view='pbmc_cell_frequency' group='2023_d' with N=54 samples and D=10 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2020_d' with N=40 samples and D=30899 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2021_d' with N=36 samples and D=30899 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2022_d' with N=21 samples and D=30899 features...\nSuccessfully loaded view='pbmc_gene_expression' group='2023_d' with N=54 samples and D=30899 features...\nSuccessfully loaded view='plasma_ab_titer' group='2020_d' with N=40 samples and D=35 features...\nSuccessfully loaded view='plasma_ab_titer' group='2021_d' with N=36 samples and D=35 features...\nSuccessfully loaded view='plasma_ab_titer' group='2022_d' with N=21 samples and D=35 features...\nSuccessfully loaded view='plasma_ab_titer' group='2023_d' with N=54 samples and D=35 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2020_d' with N=40 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2021_d' with N=36 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2022_d' with N=21 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_legendplex' group='2023_d' with N=54 samples and D=14 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2020_d' with N=40 samples and D=44 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2021_d' with N=36 samples and D=44 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2022_d' with N=21 samples and D=44 features...\nSuccessfully loaded view='plasma_cytokine_concentration_by_olink' group='2023_d' with N=54 samples and D=44 features...\nSuccessfully loaded view='t_cell_activation' group='2020_d' with N=40 samples and D=4 features...\nSuccessfully loaded view='t_cell_activation' group='2021_d' with N=36 samples and D=4 features...\nSuccessfully loaded view='t_cell_activation' group='2022_d' with N=21 samples and D=4 features...\nSuccessfully loaded view='t_cell_activation' group='2023_d' with N=54 samples and D=4 features...\nSuccessfully loaded view='t_cell_polarization' group='2020_d' with N=40 samples and D=6 features...\nSuccessfully loaded view='t_cell_polarization' group='2021_d' with N=36 samples and D=6 features...\nSuccessfully loaded view='t_cell_polarization' group='2022_d' with N=21 samples and D=6 features...\nSuccessfully loaded view='t_cell_polarization' group='2023_d' with N=54 samples and D=6 features...\n\n\nModel options:\n- Automatic Relevance Determination prior on the factors: True\n- Automatic Relevance Determination prior on the weights: True\n- Spike-and-slab prior on the factors: False\n- Spike-and-slab prior on the weights: False\nLikelihoods:\n- View 0 (pbmc_cell_frequency): gaussian\n- View 1 (pbmc_gene_expression): gaussian\n- View 2 (plasma_ab_titer): gaussian\n- View 3 (plasma_cytokine_concentration_by_legendplex): gaussian\n- View 4 (plasma_cytokine_concentration_by_olink): gaussian\n- View 5 (t_cell_activation): gaussian\n- View 6 (t_cell_polarization): gaussian\n\n\n\nWarning: some view(s) have less than 15 features, MOFA won't be able to learn meaningful factors for these view(s)...\n\n\n\n######################################\n## Training the model with seed 42 ##\n######################################\n\n\nELBO before training: -435646771.35 \n\nIteration 1: time=0.38, ELBO=-4488341.76, deltaELBO=431158429.599 (98.96972914%), Factors=15\nIteration 2: time=0.36, Factors=15\nIteration 3: time=0.37, Factors=15\nIteration 4: time=0.36, Factors=15\nIteration 5: time=0.36, Factors=15\nIteration 6: time=0.38, ELBO=802694.93, deltaELBO=5291036.684 (1.21452448%), Factors=15\nIteration 7: time=0.37, Factors=15\nIteration 8: time=0.37, Factors=15\nIteration 9: time=0.99, Factors=15\nIteration 10: time=0.77, Factors=15\nIteration 11: time=0.48, ELBO=924907.97, deltaELBO=122213.043 (0.02805324%), Factors=15\nIteration 12: time=0.37, Factors=15\nIteration 13: time=0.37, Factors=15\nIteration 14: time=0.65, Factors=15\nIteration 15: time=0.85, Factors=15\nIteration 16: time=0.38, ELBO=959772.60, deltaELBO=34864.630 (0.00800296%), Factors=15\nIteration 17: time=0.36, Factors=15\nIteration 18: time=0.36, Factors=15\nIteration 19: time=0.49, Factors=15\nIteration 20: time=0.37, Factors=15\nIteration 21: time=0.39, ELBO=973536.77, deltaELBO=13764.168 (0.00315948%), Factors=15\nIteration 22: time=0.41, Factors=15\nIteration 23: time=0.35, Factors=15\nIteration 24: time=0.36, Factors=15\nIteration 25: time=0.36, Factors=15\nIteration 26: time=0.37, ELBO=979140.01, deltaELBO=5603.244 (0.00128619%), Factors=15\nIteration 27: time=0.36, Factors=15\nIteration 28: time=0.35, Factors=15\nIteration 29: time=0.36, Factors=15\nIteration 30: time=0.46, Factors=15\nIteration 31: time=0.37, ELBO=982106.71, deltaELBO=2966.696 (0.00068099%), Factors=15\nIteration 32: time=0.36, Factors=15\nIteration 33: time=0.37, Factors=15\nIteration 34: time=0.36, Factors=15\nIteration 35: time=0.36, Factors=15\nIteration 36: time=0.37, ELBO=984277.62, deltaELBO=2170.911 (0.00049832%), Factors=15\nIteration 37: time=0.36, Factors=15\nIteration 38: time=0.39, Factors=15\nIteration 39: time=0.36, Factors=15\nIteration 40: time=0.36, Factors=15\nIteration 41: time=0.37, ELBO=986056.78, deltaELBO=1779.161 (0.00040840%), Factors=15\n\nConverged!\n\n\n\n#######################\n## Training finished ##\n#######################\n\n\nWarning: Output file /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5 already exists, it will be replaced\nSaving model in /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5...\n\n\n\n\nCode\nmodel &lt;- load_model(outfile)\n\n\n\n\nCode\nplot_variance_explained(model, x=\"view\", y=\"factor\") +\n  ggdark::dark_mode(verbose=FALSE) +\n  theme(axis.text.x = element_text(angle=90, hjust=1))\n\n\n\n\n\n\n\n\n\n\n\nCode\nplot_variance_explained(model, x=\"group\", y=\"factor\", plot_total = T)[[2]] +\n  ggdark::dark_mode(verbose=FALSE)\n\n\nWarning: Removed 5 rows containing missing values or values outside the scale range\n(`geom_bar()`)."
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html",
+    "href": "eda/filtered_data_overview.html",
+    "title": "Data Overview",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick)\n  library(ComplexHeatmap)\n  library(circlize)\n})\n\nsource(file.path(\"..\", \"src\", \"read_data.R\"))\nsource(file.path(\"..\", \"src\", \"colors.R\"))"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#how-many-subjects-do-we-have-per-dataset-per-partition",
+    "href": "eda/filtered_data_overview.html#how-many-subjects-do-we-have-per-dataset-per-partition",
+    "title": "Data Overview",
+    "section": "4.1 How many subjects do we have per dataset / per partition?",
+    "text": "4.1 How many subjects do we have per dataset / per partition?\n\n\nCode\nmeta_data %&gt;%\n  dplyr::select(subject_id, dataset, partition, infancy_vac) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::count(dataset, partition, infancy_vac) %&gt;%\n  ggplot(aes(x = n, y = dataset, fill = infancy_vac, color = partition)) +\n  geom_col(position = position_dodge(width = 0.9), width = 0.7, alpha=0.5) +  \n  geom_text(aes(label = n), \n            position = position_dodge(width = 0.9),  \n            hjust = -0.2, vjust = 0.5, size = 3, color = \"white\") +\n  scale_fill_manual(values = infancy_vac_colors) +\n  scale_color_manual(values = partition_colors) +\n  ggdark::dark_mode(verbose = FALSE)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#what-is-the-age-range",
+    "href": "eda/filtered_data_overview.html#what-is-the-age-range",
+    "title": "Data Overview",
+    "section": "4.2 What is the age range",
+    "text": "4.2 What is the age range\n\n\nCode\nmeta_data %&gt;%\n  ggplot() + \n  geom_histogram(aes(x=age_at_boost, fill=dataset, y=after_stat(density)), \n                 color=\"black\", position=\"identity\", bins=30) +\n  facet_wrap(~dataset) +\n  scale_fill_manual(values=dataset_colors) +\n  ggdark::dark_mode(verbose=FALSE)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-booster-administration",
+    "href": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-booster-administration",
+    "title": "Data Overview",
+    "section": "5.1 What is the difference between planned and actual booster administration",
+    "text": "5.1 What is the difference between planned and actual booster administration\n\n\nCode\nmeta_data %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=diff_relative_to_boost), binwidth=1) +\n  facet_wrap(~dataset) +\n  ggdark::dark_mode(verbose=FALSE)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-for-the-baseline",
+    "href": "eda/filtered_data_overview.html#what-is-the-difference-between-planned-and-actual-for-the-baseline",
+    "title": "Data Overview",
+    "section": "5.2 What is the difference between planned and actual for the baseline",
+    "text": "5.2 What is the difference between planned and actual for the baseline\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%\n  dplyr::mutate(`diff_&gt;_15` = abs(actual_day_relative_to_boost) &gt; 15) %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=actual_day_relative_to_boost, fill=`diff_&gt;_15`), binwidth=1) +\n  facet_wrap(~dataset) +\n  ggdark::dark_mode(verbose=FALSE)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#how-many-time-points-do-we-have-per-subject",
+    "href": "eda/filtered_data_overview.html#how-many-time-points-do-we-have-per-subject",
+    "title": "Data Overview",
+    "section": "5.3 How many time points do we have per subject?",
+    "text": "5.3 How many time points do we have per subject?\n\n\nCode\nmeta_data %&gt;%\n  dplyr::count(dataset, subject_id) %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=n, fill=dataset),color=\"black\", binwidth=1) +\n  facet_wrap(~dataset, ncol=2) +\n  ggdark::dark_mode(verbose=FALSE) +\n  scale_x_continuous(breaks=seq(0, 8, 1)) +\n  scale_fill_manual(values=dataset_colors)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#how-many-assays-do-we-have-for-the-baseline-measurement",
+    "href": "eda/filtered_data_overview.html#how-many-assays-do-we-have-for-the-baseline-measurement",
+    "title": "Data Overview",
+    "section": "5.4 How many assays do we have for the baseline measurement?",
+    "text": "5.4 How many assays do we have for the baseline measurement?\n\n\nCode\nassays_per_specimen &lt;- purrr::imap(exp_data, ~ .x %&gt;% \n              dplyr::select(specimen_id) %&gt;%\n              dplyr::distinct() %&gt;%\n              dplyr::mutate(assay=.y)) %&gt;%\n  dplyr::bind_rows() %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::select(specimen_id, assay, subject_id, planned_day_relative_to_boost, infancy_vac, dataset)\n\nassays_per_specimen %&gt;%\n  dplyr::count(subject_id, planned_day_relative_to_boost, dataset, specimen_id) %&gt;%\n  dplyr::filter(!is.na(subject_id)) %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%\n  ggplot() +\n  geom_histogram(aes(x=n, fill=dataset), color=\"black\", binwidth=1) +\n  facet_wrap(~dataset, ncol=2) +\n  ggdark::dark_mode(verbose=FALSE) +\n  scale_x_continuous(breaks=seq(0, 8, 1)) +\n  scale_fill_manual(values=dataset_colors)\n\n\n\n\n\n\n\n\n\n\n\nCode\nfor (day in c(0, 1, 3, 14)) {\n  \nannotation_data &lt;- meta_data %&gt;%\n  dplyr::select(specimen_id, planned_day_relative_to_boost, infancy_vac, \n                dataset, biological_sex) %&gt;%\n  dplyr::filter(specimen_id %in% assays_per_specimen$specimen_id) %&gt;%\n  dplyr::filter(planned_day_relative_to_boost == !!day) %&gt;% \n  dplyr::select(- planned_day_relative_to_boost) %&gt;%\n  dplyr::arrange(dataset, infancy_vac, biological_sex) %&gt;%\n  tibble::column_to_rownames(\"specimen_id\") %&gt;%\n  dplyr::select(dataset, infancy_vac, biological_sex)\n\nheatmap_data &lt;- assays_per_specimen %&gt;%\n  dplyr::select(specimen_id, assay) %&gt;%\n  dplyr::mutate(value = 1) %&gt;%\n  tidyr::pivot_wider(names_from=\"assay\", values_from=\"value\") %&gt;%\n  mutate(across(everything(), .fns = ~replace_na(.,0))) %&gt;%\n  tibble::column_to_rownames(\"specimen_id\") %&gt;%\n  as.matrix() %&gt;%\n  t()\n\ncolnames(heatmap_data) &lt;- as.character(colnames(heatmap_data))\nheatmap_data &lt;- heatmap_data[, rownames(annotation_data)]\n\n# Create the heatmap\nht &lt;- Heatmap(heatmap_data, \n              name = \"heatmap\", \n              row_title = \"\", \n              column_title = paste0(\"Specimens for Planned Day \", day),\n              col = colorRamp2(c(0, 1), c(\"white\", \"black\")),\n              cluster_rows = FALSE,\n              cluster_columns = FALSE,\n              show_row_names = TRUE, \n              show_column_names = FALSE,\n              width = unit(16, \"cm\"),\n              top_annotation = ComplexHeatmap::HeatmapAnnotation(df = annotation_data,\n                                    col = list(\n                                      \"dataset\" = dataset_colors,\n                                      \"infancy_vac\" = infancy_vac_colors,\n                                      \"biological_sex\" = sex_colors\n                                    ),\n                                    which=\"column\")\n)\n\ndraw(ht, \n     heatmap_legend_side = \"top\",\n     annotation_legend_side = \"top\",\n     show_heatmap_legend = FALSE # don't show colorbar\n     )\n}"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#how-many-subjects-can-we-use-to-construct-training-data",
+    "href": "eda/filtered_data_overview.html#how-many-subjects-can-we-use-to-construct-training-data",
+    "title": "Data Overview",
+    "section": "6.1 How many subjects can we use to construct training data?",
+    "text": "6.1 How many subjects can we use to construct training data?\n\n6.1.1 1) Antibody Level Tasks (anti-PT 14 days after booster)\n\nAll but 7 people were assayed approximately 14 days after the booster administration\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==14) %&gt;%\n  ggplot(aes(x=diff_relative_to_boost)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(task_1_possible = \n                  subject_id %in% (meta_data %&gt;%\n                                     dplyr::filter(planned_day_relative_to_boost==14) %&gt;%\n                                     dplyr::left_join(exp_data$plasma_ab_titer,\n                                                      by=\"specimen_id\") %&gt;%\n                                     dplyr::filter(isotype_antigen==\"IgG_PT\") %&gt;%\n                                     tidyr::drop_na() %&gt;%\n                                     dplyr::pull(subject_id))\n  ) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarise(task_1_possible_total = sum(task_1_possible), \n                   task_1_possible_fraction = mean(task_1_possible))\n\n\n\n  \n\n\n\n\n\n6.1.2 2) Cell Frequency Tasks (Monocytes 1 day after booster)\n\nBut there is one person where it does not really make sense\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==1) %&gt;%\n  ggplot(aes(x=diff_relative_to_boost)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(task_possible = \n                  subject_id %in% (meta_data %&gt;%\n                                     dplyr::filter(planned_day_relative_to_boost==1) %&gt;%\n                                     dplyr::left_join(exp_data$pbmc_cell_frequency, by=\"specimen_id\") %&gt;%\n                                     dplyr::filter(cell_type_name==\"Monocytes\") %&gt;%\n                                     tidyr::drop_na() %&gt;%\n                                     dplyr::pull(subject_id))\n  ) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarise(task_possible_total = sum(task_possible), \n                   task_possible_fraction = mean(task_possible))\n\n\n\n  \n\n\n\n\n\n6.1.3 3) Gene Expression Tasks (CCL3 expression 3 days after booster)\n\nThere are 7 people for which this task does nto make sense\n\n\n\nCode\nmeta_data %&gt;%\n  dplyr::filter(planned_day_relative_to_boost==3) %&gt;%\n  ggplot(aes(x=diff_relative_to_boost)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\nCode\nall_genes &lt;- unique(exp_data$pbmc_gene_expression$versioned_ensembl_gene_id)\nccl3_ensembl &lt;- \"ENSG00000277632\"\nccl3_ensembl_versioned &lt;- all_genes[str_starts(all_genes, ccl3_ensembl)]\n\nmeta_data %&gt;%\n  dplyr::select(subject_id, infancy_vac, dataset, biological_sex, ethnicity, race, year_of_birth) %&gt;%\n  dplyr::distinct() %&gt;%\n  dplyr::mutate(task_possible = \n                  subject_id %in% (meta_data %&gt;%\n                                     dplyr::filter(planned_day_relative_to_boost==3) %&gt;%\n                                     dplyr::left_join(exp_data$pbmc_gene_expression, by=\"specimen_id\") %&gt;%\n                                     dplyr::filter(versioned_ensembl_gene_id==ccl3_ensembl_versioned) %&gt;%\n                                     tidyr::drop_na() %&gt;%\n                                     dplyr::pull(subject_id))\n  ) %&gt;%\n  dplyr::group_by(dataset) %&gt;%\n  dplyr::summarise(task_possible_total = sum(task_possible), \n                   task_possible_fraction = mean(task_possible))"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#how-many-na-values-do-we-have-per-assay",
+    "href": "eda/filtered_data_overview.html#how-many-na-values-do-we-have-per-assay",
+    "title": "Data Overview",
+    "section": "7.1 How many NA values do we have per assay?",
+    "text": "7.1 How many NA values do we have per assay?\n\n\nCode\npurrr::imap(exp_data, function(df, modality) {\n  feature_col &lt;- experimental_data_settings[[modality]]$feature_col\n  value_col &lt;- experimental_data_settings[[modality]]$value_col\n  tibble(modality = modality, feature_col = feature_col, sum_na = sum(is.na(df[[value_col]])))\n}) %&gt;%\n  dplyr::bind_rows()"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#wide-format",
+    "href": "eda/filtered_data_overview.html#wide-format",
+    "title": "Data Overview",
+    "section": "7.2 Wide format",
+    "text": "7.2 Wide format\n\n\nCode\npurrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, impute=\"\"),\n                  function(mtx, modality) {\n                    rmeans &lt;- rowMeans(is.na(mtx))\n                    tibble(modality=modality, \n                           subject_id = names(rmeans), \n                           na_frac=rmeans)\n           }) %&gt;%\n  dplyr::group_by(modality) %&gt;%\n  dplyr::summarise(mean_na_frac = mean(na_frac))"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-pbmc-cell-type-frequencies",
+    "href": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-pbmc-cell-type-frequencies",
+    "title": "Data Overview",
+    "section": "7.3 What is the fraction of NA values in the PBMC Cell Type Frequencies",
+    "text": "7.3 What is the fraction of NA values in the PBMC Cell Type Frequencies\nWith the current selection of cell types, there is no specimen with NA values.\n\n7.3.1 Per Cell Type\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::mutate(is_na = is.na(percent_live_cell)) %&gt;%\n  dplyr::group_by(cell_type_name) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  dplyr::arrange(desc(frac_na)) %&gt;%\n  dplyr::mutate(cell_type_name = factor(cell_type_name, levels=rev(cell_type_name))) %&gt;%\n  ggplot() +\n  geom_col(aes(y=cell_type_name, x=frac_na)) +\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Cell Type\")\n\n\n\n\n\n\n\n\n\n\n\n7.3.2 Per Cell Specimen\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::mutate(is_na = is.na(percent_live_cell)) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  ggplot(aes(x = frac_na)) +\n  geom_histogram(bins = 20, color = \"white\", fill = \"blue\", alpha=0.1) +  # Add color for better visibility\n  stat_bin(aes(label = after_stat(count)), bins = 20, geom = \"text\", \n           vjust = -0.5, color = \"white\", size = 3) +  # Display bin counts at the top\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Specimen\")"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-olink-data",
+    "href": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-olink-data",
+    "title": "Data Overview",
+    "section": "7.4 What is the fraction of NA values in the Olink Data?",
+    "text": "7.4 What is the fraction of NA values in the Olink Data?\n\n7.4.1 Per Protein\nAfter excluding Q969D9, the largest fraction of NA values is about 5% which is acceptable I guess.\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(is_na = is.na(concentration)) %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  dplyr::arrange(desc(frac_na)) %&gt;%\n  dplyr::mutate(protein_id = factor(protein_id, levels=rev(protein_id))) %&gt;%\n  ggplot() +\n  geom_col(aes(y=protein_id, x=frac_na)) +\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Protein\")\n\n\n\n\n\n\n\n\n\n\n\n7.4.2 Per Specimen\nThere are 6 specimen with more than 50% NA values, I am not sure whether I should exlcude those?\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(is_na = is.na(concentration)) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  ggplot(aes(x = frac_na)) +\n  geom_histogram(bins = 20, color = \"white\", fill = \"blue\", alpha=0.1) +  # Add color for better visibility\n  stat_bin(aes(label = after_stat(count)), bins = 20, geom = \"text\", \n           vjust = -0.5, color = \"white\", size = 3) +  # Display bin counts at the top\n  ggdark::dark_mode(verbose=FALSE) +\n  labs(x=\"Fraction of NA Values per Specimen\")\n\n\n\n\n\n\n\n\n\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(is_na = is.na(concentration)) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%\n  dplyr::filter(frac_na &gt; 0.2) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::select(specimen_id, frac_na, subject_id, dataset, \n                actual_day_relative_to_boost, planned_day_relative_to_boost)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#how-does-the-quality-control-for-olink-look-like",
+    "href": "eda/filtered_data_overview.html#how-does-the-quality-control-for-olink-look-like",
+    "title": "Data Overview",
+    "section": "8.1 How does the quality control for Olink look like?",
+    "text": "8.1 How does the quality control for Olink look like?\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::count(quality_control)\n\n\n\n  \n\n\n\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::count(partition, dataset)\n\n\n\n  \n\n\n\nCode\nexp_data$plasma_cytokine_concentration_by_legendplex %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  dplyr::count(partition, dataset)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#how-often-is-the-cytokine-concentration-below-the-lod-in-olink",
+    "href": "eda/filtered_data_overview.html#how-often-is-the-cytokine-concentration-below-the-lod-in-olink",
+    "title": "Data Overview",
+    "section": "8.2 How often is the Cytokine Concentration below the LOD in Olink",
+    "text": "8.2 How often is the Cytokine Concentration below the LOD in Olink\n\n\nCode\n# check how often is it below the limit of detection?\nexp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%\n  dplyr::count(below_lod)\n\n\n\n  \n\n\n\n\n\nCode\nset.seed(1)\np1 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%\n  dplyr::mutate(qc_warning = quality_control == \"Warning\") %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),\n                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(cytokine_uniprot_mapping, by=\"protein_id\") %&gt;%\n  ggplot() +\n  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +\n  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, \n                      label = ifelse(mean_below_lod &gt; 0.2, protein_id, '')),\n                  max.overlaps = Inf, color=\"grey\") + # This ensures all labels are shown\n  ggdark::dark_mode()\n\np2 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%\n  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%\n  dplyr::mutate(qc_warning = quality_control == \"Warning\") %&gt;%\n  dplyr::group_by(protein_id) %&gt;%\n  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),\n                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(cytokine_uniprot_mapping, by=\"protein_id\") %&gt;%\n  ggplot() +\n  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +\n  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, \n                      label = ifelse(mean_below_lod &gt; 0.2, cytokine, '')),\n                  max.overlaps = Inf, color=\"grey\") + # This ensures all labels are shown\n  ggdark::dark_mode()\n\ncowplot::plot_grid(p1, p2, ncol=2)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#what-is-the-fraction-of-unspecific-antibody-measurements",
+    "href": "eda/filtered_data_overview.html#what-is-the-fraction-of-unspecific-antibody-measurements",
+    "title": "Data Overview",
+    "section": "8.3 What is the fraction of unspecific antibody measurements",
+    "text": "8.3 What is the fraction of unspecific antibody measurements\n\n8.3.1 Per Isotype-Antigen\n\n\nCode\nexp_data$plasma_ab_titer %&gt;%\n  dplyr::group_by(isotype_antigen) %&gt;%\n  dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %&gt;%\n  ggplot(aes(x=is_antigen_specific_fraction)) +\n  geom_histogram(bins=30, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), bins=30, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\n\n8.3.2 Per Specimen\nSo in some specimen we have non-specific antibody measurements? What does that mean?\n\n\nCode\nexp_data$plasma_ab_titer %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(is_antigen_specific_fraction = mean(is_antigen_specific)) %&gt;%\n  ggplot(aes(x=is_antigen_specific_fraction)) +\n  geom_histogram(binwidth=1, color = \"white\", fill = \"blue\", alpha=0.1) +\n  stat_bin(aes(label = after_stat(count)), binwidth=1, geom = \"text\", vjust = -0.5, color = \"white\", size = 3) +  \n  ggdark::dark_mode(verbose=FALSE)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#nk",
+    "href": "eda/filtered_data_overview.html#nk",
+    "title": "Data Overview",
+    "section": "9.1 NK",
+    "text": "9.1 NK\nThere are 3 types of NK cells:\n\nNK cells (CD3-CD19-CD56+): CD19-CD3-CD56+/++\nNK: CD19-CD3-CD56+\nCD56high NK cells: CD19-CD3-CD56++\n\nAnd I don’t know what to do with that information!"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#no-gating-info-for-2023",
+    "href": "eda/filtered_data_overview.html#no-gating-info-for-2023",
+    "title": "Data Overview",
+    "section": "9.2 No Gating Info for 2023",
+    "text": "9.2 No Gating Info for 2023\n\nI just assume it is the same as in 2022, but this might not be true since the data look so different"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#no-gating-info-for-basophils-and-cd19-in-2020",
+    "href": "eda/filtered_data_overview.html#no-gating-info-for-basophils-and-cd19-in-2020",
+    "title": "Data Overview",
+    "section": "9.3 No Gating Info for Basophils and CD19 in 2020",
+    "text": "9.3 No Gating Info for Basophils and CD19 in 2020\n\nI just assume it is the same as in 2021 and 2022"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#no-gating-info-for-non-pdcs-at-all",
+    "href": "eda/filtered_data_overview.html#no-gating-info-for-non-pdcs-at-all",
+    "title": "Data Overview",
+    "section": "9.4 No Gating Info for non-pDCs at all",
+    "text": "9.4 No Gating Info for non-pDCs at all\nNot sure how to fix this)\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(is.na(level)) %&gt;%\n  dplyr::select(dataset, cell_type_name) %&gt;%\n  dplyr::distinct()"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#should-the-proportions-sum-up-to-1-at-level-0",
+    "href": "eda/filtered_data_overview.html#should-the-proportions-sum-up-to-1-at-level-0",
+    "title": "Data Overview",
+    "section": "9.5 Should the Proportions sum up to 1 at level 0?",
+    "text": "9.5 Should the Proportions sum up to 1 at level 0?\n\nTrying to take the hierarchical information into account, it still does not make sense\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(level == 0) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)"
+  },
+  {
+    "objectID": "eda/filtered_data_overview.html#difference-in-2023-dataset",
+    "href": "eda/filtered_data_overview.html#difference-in-2023-dataset",
+    "title": "Data Overview",
+    "section": "9.6 Difference in 2023 Dataset",
+    "text": "9.6 Difference in 2023 Dataset\n\nIt seems like the 2023 data are very very different, which makes me hesitant to use it for any kind of predictions on the challenge data. E.g. just looking at level 0 which should make sense I get the following\n\n\n\nCode\n# first check for NAs for the levels\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(is.na(level))\n\n\n\n  \n\n\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(level == 0) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nEspecially, when completely ignoring the hierarchy in the gating information, I would expect to have more than 100% in percelt_live_cell_sum, but this is not true for the specimens from the 2023 dataset\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nOr what I use a list of predefined cell types of interest?"
   }
 ]

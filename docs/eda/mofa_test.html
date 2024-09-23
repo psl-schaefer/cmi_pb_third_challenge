@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Philipp Sven Lars Schäfer">
-<meta name="dcterms.date" content="2024-09-22">
+<meta name="dcterms.date" content="2024-09-23">
 
 <title>MOFA Test – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
@@ -190,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 22, 2024</p>
+      <p class="date">September 23, 2024</p>
     </div>
   </div>
   
@@ -619,10 +619,10 @@ Successfully loaded view='pbmc_cell_frequency' group='2020_d' with N=40 samples 
 Successfully loaded view='pbmc_cell_frequency' group='2021_d' with N=36 samples and D=10 features...
 Successfully loaded view='pbmc_cell_frequency' group='2022_d' with N=21 samples and D=10 features...
 Successfully loaded view='pbmc_cell_frequency' group='2023_d' with N=54 samples and D=10 features...
-Successfully loaded view='pbmc_gene_expression' group='2020_d' with N=40 samples and D=25280 features...
-Successfully loaded view='pbmc_gene_expression' group='2021_d' with N=36 samples and D=25280 features...
-Successfully loaded view='pbmc_gene_expression' group='2022_d' with N=21 samples and D=25280 features...
-Successfully loaded view='pbmc_gene_expression' group='2023_d' with N=54 samples and D=25280 features...
+Successfully loaded view='pbmc_gene_expression' group='2020_d' with N=40 samples and D=30899 features...
+Successfully loaded view='pbmc_gene_expression' group='2021_d' with N=36 samples and D=30899 features...
+Successfully loaded view='pbmc_gene_expression' group='2022_d' with N=21 samples and D=30899 features...
+Successfully loaded view='pbmc_gene_expression' group='2023_d' with N=54 samples and D=30899 features...
 Successfully loaded view='plasma_ab_titer' group='2020_d' with N=40 samples and D=35 features...
 Successfully loaded view='plasma_ab_titer' group='2021_d' with N=36 samples and D=35 features...
 Successfully loaded view='plasma_ab_titer' group='2022_d' with N=21 samples and D=35 features...
@@ -670,44 +670,49 @@ Warning: some view(s) have less than 15 features, MOFA won't be able to learn me
 ######################################
 
 
-ELBO before training: -426993606.81 
+ELBO before training: -435646771.35 
 
-Iteration 1: time=0.32, ELBO=-4524627.26, deltaELBO=422468979.551 (98.94035246%), Factors=15
-Iteration 2: time=0.32, Factors=15
-Iteration 3: time=0.32, Factors=15
-Iteration 4: time=0.32, Factors=15
-Iteration 5: time=0.31, Factors=15
-Iteration 6: time=0.33, ELBO=-1064740.40, deltaELBO=3459886.861 (0.81029009%), Factors=15
-Iteration 7: time=0.32, Factors=15
-Iteration 8: time=0.32, Factors=15
-Iteration 9: time=0.32, Factors=15
-Iteration 10: time=0.32, Factors=15
-Iteration 11: time=0.33, ELBO=-974285.59, deltaELBO=90454.814 (0.02118411%), Factors=15
-Iteration 12: time=0.32, Factors=15
-Iteration 13: time=0.31, Factors=15
-Iteration 14: time=0.32, Factors=15
-Iteration 15: time=0.31, Factors=15
-Iteration 16: time=0.33, ELBO=-958884.82, deltaELBO=15400.769 (0.00360679%), Factors=15
-Iteration 17: time=0.32, Factors=15
-Iteration 18: time=0.32, Factors=15
-Iteration 19: time=0.31, Factors=15
-Iteration 20: time=0.33, Factors=15
-Iteration 21: time=0.37, ELBO=-953107.93, deltaELBO=5776.891 (0.00135292%), Factors=15
-Iteration 22: time=0.32, Factors=15
-Iteration 23: time=0.32, Factors=15
-Iteration 24: time=0.31, Factors=15
-Iteration 25: time=0.32, Factors=15
-Iteration 26: time=0.33, ELBO=-950365.42, deltaELBO=2742.504 (0.00064228%), Factors=15
-Iteration 27: time=0.32, Factors=15
-Iteration 28: time=0.32, Factors=15
-Iteration 29: time=0.32, Factors=15
-Iteration 30: time=0.31, Factors=15
-Iteration 31: time=0.32, ELBO=-948372.16, deltaELBO=1993.264 (0.00046681%), Factors=15
-Iteration 32: time=0.31, Factors=15
-Iteration 33: time=0.31, Factors=15
-Iteration 34: time=0.31, Factors=15
-Iteration 35: time=0.32, Factors=15
-Iteration 36: time=0.31, ELBO=-946666.86, deltaELBO=1705.302 (0.00039937%), Factors=15
+Iteration 1: time=0.38, ELBO=-4488341.76, deltaELBO=431158429.599 (98.96972914%), Factors=15
+Iteration 2: time=0.36, Factors=15
+Iteration 3: time=0.37, Factors=15
+Iteration 4: time=0.36, Factors=15
+Iteration 5: time=0.36, Factors=15
+Iteration 6: time=0.38, ELBO=802694.93, deltaELBO=5291036.684 (1.21452448%), Factors=15
+Iteration 7: time=0.37, Factors=15
+Iteration 8: time=0.37, Factors=15
+Iteration 9: time=0.99, Factors=15
+Iteration 10: time=0.77, Factors=15
+Iteration 11: time=0.48, ELBO=924907.97, deltaELBO=122213.043 (0.02805324%), Factors=15
+Iteration 12: time=0.37, Factors=15
+Iteration 13: time=0.37, Factors=15
+Iteration 14: time=0.65, Factors=15
+Iteration 15: time=0.85, Factors=15
+Iteration 16: time=0.38, ELBO=959772.60, deltaELBO=34864.630 (0.00800296%), Factors=15
+Iteration 17: time=0.36, Factors=15
+Iteration 18: time=0.36, Factors=15
+Iteration 19: time=0.49, Factors=15
+Iteration 20: time=0.37, Factors=15
+Iteration 21: time=0.39, ELBO=973536.77, deltaELBO=13764.168 (0.00315948%), Factors=15
+Iteration 22: time=0.41, Factors=15
+Iteration 23: time=0.35, Factors=15
+Iteration 24: time=0.36, Factors=15
+Iteration 25: time=0.36, Factors=15
+Iteration 26: time=0.37, ELBO=979140.01, deltaELBO=5603.244 (0.00128619%), Factors=15
+Iteration 27: time=0.36, Factors=15
+Iteration 28: time=0.35, Factors=15
+Iteration 29: time=0.36, Factors=15
+Iteration 30: time=0.46, Factors=15
+Iteration 31: time=0.37, ELBO=982106.71, deltaELBO=2966.696 (0.00068099%), Factors=15
+Iteration 32: time=0.36, Factors=15
+Iteration 33: time=0.37, Factors=15
+Iteration 34: time=0.36, Factors=15
+Iteration 35: time=0.36, Factors=15
+Iteration 36: time=0.37, ELBO=984277.62, deltaELBO=2170.911 (0.00049832%), Factors=15
+Iteration 37: time=0.36, Factors=15
+Iteration 38: time=0.39, Factors=15
+Iteration 39: time=0.36, Factors=15
+Iteration 40: time=0.36, Factors=15
+Iteration 41: time=0.37, ELBO=986056.78, deltaELBO=1779.161 (0.00040840%), Factors=15
 
 Converged!
 
@@ -721,25 +726,19 @@ Converged!
 Warning: Output file /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5 already exists, it will be replaced
 Saving model in /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5...</code></pre>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in .quality_control(object, verbose = verbose): Factor(s) 1 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.</code></pre>
-</div>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">load_model</span>(outfile)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">load_model</span>(outfile)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in .quality_control(object, verbose = verbose): Factor(s) 1 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.</code></pre>
-</div>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_variance_explained</span>(model, <span class="at">x=</span><span class="st">"view"</span>, <span class="at">y=</span><span class="st">"factor"</span>) <span class="sc">+</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">hjust=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_variance_explained</span>(model, <span class="at">x=</span><span class="st">"view"</span>, <span class="at">y=</span><span class="st">"factor"</span>) <span class="sc">+</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">hjust=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -752,8 +751,8 @@ Saving model in /Users/pschafer/Projects/cmi_pb_third_challenge/eda/model.hdf5..
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_variance_explained</span>(model, <span class="at">x=</span><span class="st">"group"</span>, <span class="at">y=</span><span class="st">"factor"</span>, <span class="at">plot_total =</span> T)[[<span class="dv">2</span>]] <span class="sc">+</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_variance_explained</span>(model, <span class="at">x=</span><span class="st">"group"</span>, <span class="at">y=</span><span class="st">"factor"</span>, <span class="at">plot_total =</span> T)[[<span class="dv">2</span>]] <span class="sc">+</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
@@ -1245,209 +1244,209 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb49" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "MOFA Test"</span></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
-<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
-<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
-<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick)</span>
-<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(reticulate)</span>
-<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>  reticulate<span class="sc">::</span><span class="fu">use_condaenv</span>(<span class="st">"scanpy"</span>)</span>
-<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(MOFA2)</span>
-<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
-<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
-<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
-<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
-<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-40"><a href="#cb49-40" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
-<span id="cb49-41"><a href="#cb49-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-42"><a href="#cb49-42" aria-hidden="true" tabindex="-1"></a><span class="co">#exp_data &lt;- read_harmonized_experimental_data(input_dir)</span></span>
-<span id="cb49-43"><a href="#cb49-43" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
-<span id="cb49-44"><a href="#cb49-44" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(meta_data, exp_data)</span>
-<span id="cb49-45"><a href="#cb49-45" aria-hidden="true" tabindex="-1"></a>wide_exp_data <span class="ot">&lt;-</span> <span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>exp_data, <span class="at">impute=</span><span class="cn">NULL</span>)</span>
-<span id="cb49-46"><a href="#cb49-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-47"><a href="#cb49-47" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
-<span id="cb49-48"><a href="#cb49-48" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
-<span id="cb49-49"><a href="#cb49-49" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
-<span id="cb49-50"><a href="#cb49-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-51"><a href="#cb49-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-52"><a href="#cb49-52" aria-hidden="true" tabindex="-1"></a><span class="fu"># Checks</span></span>
-<span id="cb49-53"><a href="#cb49-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-56"><a href="#cb49-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-57"><a href="#cb49-57" aria-hidden="true" tabindex="-1"></a><span class="co"># only works due to filtering step above</span></span>
-<span id="cb49-58"><a href="#cb49-58" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(</span>
-<span id="cb49-59"><a href="#cb49-59" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map_lgl</span>(exp_data, <span class="sc">~</span> <span class="fu">all</span>(.x<span class="sc">$</span>specimen_id <span class="sc">%in%</span> meta_data<span class="sc">$</span>specimen_id)))</span>
-<span id="cb49-60"><a href="#cb49-60" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb49-61"><a href="#cb49-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-62"><a href="#cb49-62" aria-hidden="true" tabindex="-1"></a><span class="co"># no subject is recorded in more than one dataset</span></span>
-<span id="cb49-63"><a href="#cb49-63" aria-hidden="true" tabindex="-1"></a>(meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb49-64"><a href="#cb49-64" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(subject_id, dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb49-65"><a href="#cb49-65" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(subject_id) <span class="sc">%&gt;%</span></span>
-<span id="cb49-66"><a href="#cb49-66" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(n) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb49-67"><a href="#cb49-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb49-68"><a href="#cb49-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>()</span>
-<span id="cb49-69"><a href="#cb49-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-70"><a href="#cb49-70" aria-hidden="true" tabindex="-1"></a><span class="co"># we have the baseline specimen (planned_day_relative_to_boost = 0) for every subject</span></span>
-<span id="cb49-71"><a href="#cb49-71" aria-hidden="true" tabindex="-1"></a>(meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb49-72"><a href="#cb49-72" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, planned_day_relative_to_boost, dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb49-73"><a href="#cb49-73" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb49-74"><a href="#cb49-74" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_baseline =</span> (planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-75"><a href="#cb49-75" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(subject_id) <span class="sc">%&gt;%</span></span>
-<span id="cb49-76"><a href="#cb49-76" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">baseline_present =</span> <span class="fu">any</span>(is_baseline),</span>
-<span id="cb49-77"><a href="#cb49-77" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dataset =</span> <span class="fu">first</span>(dataset)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-78"><a href="#cb49-78" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb49-79"><a href="#cb49-79" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">baseline_present_frac =</span> <span class="fu">mean</span>(baseline_present)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-80"><a href="#cb49-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(baseline_present_frac) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb49-81"><a href="#cb49-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb49-82"><a href="#cb49-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>()</span>
-<span id="cb49-83"><a href="#cb49-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-84"><a href="#cb49-84" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(</span>
-<span id="cb49-85"><a href="#cb49-85" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map_lgl</span>(exp_data, <span class="cf">function</span>(df) {</span>
-<span id="cb49-86"><a href="#cb49-86" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="st">"unit"</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(df)) {</span>
-<span id="cb49-87"><a href="#cb49-87" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">length</span>(<span class="fu">unique</span>(df[[<span class="st">"unit"</span>]])) <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb49-88"><a href="#cb49-88" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb49-89"><a href="#cb49-89" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="cn">TRUE</span>)</span>
-<span id="cb49-90"><a href="#cb49-90" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb49-91"><a href="#cb49-91" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb49-92"><a href="#cb49-92" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb49-93"><a href="#cb49-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-94"><a href="#cb49-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-95"><a href="#cb49-95" aria-hidden="true" tabindex="-1"></a><span class="fu"># MOFA</span></span>
-<span id="cb49-96"><a href="#cb49-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-97"><a href="#cb49-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>https://biofam.github.io/MOFA2/index.html</span>
-<span id="cb49-98"><a href="#cb49-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-99"><a href="#cb49-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/getting_started_R.html</span>
-<span id="cb49-100"><a href="#cb49-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-101"><a href="#cb49-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/downstream_analysis.html</span>
-<span id="cb49-102"><a href="#cb49-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-103"><a href="#cb49-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=14, fig.height=10}</span></span>
-<span id="cb49-104"><a href="#cb49-104" aria-hidden="true" tabindex="-1"></a><span class="in"># filter genes and normalize the gene expression data</span></span>
-<span id="cb49-105"><a href="#cb49-105" aria-hidden="true" tabindex="-1"></a><span class="in">min_counts &lt;- 200</span></span>
-<span id="cb49-106"><a href="#cb49-106" aria-hidden="true" tabindex="-1"></a><span class="in">min_samples &lt;- 20</span></span>
-<span id="cb49-107"><a href="#cb49-107" aria-hidden="true" tabindex="-1"></a><span class="in">genes_to_keep &lt;- colnames(wide_exp_data$pbmc_gene_expression)[</span></span>
-<span id="cb49-108"><a href="#cb49-108" aria-hidden="true" tabindex="-1"></a><span class="in">  (colSums(wide_exp_data$pbmc_gene_expression) &gt;= min_counts) &amp;</span></span>
-<span id="cb49-109"><a href="#cb49-109" aria-hidden="true" tabindex="-1"></a><span class="in">    (colSums(wide_exp_data$pbmc_gene_expression &gt; 0) &gt;= min_samples)</span></span>
-<span id="cb49-110"><a href="#cb49-110" aria-hidden="true" tabindex="-1"></a><span class="in">]</span></span>
-<span id="cb49-111"><a href="#cb49-111" aria-hidden="true" tabindex="-1"></a><span class="in">target_sum &lt;- 1e6</span></span>
-<span id="cb49-112"><a href="#cb49-112" aria-hidden="true" tabindex="-1"></a><span class="in">pbmc_gene_expression_norm &lt;- </span></span>
-<span id="cb49-113"><a href="#cb49-113" aria-hidden="true" tabindex="-1"></a><span class="in">  wide_exp_data$pbmc_gene_expression / rowSums(wide_exp_data$pbmc_gene_expression) * target_sum</span></span>
-<span id="cb49-114"><a href="#cb49-114" aria-hidden="true" tabindex="-1"></a><span class="in">stopifnot(all(dplyr::near(rowSums(pbmc_gene_expression_norm), target_sum, tol=0.1)))</span></span>
-<span id="cb49-115"><a href="#cb49-115" aria-hidden="true" tabindex="-1"></a><span class="in">pbmc_gene_expression_norm &lt;- pbmc_gene_expression_norm[ , genes_to_keep]</span></span>
-<span id="cb49-116"><a href="#cb49-116" aria-hidden="true" tabindex="-1"></a><span class="in">pbmc_gene_expression_log &lt;- log1p(pbmc_gene_expression_norm)</span></span>
-<span id="cb49-117"><a href="#cb49-117" aria-hidden="true" tabindex="-1"></a><span class="in">wide_exp_data$pbmc_gene_expression &lt;- pbmc_gene_expression_log</span></span>
-<span id="cb49-118"><a href="#cb49-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-119"><a href="#cb49-119" aria-hidden="true" tabindex="-1"></a><span class="in">baseline_specimen &lt;- meta_data %&gt;%</span></span>
-<span id="cb49-120"><a href="#cb49-120" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%</span></span>
-<span id="cb49-121"><a href="#cb49-121" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::pull(specimen_id)</span></span>
-<span id="cb49-122"><a href="#cb49-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-123"><a href="#cb49-123" aria-hidden="true" tabindex="-1"></a><span class="in">assay_specimen &lt;- purrr::map(wide_exp_data, ~ rownames(.x)) %&gt;% </span></span>
-<span id="cb49-124"><a href="#cb49-124" aria-hidden="true" tabindex="-1"></a><span class="in">  unlist() %&gt;% </span></span>
-<span id="cb49-125"><a href="#cb49-125" aria-hidden="true" tabindex="-1"></a><span class="in">  unique()</span></span>
-<span id="cb49-126"><a href="#cb49-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-127"><a href="#cb49-127" aria-hidden="true" tabindex="-1"></a><span class="in">intersect_specimen &lt;- dplyr::intersect(baseline_specimen, assay_specimen)</span></span>
-<span id="cb49-128"><a href="#cb49-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-129"><a href="#cb49-129" aria-hidden="true" tabindex="-1"></a><span class="in">group_vec &lt;- (meta_data %&gt;% column_to_rownames(var="specimen_id"))[intersect_specimen, ]$dataset</span></span>
-<span id="cb49-130"><a href="#cb49-130" aria-hidden="true" tabindex="-1"></a><span class="in">group_vec &lt;- str_replace(group_vec, "_dataset", "_d")</span></span>
-<span id="cb49-131"><a href="#cb49-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-132"><a href="#cb49-132" aria-hidden="true" tabindex="-1"></a><span class="in">mofa_data &lt;- purrr::imap(wide_exp_data, function(mtx, modality) {</span></span>
-<span id="cb49-133"><a href="#cb49-133" aria-hidden="true" tabindex="-1"></a><span class="in">  # mtx &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
-<span id="cb49-134"><a href="#cb49-134" aria-hidden="true" tabindex="-1"></a><span class="in">  specimen_in_modality &lt;- intersect_specimen[intersect_specimen %in% rownames(mtx)]</span></span>
-<span id="cb49-135"><a href="#cb49-135" aria-hidden="true" tabindex="-1"></a><span class="in">  out_mtx &lt;- matrix(data=NA, nrow=ncol(mtx), ncol=length(intersect_specimen))</span></span>
-<span id="cb49-136"><a href="#cb49-136" aria-hidden="true" tabindex="-1"></a><span class="in">  rownames(out_mtx) &lt;- colnames(mtx)</span></span>
-<span id="cb49-137"><a href="#cb49-137" aria-hidden="true" tabindex="-1"></a><span class="in">  colnames(out_mtx) &lt;- intersect_specimen</span></span>
-<span id="cb49-138"><a href="#cb49-138" aria-hidden="true" tabindex="-1"></a><span class="in">  out_mtx[, specimen_in_modality] &lt;- t(mtx[specimen_in_modality, ])</span></span>
-<span id="cb49-139"><a href="#cb49-139" aria-hidden="true" tabindex="-1"></a><span class="in">  print(paste0(modality, " | Fraction of NAs: ", mean(is.na(out_mtx))))</span></span>
-<span id="cb49-140"><a href="#cb49-140" aria-hidden="true" tabindex="-1"></a><span class="in">  return(out_mtx)</span></span>
-<span id="cb49-141"><a href="#cb49-141" aria-hidden="true" tabindex="-1"></a><span class="in">})</span></span>
-<span id="cb49-142"><a href="#cb49-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-143"><a href="#cb49-143" aria-hidden="true" tabindex="-1"></a><span class="in">MOFAobject &lt;- MOFA2::create_mofa_from_matrix(mofa_data, groups=group_vec)</span></span>
-<span id="cb49-144"><a href="#cb49-144" aria-hidden="true" tabindex="-1"></a><span class="in">plot_data_overview(MOFAobject) + ggdark::dark_mode()</span></span>
-<span id="cb49-145"><a href="#cb49-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-146"><a href="#cb49-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-147"><a href="#cb49-147" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Define data options</span>
-<span id="cb49-148"><a href="#cb49-148" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`scale_groups`</span>: if groups have different ranges/variances, it is good practice to scale each group to unit variance. Default is FALSE</span>
-<span id="cb49-149"><a href="#cb49-149" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`scale_views`</span>: if views have different ranges/variances, it is good practice to scale each view to unit variance. Default is FALSE</span>
-<span id="cb49-150"><a href="#cb49-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-153"><a href="#cb49-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-154"><a href="#cb49-154" aria-hidden="true" tabindex="-1"></a>data_opts <span class="ot">&lt;-</span> <span class="fu">get_default_data_options</span>(MOFAobject)</span>
-<span id="cb49-155"><a href="#cb49-155" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_opts)</span>
-<span id="cb49-156"><a href="#cb49-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-157"><a href="#cb49-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-158"><a href="#cb49-158" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Define model options</span>
-<span id="cb49-159"><a href="#cb49-159" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`num_factors`</span>: number of factors</span>
-<span id="cb49-160"><a href="#cb49-160" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`likelihoods`</span>: likelihood per view (options are “gaussian”, “poisson”, “bernoulli”). By default they are learnt automatically. We advise users to use “gaussian” whenever possible!</span>
-<span id="cb49-161"><a href="#cb49-161" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`spikeslab_factors`</span>: use spike-slab sparsity prior in the factors? default is FALSE.</span>
-<span id="cb49-162"><a href="#cb49-162" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`spikeslab_weights`</span>: use spike-slab sparsity prior in the weights? default is TRUE.</span>
-<span id="cb49-163"><a href="#cb49-163" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`ard_factors`</span>: use ARD prior in the factors? Default is TRUE if using multiple groups.</span>
-<span id="cb49-164"><a href="#cb49-164" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`ard_weights`</span>: use ARD prior in the weights? Default is TRUE if using multiple views.</span>
-<span id="cb49-165"><a href="#cb49-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-168"><a href="#cb49-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-169"><a href="#cb49-169" aria-hidden="true" tabindex="-1"></a>model_opts <span class="ot">&lt;-</span> <span class="fu">get_default_model_options</span>(MOFAobject)</span>
-<span id="cb49-170"><a href="#cb49-170" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(model_opts)</span>
-<span id="cb49-171"><a href="#cb49-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-172"><a href="#cb49-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-173"><a href="#cb49-173" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Define train options</span>
-<span id="cb49-174"><a href="#cb49-174" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`maxiter`</span>: number of iterations. Default is 1000.</span>
-<span id="cb49-175"><a href="#cb49-175" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`convergence_mode`</span>: “fast”, “medium”, “slow”. For exploration, the fast mode is good enough.</span>
-<span id="cb49-176"><a href="#cb49-176" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`startELBO`</span>: initial iteration to compute the ELBO (the objective function used to assess convergence).</span>
-<span id="cb49-177"><a href="#cb49-177" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`freqELBO`</span>: frequency of computations of the ELBO.</span>
-<span id="cb49-178"><a href="#cb49-178" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`gpu_mode`</span>: use GPU mode? (needs cupy installed and a functional GPU).</span>
-<span id="cb49-179"><a href="#cb49-179" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`stochastic`</span>: use stochastic inference? (default is FALSE).</span>
-<span id="cb49-180"><a href="#cb49-180" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`verbose`</span>: verbose mode?</span>
-<span id="cb49-181"><a href="#cb49-181" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`seed`</span>: random seed</span>
-<span id="cb49-182"><a href="#cb49-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-185"><a href="#cb49-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-186"><a href="#cb49-186" aria-hidden="true" tabindex="-1"></a>train_opts <span class="ot">&lt;-</span> <span class="fu">get_default_training_options</span>(MOFAobject)</span>
-<span id="cb49-187"><a href="#cb49-187" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(train_opts)</span>
-<span id="cb49-188"><a href="#cb49-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-189"><a href="#cb49-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-192"><a href="#cb49-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-193"><a href="#cb49-193" aria-hidden="true" tabindex="-1"></a>MOFAobject <span class="ot">&lt;-</span> <span class="fu">prepare_mofa</span>(</span>
-<span id="cb49-194"><a href="#cb49-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> MOFAobject,</span>
-<span id="cb49-195"><a href="#cb49-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_options =</span> data_opts,</span>
-<span id="cb49-196"><a href="#cb49-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_options =</span> model_opts,</span>
-<span id="cb49-197"><a href="#cb49-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_options =</span> train_opts</span>
-<span id="cb49-198"><a href="#cb49-198" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb49-199"><a href="#cb49-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-200"><a href="#cb49-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-203"><a href="#cb49-203" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-204"><a href="#cb49-204" aria-hidden="true" tabindex="-1"></a>outfile <span class="ot">=</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"model.hdf5"</span>)</span>
-<span id="cb49-205"><a href="#cb49-205" aria-hidden="true" tabindex="-1"></a>MOFAobject.trained <span class="ot">&lt;-</span> <span class="fu">run_mofa</span>(MOFAobject, outfile)</span>
-<span id="cb49-206"><a href="#cb49-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-207"><a href="#cb49-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-210"><a href="#cb49-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb49-211"><a href="#cb49-211" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">load_model</span>(outfile)</span>
-<span id="cb49-212"><a href="#cb49-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-213"><a href="#cb49-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-214"><a href="#cb49-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=14, fig.height=8}</span></span>
-<span id="cb49-215"><a href="#cb49-215" aria-hidden="true" tabindex="-1"></a><span class="in">plot_variance_explained(model, x="view", y="factor") +</span></span>
-<span id="cb49-216"><a href="#cb49-216" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode(verbose=FALSE) +</span></span>
-<span id="cb49-217"><a href="#cb49-217" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(axis.text.x = element_text(angle=90, hjust=1))</span></span>
-<span id="cb49-218"><a href="#cb49-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb49-219"><a href="#cb49-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-220"><a href="#cb49-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=16, fig.height=6}</span></span>
-<span id="cb49-221"><a href="#cb49-221" aria-hidden="true" tabindex="-1"></a><span class="in">plot_variance_explained(model, x="group", y="factor", plot_total = T)[[2]] +</span></span>
-<span id="cb49-222"><a href="#cb49-222" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode(verbose=FALSE)</span></span>
-<span id="cb49-223"><a href="#cb49-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb47" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "MOFA Test"</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick)</span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(reticulate)</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>  reticulate<span class="sc">::</span><span class="fu">use_condaenv</span>(<span class="st">"scanpy"</span>)</span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(MOFA2)</span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
+<span id="cb47-35"><a href="#cb47-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-36"><a href="#cb47-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-39"><a href="#cb47-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-40"><a href="#cb47-40" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb47-41"><a href="#cb47-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-42"><a href="#cb47-42" aria-hidden="true" tabindex="-1"></a><span class="co">#exp_data &lt;- read_harmonized_experimental_data(input_dir)</span></span>
+<span id="cb47-43"><a href="#cb47-43" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb47-44"><a href="#cb47-44" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(meta_data, exp_data)</span>
+<span id="cb47-45"><a href="#cb47-45" aria-hidden="true" tabindex="-1"></a>wide_exp_data <span class="ot">&lt;-</span> <span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>exp_data, <span class="at">impute=</span><span class="cn">NULL</span>)</span>
+<span id="cb47-46"><a href="#cb47-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-47"><a href="#cb47-47" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb47-48"><a href="#cb47-48" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb47-49"><a href="#cb47-49" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
+<span id="cb47-50"><a href="#cb47-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-51"><a href="#cb47-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-52"><a href="#cb47-52" aria-hidden="true" tabindex="-1"></a><span class="fu"># Checks</span></span>
+<span id="cb47-53"><a href="#cb47-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-56"><a href="#cb47-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-57"><a href="#cb47-57" aria-hidden="true" tabindex="-1"></a><span class="co"># only works due to filtering step above</span></span>
+<span id="cb47-58"><a href="#cb47-58" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(</span>
+<span id="cb47-59"><a href="#cb47-59" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map_lgl</span>(exp_data, <span class="sc">~</span> <span class="fu">all</span>(.x<span class="sc">$</span>specimen_id <span class="sc">%in%</span> meta_data<span class="sc">$</span>specimen_id)))</span>
+<span id="cb47-60"><a href="#cb47-60" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb47-61"><a href="#cb47-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-62"><a href="#cb47-62" aria-hidden="true" tabindex="-1"></a><span class="co"># no subject is recorded in more than one dataset</span></span>
+<span id="cb47-63"><a href="#cb47-63" aria-hidden="true" tabindex="-1"></a>(meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb47-64"><a href="#cb47-64" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(subject_id, dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb47-65"><a href="#cb47-65" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(subject_id) <span class="sc">%&gt;%</span></span>
+<span id="cb47-66"><a href="#cb47-66" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(n) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-67"><a href="#cb47-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb47-68"><a href="#cb47-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>()</span>
+<span id="cb47-69"><a href="#cb47-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-70"><a href="#cb47-70" aria-hidden="true" tabindex="-1"></a><span class="co"># we have the baseline specimen (planned_day_relative_to_boost = 0) for every subject</span></span>
+<span id="cb47-71"><a href="#cb47-71" aria-hidden="true" tabindex="-1"></a>(meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb47-72"><a href="#cb47-72" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, planned_day_relative_to_boost, dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb47-73"><a href="#cb47-73" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb47-74"><a href="#cb47-74" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_baseline =</span> (planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb47-75"><a href="#cb47-75" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(subject_id) <span class="sc">%&gt;%</span></span>
+<span id="cb47-76"><a href="#cb47-76" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">baseline_present =</span> <span class="fu">any</span>(is_baseline),</span>
+<span id="cb47-77"><a href="#cb47-77" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dataset =</span> <span class="fu">first</span>(dataset)) <span class="sc">%&gt;%</span></span>
+<span id="cb47-78"><a href="#cb47-78" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb47-79"><a href="#cb47-79" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">baseline_present_frac =</span> <span class="fu">mean</span>(baseline_present)) <span class="sc">%&gt;%</span></span>
+<span id="cb47-80"><a href="#cb47-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(baseline_present_frac) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-81"><a href="#cb47-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb47-82"><a href="#cb47-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>()</span>
+<span id="cb47-83"><a href="#cb47-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-84"><a href="#cb47-84" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(</span>
+<span id="cb47-85"><a href="#cb47-85" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map_lgl</span>(exp_data, <span class="cf">function</span>(df) {</span>
+<span id="cb47-86"><a href="#cb47-86" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="st">"unit"</span> <span class="sc">%in%</span> <span class="fu">colnames</span>(df)) {</span>
+<span id="cb47-87"><a href="#cb47-87" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">length</span>(<span class="fu">unique</span>(df[[<span class="st">"unit"</span>]])) <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb47-88"><a href="#cb47-88" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb47-89"><a href="#cb47-89" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="cn">TRUE</span>)</span>
+<span id="cb47-90"><a href="#cb47-90" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb47-91"><a href="#cb47-91" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb47-92"><a href="#cb47-92" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb47-93"><a href="#cb47-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-94"><a href="#cb47-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-95"><a href="#cb47-95" aria-hidden="true" tabindex="-1"></a><span class="fu"># MOFA</span></span>
+<span id="cb47-96"><a href="#cb47-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-97"><a href="#cb47-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>https://biofam.github.io/MOFA2/index.html</span>
+<span id="cb47-98"><a href="#cb47-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-99"><a href="#cb47-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/getting_started_R.html</span>
+<span id="cb47-100"><a href="#cb47-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-101"><a href="#cb47-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/downstream_analysis.html</span>
+<span id="cb47-102"><a href="#cb47-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-103"><a href="#cb47-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=14, fig.height=10}</span></span>
+<span id="cb47-104"><a href="#cb47-104" aria-hidden="true" tabindex="-1"></a><span class="in"># filter genes and normalize the gene expression data</span></span>
+<span id="cb47-105"><a href="#cb47-105" aria-hidden="true" tabindex="-1"></a><span class="in">min_counts &lt;- 200</span></span>
+<span id="cb47-106"><a href="#cb47-106" aria-hidden="true" tabindex="-1"></a><span class="in">min_samples &lt;- 20</span></span>
+<span id="cb47-107"><a href="#cb47-107" aria-hidden="true" tabindex="-1"></a><span class="in">genes_to_keep &lt;- colnames(wide_exp_data$pbmc_gene_expression)[</span></span>
+<span id="cb47-108"><a href="#cb47-108" aria-hidden="true" tabindex="-1"></a><span class="in">  (colSums(wide_exp_data$pbmc_gene_expression) &gt;= min_counts) &amp;</span></span>
+<span id="cb47-109"><a href="#cb47-109" aria-hidden="true" tabindex="-1"></a><span class="in">    (colSums(wide_exp_data$pbmc_gene_expression &gt; 0) &gt;= min_samples)</span></span>
+<span id="cb47-110"><a href="#cb47-110" aria-hidden="true" tabindex="-1"></a><span class="in">]</span></span>
+<span id="cb47-111"><a href="#cb47-111" aria-hidden="true" tabindex="-1"></a><span class="in">target_sum &lt;- 1e6</span></span>
+<span id="cb47-112"><a href="#cb47-112" aria-hidden="true" tabindex="-1"></a><span class="in">pbmc_gene_expression_norm &lt;- </span></span>
+<span id="cb47-113"><a href="#cb47-113" aria-hidden="true" tabindex="-1"></a><span class="in">  wide_exp_data$pbmc_gene_expression / rowSums(wide_exp_data$pbmc_gene_expression) * target_sum</span></span>
+<span id="cb47-114"><a href="#cb47-114" aria-hidden="true" tabindex="-1"></a><span class="in">stopifnot(all(dplyr::near(rowSums(pbmc_gene_expression_norm), target_sum, tol=0.1)))</span></span>
+<span id="cb47-115"><a href="#cb47-115" aria-hidden="true" tabindex="-1"></a><span class="in">pbmc_gene_expression_norm &lt;- pbmc_gene_expression_norm[ , genes_to_keep]</span></span>
+<span id="cb47-116"><a href="#cb47-116" aria-hidden="true" tabindex="-1"></a><span class="in">pbmc_gene_expression_log &lt;- log1p(pbmc_gene_expression_norm)</span></span>
+<span id="cb47-117"><a href="#cb47-117" aria-hidden="true" tabindex="-1"></a><span class="in">wide_exp_data$pbmc_gene_expression &lt;- pbmc_gene_expression_log</span></span>
+<span id="cb47-118"><a href="#cb47-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-119"><a href="#cb47-119" aria-hidden="true" tabindex="-1"></a><span class="in">baseline_specimen &lt;- meta_data %&gt;%</span></span>
+<span id="cb47-120"><a href="#cb47-120" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::filter(planned_day_relative_to_boost==0) %&gt;%</span></span>
+<span id="cb47-121"><a href="#cb47-121" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::pull(specimen_id)</span></span>
+<span id="cb47-122"><a href="#cb47-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-123"><a href="#cb47-123" aria-hidden="true" tabindex="-1"></a><span class="in">assay_specimen &lt;- purrr::map(wide_exp_data, ~ rownames(.x)) %&gt;% </span></span>
+<span id="cb47-124"><a href="#cb47-124" aria-hidden="true" tabindex="-1"></a><span class="in">  unlist() %&gt;% </span></span>
+<span id="cb47-125"><a href="#cb47-125" aria-hidden="true" tabindex="-1"></a><span class="in">  unique()</span></span>
+<span id="cb47-126"><a href="#cb47-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-127"><a href="#cb47-127" aria-hidden="true" tabindex="-1"></a><span class="in">intersect_specimen &lt;- dplyr::intersect(baseline_specimen, assay_specimen)</span></span>
+<span id="cb47-128"><a href="#cb47-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-129"><a href="#cb47-129" aria-hidden="true" tabindex="-1"></a><span class="in">group_vec &lt;- (meta_data %&gt;% column_to_rownames(var="specimen_id"))[intersect_specimen, ]$dataset</span></span>
+<span id="cb47-130"><a href="#cb47-130" aria-hidden="true" tabindex="-1"></a><span class="in">group_vec &lt;- str_replace(group_vec, "_dataset", "_d")</span></span>
+<span id="cb47-131"><a href="#cb47-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-132"><a href="#cb47-132" aria-hidden="true" tabindex="-1"></a><span class="in">mofa_data &lt;- purrr::imap(wide_exp_data, function(mtx, modality) {</span></span>
+<span id="cb47-133"><a href="#cb47-133" aria-hidden="true" tabindex="-1"></a><span class="in">  # mtx &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
+<span id="cb47-134"><a href="#cb47-134" aria-hidden="true" tabindex="-1"></a><span class="in">  specimen_in_modality &lt;- intersect_specimen[intersect_specimen %in% rownames(mtx)]</span></span>
+<span id="cb47-135"><a href="#cb47-135" aria-hidden="true" tabindex="-1"></a><span class="in">  out_mtx &lt;- matrix(data=NA, nrow=ncol(mtx), ncol=length(intersect_specimen))</span></span>
+<span id="cb47-136"><a href="#cb47-136" aria-hidden="true" tabindex="-1"></a><span class="in">  rownames(out_mtx) &lt;- colnames(mtx)</span></span>
+<span id="cb47-137"><a href="#cb47-137" aria-hidden="true" tabindex="-1"></a><span class="in">  colnames(out_mtx) &lt;- intersect_specimen</span></span>
+<span id="cb47-138"><a href="#cb47-138" aria-hidden="true" tabindex="-1"></a><span class="in">  out_mtx[, specimen_in_modality] &lt;- t(mtx[specimen_in_modality, ])</span></span>
+<span id="cb47-139"><a href="#cb47-139" aria-hidden="true" tabindex="-1"></a><span class="in">  print(paste0(modality, " | Fraction of NAs: ", mean(is.na(out_mtx))))</span></span>
+<span id="cb47-140"><a href="#cb47-140" aria-hidden="true" tabindex="-1"></a><span class="in">  return(out_mtx)</span></span>
+<span id="cb47-141"><a href="#cb47-141" aria-hidden="true" tabindex="-1"></a><span class="in">})</span></span>
+<span id="cb47-142"><a href="#cb47-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-143"><a href="#cb47-143" aria-hidden="true" tabindex="-1"></a><span class="in">MOFAobject &lt;- MOFA2::create_mofa_from_matrix(mofa_data, groups=group_vec)</span></span>
+<span id="cb47-144"><a href="#cb47-144" aria-hidden="true" tabindex="-1"></a><span class="in">plot_data_overview(MOFAobject) + ggdark::dark_mode()</span></span>
+<span id="cb47-145"><a href="#cb47-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-146"><a href="#cb47-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-147"><a href="#cb47-147" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Define data options</span>
+<span id="cb47-148"><a href="#cb47-148" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`scale_groups`</span>: if groups have different ranges/variances, it is good practice to scale each group to unit variance. Default is FALSE</span>
+<span id="cb47-149"><a href="#cb47-149" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`scale_views`</span>: if views have different ranges/variances, it is good practice to scale each view to unit variance. Default is FALSE</span>
+<span id="cb47-150"><a href="#cb47-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-153"><a href="#cb47-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-154"><a href="#cb47-154" aria-hidden="true" tabindex="-1"></a>data_opts <span class="ot">&lt;-</span> <span class="fu">get_default_data_options</span>(MOFAobject)</span>
+<span id="cb47-155"><a href="#cb47-155" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_opts)</span>
+<span id="cb47-156"><a href="#cb47-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-157"><a href="#cb47-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-158"><a href="#cb47-158" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Define model options</span>
+<span id="cb47-159"><a href="#cb47-159" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`num_factors`</span>: number of factors</span>
+<span id="cb47-160"><a href="#cb47-160" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`likelihoods`</span>: likelihood per view (options are “gaussian”, “poisson”, “bernoulli”). By default they are learnt automatically. We advise users to use “gaussian” whenever possible!</span>
+<span id="cb47-161"><a href="#cb47-161" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`spikeslab_factors`</span>: use spike-slab sparsity prior in the factors? default is FALSE.</span>
+<span id="cb47-162"><a href="#cb47-162" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`spikeslab_weights`</span>: use spike-slab sparsity prior in the weights? default is TRUE.</span>
+<span id="cb47-163"><a href="#cb47-163" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`ard_factors`</span>: use ARD prior in the factors? Default is TRUE if using multiple groups.</span>
+<span id="cb47-164"><a href="#cb47-164" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`ard_weights`</span>: use ARD prior in the weights? Default is TRUE if using multiple views.</span>
+<span id="cb47-165"><a href="#cb47-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-168"><a href="#cb47-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-169"><a href="#cb47-169" aria-hidden="true" tabindex="-1"></a>model_opts <span class="ot">&lt;-</span> <span class="fu">get_default_model_options</span>(MOFAobject)</span>
+<span id="cb47-170"><a href="#cb47-170" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(model_opts)</span>
+<span id="cb47-171"><a href="#cb47-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-172"><a href="#cb47-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-173"><a href="#cb47-173" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Define train options</span>
+<span id="cb47-174"><a href="#cb47-174" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`maxiter`</span>: number of iterations. Default is 1000.</span>
+<span id="cb47-175"><a href="#cb47-175" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`convergence_mode`</span>: “fast”, “medium”, “slow”. For exploration, the fast mode is good enough.</span>
+<span id="cb47-176"><a href="#cb47-176" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`startELBO`</span>: initial iteration to compute the ELBO (the objective function used to assess convergence).</span>
+<span id="cb47-177"><a href="#cb47-177" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`freqELBO`</span>: frequency of computations of the ELBO.</span>
+<span id="cb47-178"><a href="#cb47-178" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`gpu_mode`</span>: use GPU mode? (needs cupy installed and a functional GPU).</span>
+<span id="cb47-179"><a href="#cb47-179" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`stochastic`</span>: use stochastic inference? (default is FALSE).</span>
+<span id="cb47-180"><a href="#cb47-180" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`verbose`</span>: verbose mode?</span>
+<span id="cb47-181"><a href="#cb47-181" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="in">`seed`</span>: random seed</span>
+<span id="cb47-182"><a href="#cb47-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-185"><a href="#cb47-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-186"><a href="#cb47-186" aria-hidden="true" tabindex="-1"></a>train_opts <span class="ot">&lt;-</span> <span class="fu">get_default_training_options</span>(MOFAobject)</span>
+<span id="cb47-187"><a href="#cb47-187" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(train_opts)</span>
+<span id="cb47-188"><a href="#cb47-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-189"><a href="#cb47-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-192"><a href="#cb47-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-193"><a href="#cb47-193" aria-hidden="true" tabindex="-1"></a>MOFAobject <span class="ot">&lt;-</span> <span class="fu">prepare_mofa</span>(</span>
+<span id="cb47-194"><a href="#cb47-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> MOFAobject,</span>
+<span id="cb47-195"><a href="#cb47-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_options =</span> data_opts,</span>
+<span id="cb47-196"><a href="#cb47-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">model_options =</span> model_opts,</span>
+<span id="cb47-197"><a href="#cb47-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_options =</span> train_opts</span>
+<span id="cb47-198"><a href="#cb47-198" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb47-199"><a href="#cb47-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-200"><a href="#cb47-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-203"><a href="#cb47-203" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-204"><a href="#cb47-204" aria-hidden="true" tabindex="-1"></a>outfile <span class="ot">=</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"model.hdf5"</span>)</span>
+<span id="cb47-205"><a href="#cb47-205" aria-hidden="true" tabindex="-1"></a>MOFAobject.trained <span class="ot">&lt;-</span> <span class="fu">run_mofa</span>(MOFAobject, outfile)</span>
+<span id="cb47-206"><a href="#cb47-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-207"><a href="#cb47-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-210"><a href="#cb47-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb47-211"><a href="#cb47-211" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">load_model</span>(outfile)</span>
+<span id="cb47-212"><a href="#cb47-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-213"><a href="#cb47-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-214"><a href="#cb47-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=14, fig.height=8}</span></span>
+<span id="cb47-215"><a href="#cb47-215" aria-hidden="true" tabindex="-1"></a><span class="in">plot_variance_explained(model, x="view", y="factor") +</span></span>
+<span id="cb47-216"><a href="#cb47-216" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode(verbose=FALSE) +</span></span>
+<span id="cb47-217"><a href="#cb47-217" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(axis.text.x = element_text(angle=90, hjust=1))</span></span>
+<span id="cb47-218"><a href="#cb47-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb47-219"><a href="#cb47-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-220"><a href="#cb47-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=16, fig.height=6}</span></span>
+<span id="cb47-221"><a href="#cb47-221" aria-hidden="true" tabindex="-1"></a><span class="in">plot_variance_explained(model, x="group", y="factor", plot_total = T)[[2]] +</span></span>
+<span id="cb47-222"><a href="#cb47-222" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode(verbose=FALSE)</span></span>
+<span id="cb47-223"><a href="#cb47-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

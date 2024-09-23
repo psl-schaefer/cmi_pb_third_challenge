@@ -106,7 +106,7 @@ experimental_data_settings <- list(
   ),
   pbmc_gene_expression = list(
     feature_col = "versioned_ensembl_gene_id",
-    value_col = "tpm"
+    value_col = "raw_count" # tpm
   ),
   plasma_ab_titer = list(
     feature_col = "isotype_antigen",
@@ -204,6 +204,7 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
     }
     return(filtered_data)
   })
+  cat("\n")
   
   # 2. Only keep features that are in the subset for the modality
   experimental_data <- purrr::imap(experimental_data, function(df, modality) {
@@ -221,6 +222,7 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
     }
     return(df)
   })
+  cat("\n")
   
   # 3. Filter Olink measurements where QC is warn
   initial_feature_count <- nrow(experimental_data$plasma_cytokine_concentration_by_olink)
@@ -233,8 +235,10 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
   if (verbose) {
     message("plasma_cytokine_concentration_by_olink | Removed ", initial_feature_count - final_feature_count, " features because qc warning")
   }
+  cat("\n")
   
   # 4. Only use data with the same unit (MFI for plasma_ab_titer; PG/ML for plasma_cytokine_concentration_by_olink)
+  # TODO: This might be a mistake!
   experimental_data <- purrr::imap(experimental_data, function(df, modality) {
     if ("unit" %in% names(experimental_data_settings[[modality]])) {
       initial_feature_count <- nrow(df)
@@ -247,11 +251,13 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
     }
     return(df)
   })
+  cat("\n")
   
   # 5. TODO
   
   return(experimental_data)
 }
+
 
 generate_wide_experimental_data <- function(experimental_data, impute="zero", verbose=TRUE) {
   wide_experimental_data <- purrr::imap(experimental_data, function(df, modality) {

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Philipp Sven Lars Schäfer">
-<meta name="dcterms.date" content="2024-09-22">
+<meta name="dcterms.date" content="2024-09-23">
 
 <title>Batch Effects – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
@@ -163,7 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#packages" id="toc-packages" class="nav-link active" data-scroll-target="#packages"><span class="header-section-number">1</span> Packages</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">2</span> Data</a></li>
-  <li><a href="#baseline-planned-day-0" id="toc-baseline-planned-day-0" class="nav-link" data-scroll-target="#baseline-planned-day-0"><span class="header-section-number">3</span> Baseline (planned day 0)</a>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">3</span> Conclusions</a>
   <ul class="collapse">
   <li><a href="#pbmc-fractions" id="toc-pbmc-fractions" class="nav-link" data-scroll-target="#pbmc-fractions"><span class="header-section-number">3.1</span> PBMC Fractions</a></li>
   <li><a href="#pbmc-gene-expression" id="toc-pbmc-gene-expression" class="nav-link" data-scroll-target="#pbmc-gene-expression"><span class="header-section-number">3.2</span> PBMC Gene Expression</a></li>
@@ -173,7 +173,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#t-cell-activation" id="toc-t-cell-activation" class="nav-link" data-scroll-target="#t-cell-activation"><span class="header-section-number">3.6</span> T Cell Activation</a></li>
   <li><a href="#t-cell-polarization" id="toc-t-cell-polarization" class="nav-link" data-scroll-target="#t-cell-polarization"><span class="header-section-number">3.7</span> T Cell Polarization</a></li>
   </ul></li>
-  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">4</span> Appendix</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">4</span> Results</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">5</span> Appendix</a></li>
   </ul>
 </nav>
     </div>
@@ -199,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 22, 2024</p>
+      <p class="date">September 23, 2024</p>
     </div>
   </div>
   
@@ -219,14 +220,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(vsn)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(lme4)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(DESeq2)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"model.R"</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"batch_effects.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -242,8 +248,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, <span class="at">experimental_data=</span>exp_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">experimental_data=</span>experimental_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>pbmc_cell_frequency | Removed 550 specimens because missing in meta data</code></pre>
@@ -278,600 +285,301 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>specimen_per_day <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(<span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="baseline-planned-day-0" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Baseline (planned day 0)</h1>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>baseline_specimen <span class="ot">&lt;-</span> meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(specimen_id)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  exp_data, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> baseline_specimen)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_wide_experimental_data</span>(., <span class="at">impute=</span><span class="st">"zero"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>plasma_cytokine_concentration_by_olink | NA Fraction: 0.00391849529780564 | Imputed with zeros</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>t_cell_activation | NA Fraction: 0.0589622641509434 | Imputed with zeros</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>t_cell_polarization | NA Fraction: 0.0106382978723404 | Imputed with zeros</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># filter genes and normalize the gene expression data</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>min_counts <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>min_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>genes_to_keep <span class="ot">&lt;-</span> <span class="fu">colnames</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression)[</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">&gt;=</span> min_counts) <span class="sc">&amp;</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> min_samples)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>target_sum <span class="ot">&lt;-</span> <span class="fl">1e6</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> </span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">/</span> <span class="fu">rowSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">*</span> target_sum</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(dplyr<span class="sc">::</span><span class="fu">near</span>(<span class="fu">rowSums</span>(pbmc_gene_expression_norm), target_sum, <span class="at">tol=</span><span class="fl">0.1</span>)))</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> pbmc_gene_expression_norm[ , genes_to_keep]</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_log <span class="ot">&lt;-</span> <span class="fu">log1p</span>(pbmc_gene_expression_norm)</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="ot">&lt;-</span> pbmc_gene_expression_log</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map</span>(baseline_wide_exp_data, <span class="sc">~</span> <span class="fu">dim</span>(.x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>$pbmc_cell_frequency
-[1] 122  10
-
-$pbmc_gene_expression
-[1]   146 17569
-
-$plasma_ab_titer
-[1] 108  35
-
-$plasma_cytokine_concentration_by_legendplex
-[1] 104  14
-
-$plasma_cytokine_concentration_by_olink
-[1] 87 44
-
-$t_cell_activation
-[1] 106   4
-
-$t_cell_polarization
-[1] 94  6</code></pre>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>generate_pca_plots <span class="ot">&lt;-</span> <span class="cf">function</span>(wide_exp_modality, meta_data) {</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># wide_exp_modality &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  pca_out <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(wide_exp_modality, <span class="at">center=</span><span class="cn">TRUE</span>, <span class="at">retx=</span><span class="cn">TRUE</span>, <span class="at">scale.=</span><span class="cn">TRUE</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>rotation) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(wide_exp_modality)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>x) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(wide_exp_modality)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  wide_exp_modality_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(wide_exp_modality) <span class="sc">%&gt;%</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id))</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  dataset_fill <span class="ot">&lt;-</span> wide_exp_modality_df <span class="sc">%&gt;%</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(dataset)</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  plot_df <span class="ot">&lt;-</span> pca_out<span class="sc">$</span>x <span class="sc">%&gt;%</span></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(wide_exp_modality_df, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>)</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  var_contrib <span class="ot">&lt;-</span> <span class="fu">get_pca_var</span>(pca_out)<span class="sc">$</span>contrib</span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>  top_variables <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(var_contrib) <span class="sc">%&gt;%</span></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>dataset),</span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>actual_day_relative_to_boost),</span>
-<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, top_variables))) <span class="sc">%&gt;%</span></span>
-<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(top_variables), </span>
-<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>                        <span class="at">values_to =</span> <span class="st">"values"</span>,</span>
-<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>                        <span class="at">names_to =</span> <span class="st">"features"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>values), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>features) <span class="sc">+</span></span>
-<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a>  p4 <span class="ot">&lt;-</span> <span class="fu">fviz_pca_biplot</span>(pca_out, </span>
-<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a>                  <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
-<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointshape =</span> <span class="dv">21</span>,</span>
-<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointsize =</span> <span class="fl">2.5</span>,</span>
-<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill.ind =</span> dataset_fill,</span>
-<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col.ind =</span> <span class="st">"black"</span>,</span>
-<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>                  <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>                  <span class="at">select.var =</span> <span class="fu">list</span>(<span class="at">name =</span> top_variables)</span>
-<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
-<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
-<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">p1=</span>p1, <span class="at">p2=</span>p2, <span class="at">p3=</span>p3, <span class="at">p4=</span>p4)</span>
-<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
+<section id="conclusions" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Conclusions</h1>
 <section id="pbmc-fractions" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="pbmc-fractions"><span class="header-section-number">3.1</span> PBMC Fractions</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_cell_frequency, </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<ul>
+<li>For the baseline specimen (day 0), we see a very strong batch effect, because the 2023 dataset is very different</li>
+</ul>
 </section>
 <section id="pbmc-gene-expression" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="pbmc-gene-expression"><span class="header-section-number">3.2</span> PBMC Gene Expression</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression, </span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<ul>
+<li>Very strong cohort-specific effects for baseline specimen and post-booster specimen</li>
+</ul>
 </section>
 <section id="plasma-antibody-levels" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="plasma-antibody-levels"><span class="header-section-number">3.3</span> Plasma Antibody Levels</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_ab_titer, </span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
 </section>
 <section id="plasma-cytokine-concentration-by-legendplex" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="plasma-cytokine-concentration-by-legendplex"><span class="header-section-number">3.4</span> Plasma Cytokine Concentration by Legendplex</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex, </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
 </section>
 <section id="plasma-cytokine-concentration-by-olink" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="plasma-cytokine-concentration-by-olink"><span class="header-section-number">3.5</span> Plasma Cytokine Concentration by Olink</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink, </span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
 </section>
 <section id="t-cell-activation" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="t-cell-activation"><span class="header-section-number">3.6</span> T Cell Activation</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_activation, </span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<ul>
+<li>No cohort-specific effect</li>
+</ul>
 </section>
 <section id="t-cell-polarization" class="level2" data-number="3.7">
 <h2 data-number="3.7" class="anchored" data-anchor-id="t-cell-polarization"><span class="header-section-number">3.7</span> T Cell Polarization</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_polarization, </span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-crop="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="batch_effects_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
 </section>
 </section>
-<section id="appendix" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Appendix</h1>
+<section id="results" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Results</h1>
+<div class="cell" data-crop="true">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (day <span class="cf">in</span> <span class="fu">names</span>(specimen_per_day)) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># day &lt;- names(specimen_per_day)[1]</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"## "</span>, day))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  specimen_df <span class="ot">&lt;-</span> specimen_per_day[[day]]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (assay <span class="cf">in</span> <span class="fu">names</span>(experimental_data)) {</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># assay &lt;- names(experimental_data)[2]</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"### "</span>, assay))</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    feature_col <span class="ot">&lt;-</span> experimental_data_settings[[assay]]<span class="sc">$</span>feature_col</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    value_col <span class="ot">&lt;-</span> experimental_data_settings[[assay]]<span class="sc">$</span>value_col</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    assay_df_long <span class="ot">&lt;-</span> experimental_data[[assay]]</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">#str(assay_df_long)</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    specimen_df_filtered <span class="ot">&lt;-</span> specimen_df <span class="sc">%&gt;%</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> <span class="fu">unique</span>(assay_df_long<span class="sc">$</span>specimen_id))</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(specimen_df_filtered) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"No specimen for this combination of assay and day available"</span>))</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>      assay_mtx_wide <span class="ot">&lt;-</span> assay_df_long <span class="sc">%&gt;%</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"specimen_id"</span>, feature_col, value_col))) <span class="sc">%&gt;%</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>        tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(feature_col), </span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>                           <span class="at">values_from=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(value_col)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>        tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>        .[<span class="fu">as.character</span>(specimen_df_filtered<span class="sc">$</span>specimen_id), ]</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>      impute_mode <span class="ot">&lt;-</span> <span class="st">"knn"</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stopifnot</span>(impute_mode <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"zero"</span>, <span class="st">"median_feature"</span>, <span class="st">"knn"</span>))</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide))) {</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Non-zero fraction of NAs: "</span>, </span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">round</span>(<span class="fu">mean</span>(<span class="fu">is.na</span>(assay_mtx_wide)), <span class="dv">4</span>)))</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data: matrix with genes in the rows, samples in the columns</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"zero"</span>) {</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide[<span class="fu">is.na</span>(assay_mtx_wide)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"knn"</span>) {</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide <span class="ot">&lt;-</span> <span class="fu">t</span>(impute<span class="sc">::</span><span class="fu">impute.knn</span>(<span class="at">data=</span><span class="fu">t</span>(assay_mtx_wide))<span class="sc">$</span>data)</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"median_feature"</span>) {</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>          col_medians <span class="ot">&lt;-</span> matrixStats<span class="sc">::</span><span class="fu">colMedians</span>(assay_mtx_wide, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>          <span class="cf">for</span> (colname <span class="cf">in</span> <span class="fu">colnames</span>(assay_mtx_wide)) {</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>            col_vec <span class="ot">&lt;-</span> assay_mtx_wide[, colname]</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>            col_vec[<span class="fu">is.na</span>(col_vec)] <span class="ot">&lt;-</span> col_medians[colname]</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>            assay_mtx_wide[, colname] <span class="ot">&lt;-</span> col_vec</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="sc">!</span><span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide)))</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (assay <span class="sc">==</span> <span class="st">"pbmc_gene_expression"</span>) {</span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>        <span class="co"># normalization using vst from DEseq2</span></span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>        <span class="co">#str(assay_mtx_wide)</span></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create DESeq dataset object</span></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>        min_counts <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>        min_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a>        genes_to_keep <span class="ot">&lt;-</span> <span class="fu">colnames</span>(assay_mtx_wide)[</span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a>          (<span class="fu">colSums</span>(assay_mtx_wide) <span class="sc">&gt;=</span> min_counts) <span class="sc">&amp;</span></span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a>            (<span class="fu">colSums</span>(assay_mtx_wide <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> min_samples)</span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>        assay_mtx_wide <span class="ot">&lt;-</span> assay_mtx_wide[ , genes_to_keep]</span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a>        <span class="co">#str(assay_mtx_wide)</span></span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a>        <span class="co"># check that all column (gene) names are unique</span></span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">length</span>(<span class="fu">colnames</span>(assay_mtx_wide)) <span class="sc">==</span> <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">colnames</span>(assay_mtx_wide))))</span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a>        ensemble_to_gene <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">versioned_ensembl_gene_id =</span> <span class="fu">colnames</span>(assay_mtx_wide)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a>          dplyr<span class="sc">::</span><span class="fu">left_join</span>(gene_meta, <span class="at">by=</span><span class="st">"versioned_ensembl_gene_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a>          dplyr<span class="sc">::</span><span class="fu">group_by</span>(gene_symbol) <span class="sc">%&gt;%</span></span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a>          dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb15-79"><a href="#cb15-79" aria-hidden="true" tabindex="-1"></a>          dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(n), gene_symbol) <span class="sc">%&gt;%</span></span>
+<span id="cb15-80"><a href="#cb15-80" aria-hidden="true" tabindex="-1"></a>          dplyr<span class="sc">::</span><span class="fu">filter</span>(n<span class="sc">==</span><span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a>          dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a>        assay_mtx_wide <span class="ot">&lt;-</span> assay_mtx_wide[ , ensemble_to_gene<span class="sc">$</span>versioned_ensembl_gene_id]</span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a>        <span class="fu">colnames</span>(assay_mtx_wide) <span class="ot">&lt;-</span> ensemble_to_gene<span class="sc">$</span>gene_symbol</span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">length</span>(<span class="fu">colnames</span>(assay_mtx_wide)) <span class="sc">==</span> <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">colnames</span>(assay_mtx_wide))))</span>
+<span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a>        assay_mtx_wide <span class="ot">&lt;-</span> </span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a>          DESeq2<span class="sc">::</span><span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> <span class="fu">t</span>(assay_mtx_wide),</span>
+<span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">colData =</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">specimen_id=</span><span class="fu">rownames</span>(assay_mtx_wide)),</span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">design =</span> <span class="sc">~</span> <span class="dv">1</span>)</span>
+<span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a>        <span class="co"># DESeq2 normalization with variance stabilizing transformation (vst)</span></span>
+<span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a>        assay_mtx_wide <span class="ot">&lt;-</span> DESeq2<span class="sc">::</span><span class="fu">estimateSizeFactors</span>(assay_mtx_wide, <span class="at">quiet=</span><span class="cn">TRUE</span>) <span class="do">## estimate size factor</span></span>
+<span id="cb15-95"><a href="#cb15-95" aria-hidden="true" tabindex="-1"></a>        assay_mtx_wide <span class="ot">&lt;-</span> DESeq2<span class="sc">::</span><span class="fu">estimateDispersions</span>(assay_mtx_wide, <span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-96"><a href="#cb15-96" aria-hidden="true" tabindex="-1"></a>        assay_mtx_wide <span class="ot">&lt;-</span> DESeq2<span class="sc">::</span><span class="fu">varianceStabilizingTransformation</span>(assay_mtx_wide, <span class="at">blind=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-97"><a href="#cb15-97" aria-hidden="true" tabindex="-1"></a>        assay_mtx_wide <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">assay</span>(assay_mtx_wide))</span>
+<span id="cb15-98"><a href="#cb15-98" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb15-99"><a href="#cb15-99" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a>      <span class="co">#str(assay_mtx_wide)</span></span>
+<span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a>      <span class="fu">suppressMessages</span>({</span>
+<span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a>        <span class="fu">suppressWarnings</span>({</span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a>          p1 <span class="ot">&lt;-</span> <span class="fu">pvca_analysis</span>(<span class="at">assay_mtx_wide=</span>assay_mtx_wide,</span>
+<span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a>                        <span class="at">meta_data=</span>meta_data)<span class="sc">$</span>p1</span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(p1)</span>
+<span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a>      plist <span class="ot">&lt;-</span> <span class="fu">generate_pca_plots</span>(<span class="at">assay_mtx_wide=</span>assay_mtx_wide,</span>
+<span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb15-111"><a href="#cb15-111" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p1)</span>
+<span id="cb15-112"><a href="#cb15-112" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p2)</span>
+<span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p3)</span>
+<span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-115"><a href="#cb15-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>))</span>
+<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<section id="day_0" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="day_0"><span class="header-section-number">4.1</span> day_0</h2>
+<section id="pbmc_cell_frequency" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="pbmc_cell_frequency"><span class="header-section-number">4.1.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="pbmc_gene_expression"><span class="header-section-number">4.1.2</span> pbmc_gene_expression</h3>
+<pre><code>converting counts to integer mode</code></pre>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-5.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-6.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-7.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-8.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="plasma_ab_titer"><span class="header-section-number">4.1.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-9.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-10.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-11.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-12.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex"><span class="header-section-number">4.1.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-13.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-14.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-15.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-16.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink" class="level3" data-number="4.1.5">
+<h3 data-number="4.1.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink"><span class="header-section-number">4.1.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.0039<img src="batch_effects_files/figure-html/unnamed-chunk-4-17.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-18.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-19.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-20.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation" class="level3" data-number="4.1.6">
+<h3 data-number="4.1.6" class="anchored" data-anchor-id="t_cell_activation"><span class="header-section-number">4.1.6</span> t_cell_activation</h3>
+<p>Non-zero fraction of NAs: 0.059<img src="batch_effects_files/figure-html/unnamed-chunk-4-21.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-22.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-23.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-24.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_polarization" class="level3" data-number="4.1.7">
+<h3 data-number="4.1.7" class="anchored" data-anchor-id="t_cell_polarization"><span class="header-section-number">4.1.7</span> t_cell_polarization</h3>
+<p>Non-zero fraction of NAs: 0.0106<img src="batch_effects_files/figure-html/unnamed-chunk-4-25.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-26.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-27.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-28.png" class="img-fluid" width="672"></p>
+</section>
+</section>
+<section id="day_1" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="day_1"><span class="header-section-number">4.2</span> day_1</h2>
+<section id="pbmc_cell_frequency-1" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="pbmc_cell_frequency-1"><span class="header-section-number">4.2.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-29.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-30.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-31.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-32.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression-1" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="pbmc_gene_expression-1"><span class="header-section-number">4.2.2</span> pbmc_gene_expression</h3>
+<pre><code>converting counts to integer mode</code></pre>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-33.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-34.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-35.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-36.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer-1" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="plasma_ab_titer-1"><span class="header-section-number">4.2.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-37.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-38.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-39.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-40.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex-1" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex-1"><span class="header-section-number">4.2.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-41.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-42.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-43.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-44.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink-1" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink-1"><span class="header-section-number">4.2.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.014<img src="batch_effects_files/figure-html/unnamed-chunk-4-45.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-46.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-47.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-48.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation-1" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="t_cell_activation-1"><span class="header-section-number">4.2.6</span> t_cell_activation</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+<section id="t_cell_polarization-1" class="level3" data-number="4.2.7">
+<h3 data-number="4.2.7" class="anchored" data-anchor-id="t_cell_polarization-1"><span class="header-section-number">4.2.7</span> t_cell_polarization</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+</section>
+<section id="day_3" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="day_3"><span class="header-section-number">4.3</span> day_3</h2>
+<section id="pbmc_cell_frequency-2" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="pbmc_cell_frequency-2"><span class="header-section-number">4.3.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-49.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-50.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-51.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-52.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression-2" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="pbmc_gene_expression-2"><span class="header-section-number">4.3.2</span> pbmc_gene_expression</h3>
+<pre><code>converting counts to integer mode</code></pre>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-53.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-54.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-55.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-56.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer-2" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="plasma_ab_titer-2"><span class="header-section-number">4.3.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-57.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-58.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-59.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-60.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex-2" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex-2"><span class="header-section-number">4.3.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-61.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-62.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-63.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-64.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink-2" class="level3" data-number="4.3.5">
+<h3 data-number="4.3.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink-2"><span class="header-section-number">4.3.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.0199<img src="batch_effects_files/figure-html/unnamed-chunk-4-65.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-66.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-67.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-68.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation-2" class="level3" data-number="4.3.6">
+<h3 data-number="4.3.6" class="anchored" data-anchor-id="t_cell_activation-2"><span class="header-section-number">4.3.6</span> t_cell_activation</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+<section id="t_cell_polarization-2" class="level3" data-number="4.3.7">
+<h3 data-number="4.3.7" class="anchored" data-anchor-id="t_cell_polarization-2"><span class="header-section-number">4.3.7</span> t_cell_polarization</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+</section>
+<section id="day_14" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="day_14"><span class="header-section-number">4.4</span> day_14</h2>
+<section id="pbmc_cell_frequency-3" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="pbmc_cell_frequency-3"><span class="header-section-number">4.4.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-69.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-70.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-71.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-72.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression-3" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="pbmc_gene_expression-3"><span class="header-section-number">4.4.2</span> pbmc_gene_expression</h3>
+<pre><code>converting counts to integer mode</code></pre>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-73.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-74.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-75.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-76.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer-3" class="level3" data-number="4.4.3">
+<h3 data-number="4.4.3" class="anchored" data-anchor-id="plasma_ab_titer-3"><span class="header-section-number">4.4.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-77.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-78.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-79.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-80.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex-3" class="level3" data-number="4.4.4">
+<h3 data-number="4.4.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex-3"><span class="header-section-number">4.4.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_files/figure-html/unnamed-chunk-4-81.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-82.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-83.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-84.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink-3" class="level3" data-number="4.4.5">
+<h3 data-number="4.4.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink-3"><span class="header-section-number">4.4.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.0025<img src="batch_effects_files/figure-html/unnamed-chunk-4-85.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-86.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-87.png" class="img-fluid" width="672"><img src="batch_effects_files/figure-html/unnamed-chunk-4-88.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation-3" class="level3" data-number="4.4.6">
+<h3 data-number="4.4.6" class="anchored" data-anchor-id="t_cell_activation-3"><span class="header-section-number">4.4.6</span> t_cell_activation</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+<section id="t_cell_polarization-3" class="level3" data-number="4.4.7">
+<h3 data-number="4.4.7" class="anchored" data-anchor-id="t_cell_polarization-3"><span class="header-section-number">4.4.7</span> t_cell_polarization</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+</section>
+</div>
+</section>
+<section id="appendix" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Appendix</h1>
 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
 Session Information
 </button>
@@ -880,7 +588,7 @@ Session Information
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.2.3 (2023-03-15)
@@ -895,40 +603,62 @@ locale:
 [1] C
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
- [1] magick_2.8.3     FactoMineR_2.11  factoextra_1.0.7 ggdark_0.2.1    
- [5] lubridate_1.9.3  forcats_1.0.0    stringr_1.5.1    dplyr_1.1.4     
- [9] purrr_1.0.2      readr_2.1.5      tidyr_1.3.1      tibble_3.2.1    
-[13] ggplot2_3.5.1    tidyverse_2.0.0 
+ [1] magick_2.8.3                FactoMineR_2.11            
+ [3] factoextra_1.0.7            DESeq2_1.38.3              
+ [5] SummarizedExperiment_1.28.0 MatrixGenerics_1.10.0      
+ [7] matrixStats_1.4.1           GenomicRanges_1.50.2       
+ [9] GenomeInfoDb_1.34.9         IRanges_2.32.0             
+[11] S4Vectors_0.36.2            lme4_1.1-35.5              
+[13] Matrix_1.6-5                vsn_3.66.0                 
+[15] Biobase_2.58.0              BiocGenerics_0.44.0        
+[17] ggdark_0.2.1                lubridate_1.9.3            
+[19] forcats_1.0.0               stringr_1.5.1              
+[21] dplyr_1.1.4                 purrr_1.0.2                
+[23] readr_2.1.5                 tidyr_1.3.1                
+[25] tibble_3.2.1                ggplot2_3.5.1              
+[27] tidyverse_2.0.0            
 
 loaded via a namespace (and not attached):
- [1] bit64_4.0.5          vroom_1.6.5          jsonlite_1.8.8      
- [4] viridisLite_0.4.2    splines_4.2.3        carData_3.0-5       
- [7] yaml_2.3.10          ggrepel_0.9.5        pillar_1.9.0        
-[10] backports_1.5.0      lattice_0.22-6       glue_1.7.0          
-[13] digest_0.6.37        ggsignif_0.6.4       colorspace_2.1-1    
-[16] sandwich_3.1-0       htmltools_0.5.8.1    Matrix_1.6-5        
-[19] pkgconfig_2.0.3      broom_1.0.6          xtable_1.8-4        
-[22] mvtnorm_1.2-6        scales_1.3.0         tzdb_0.4.0          
-[25] timechange_0.3.0     emmeans_1.10.4       generics_0.1.3      
-[28] farver_2.1.2         car_3.1-2            ggpubr_0.6.0        
-[31] DT_0.33              TH.data_1.1-2        withr_3.0.1         
-[34] cli_3.6.3            survival_3.7-0       magrittr_2.0.3      
-[37] crayon_1.5.3         estimability_1.5.1   evaluate_0.24.0     
-[40] fansi_1.0.6          MASS_7.3-60.0.1      rstatix_0.7.2       
-[43] tools_4.2.3          hms_1.1.3            lifecycle_1.0.4     
-[46] multcomp_1.4-26      munsell_0.5.1        cluster_2.1.6       
-[49] flashClust_1.01-2    compiler_4.2.3       multcompView_0.1-10 
-[52] tinytex_0.52         rlang_1.1.4          grid_4.2.3          
-[55] htmlwidgets_1.6.4    leaps_3.2            labeling_0.4.3      
-[58] rmarkdown_2.28       gtable_0.3.5         codetools_0.2-20    
-[61] abind_1.4-5          R6_2.5.1             zoo_1.8-12          
-[64] knitr_1.48           fastmap_1.2.0        bit_4.0.5           
-[67] utf8_1.2.4           stringi_1.8.4        parallel_4.2.3      
-[70] Rcpp_1.0.13          vctrs_0.6.5          scatterplot3d_0.3-44
-[73] tidyselect_1.2.1     xfun_0.47            coda_0.19-4.1       </code></pre>
+  [1] TH.data_1.1-2          minqa_1.2.8            colorspace_2.1-1      
+  [4] ggsignif_0.6.4         estimability_1.5.1     XVector_0.38.0        
+  [7] ggpubr_0.6.0           farver_2.1.2           affyio_1.68.0         
+ [10] DT_0.33                ggrepel_0.9.6          bit64_4.5.2           
+ [13] AnnotationDbi_1.60.2   fansi_1.0.6            mvtnorm_1.3-1         
+ [16] codetools_0.2-20       splines_4.2.3          leaps_3.2             
+ [19] impute_1.72.3          cachem_1.1.0           geneplotter_1.76.0    
+ [22] knitr_1.48             jsonlite_1.8.9         nloptr_2.1.1          
+ [25] broom_1.0.6            annotate_1.76.0        cluster_2.1.6         
+ [28] png_0.1-8              BiocManager_1.30.25    compiler_4.2.3        
+ [31] httr_1.4.7             backports_1.5.0        emmeans_1.10.4        
+ [34] fastmap_1.2.0          limma_3.54.2           cli_3.6.3             
+ [37] htmltools_0.5.8.1      tools_4.2.3            coda_0.19-4.1         
+ [40] gtable_0.3.5           glue_1.7.0             GenomeInfoDbData_1.2.9
+ [43] affy_1.76.0            tinytex_0.53           Rcpp_1.0.13           
+ [46] carData_3.0-5          vctrs_0.6.5            Biostrings_2.66.0     
+ [49] preprocessCore_1.60.2  nlme_3.1-166           xfun_0.47             
+ [52] timechange_0.3.0       lifecycle_1.0.4        rstatix_0.7.2         
+ [55] XML_3.99-0.17          zlibbioc_1.44.0        MASS_7.3-60.0.1       
+ [58] zoo_1.8-12             scales_1.3.0           vroom_1.6.5           
+ [61] hms_1.1.3              parallel_4.2.3         sandwich_3.1-1        
+ [64] RColorBrewer_1.1-3     yaml_2.3.10            memoise_2.0.1         
+ [67] stringi_1.8.4          RSQLite_2.3.7          boot_1.3-31           
+ [70] BiocParallel_1.32.6    rlang_1.1.4            pkgconfig_2.0.3       
+ [73] bitops_1.0-8           evaluate_1.0.0         lattice_0.22-6        
+ [76] labeling_0.4.3         htmlwidgets_1.6.4      bit_4.5.0             
+ [79] tidyselect_1.2.1       magrittr_2.0.3         R6_2.5.1              
+ [82] multcompView_0.1-10    generics_0.1.3         multcomp_1.4-26       
+ [85] DelayedArray_0.24.0    DBI_1.2.3              pillar_1.9.0          
+ [88] withr_3.0.1            abind_1.4-8            scatterplot3d_0.3-44  
+ [91] survival_3.7-0         KEGGREST_1.38.0        RCurl_1.98-1.14       
+ [94] car_3.1-2              crayon_1.5.3           utf8_1.2.4            
+ [97] tzdb_0.4.0             rmarkdown_2.28         locfit_1.5-9.10       
+[100] grid_4.2.3             blob_1.2.4             flashClust_1.01-2     
+[103] digest_0.6.37          xtable_1.8-4           munsell_0.5.1         
+[106] viridisLite_0.4.2     </code></pre>
 </div>
 </div>
 </div>
@@ -1411,359 +1141,211 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb59" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Batch Effects"</span></span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
-<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
-<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
-<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
-<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
-<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
-<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
-<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
-<span id="cb59-24"><a href="#cb59-24" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
-<span id="cb59-25"><a href="#cb59-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-26"><a href="#cb59-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-27"><a href="#cb59-27" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
-<span id="cb59-28"><a href="#cb59-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-31"><a href="#cb59-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-32"><a href="#cb59-32" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
-<span id="cb59-33"><a href="#cb59-33" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-34"><a href="#cb59-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-37"><a href="#cb59-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-38"><a href="#cb59-38" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
-<span id="cb59-39"><a href="#cb59-39" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
-<span id="cb59-40"><a href="#cb59-40" aria-hidden="true" tabindex="-1"></a>exp_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, <span class="at">experimental_data=</span>exp_data)</span>
-<span id="cb59-41"><a href="#cb59-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-42"><a href="#cb59-42" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
-<span id="cb59-43"><a href="#cb59-43" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
-<span id="cb59-44"><a href="#cb59-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-45"><a href="#cb59-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-46"><a href="#cb59-46" aria-hidden="true" tabindex="-1"></a><span class="fu"># Baseline (planned day 0)</span></span>
-<span id="cb59-47"><a href="#cb59-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-50"><a href="#cb59-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-51"><a href="#cb59-51" aria-hidden="true" tabindex="-1"></a>baseline_specimen <span class="ot">&lt;-</span> meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb59-52"><a href="#cb59-52" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost<span class="sc">==</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-53"><a href="#cb59-53" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(specimen_id)</span>
-<span id="cb59-54"><a href="#cb59-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-55"><a href="#cb59-55" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
-<span id="cb59-56"><a href="#cb59-56" aria-hidden="true" tabindex="-1"></a>  exp_data, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> baseline_specimen)) <span class="sc">%&gt;%</span></span>
-<span id="cb59-57"><a href="#cb59-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_wide_experimental_data</span>(., <span class="at">impute=</span><span class="st">"zero"</span>)</span>
-<span id="cb59-58"><a href="#cb59-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-59"><a href="#cb59-59" aria-hidden="true" tabindex="-1"></a><span class="co"># filter genes and normalize the gene expression data</span></span>
-<span id="cb59-60"><a href="#cb59-60" aria-hidden="true" tabindex="-1"></a>min_counts <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb59-61"><a href="#cb59-61" aria-hidden="true" tabindex="-1"></a>min_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb59-62"><a href="#cb59-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-63"><a href="#cb59-63" aria-hidden="true" tabindex="-1"></a>genes_to_keep <span class="ot">&lt;-</span> <span class="fu">colnames</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression)[</span>
-<span id="cb59-64"><a href="#cb59-64" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">&gt;=</span> min_counts) <span class="sc">&amp;</span></span>
-<span id="cb59-65"><a href="#cb59-65" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">colSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> min_samples)</span>
-<span id="cb59-66"><a href="#cb59-66" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb59-67"><a href="#cb59-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-68"><a href="#cb59-68" aria-hidden="true" tabindex="-1"></a>target_sum <span class="ot">&lt;-</span> <span class="fl">1e6</span></span>
-<span id="cb59-69"><a href="#cb59-69" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> </span>
-<span id="cb59-70"><a href="#cb59-70" aria-hidden="true" tabindex="-1"></a>  baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="sc">/</span> <span class="fu">rowSums</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression) <span class="sc">*</span> target_sum</span>
-<span id="cb59-71"><a href="#cb59-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-72"><a href="#cb59-72" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(dplyr<span class="sc">::</span><span class="fu">near</span>(<span class="fu">rowSums</span>(pbmc_gene_expression_norm), target_sum, <span class="at">tol=</span><span class="fl">0.1</span>)))</span>
-<span id="cb59-73"><a href="#cb59-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-74"><a href="#cb59-74" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_norm <span class="ot">&lt;-</span> pbmc_gene_expression_norm[ , genes_to_keep]</span>
-<span id="cb59-75"><a href="#cb59-75" aria-hidden="true" tabindex="-1"></a>pbmc_gene_expression_log <span class="ot">&lt;-</span> <span class="fu">log1p</span>(pbmc_gene_expression_norm)</span>
-<span id="cb59-76"><a href="#cb59-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-77"><a href="#cb59-77" aria-hidden="true" tabindex="-1"></a>baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression <span class="ot">&lt;-</span> pbmc_gene_expression_log</span>
-<span id="cb59-78"><a href="#cb59-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-79"><a href="#cb59-79" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map</span>(baseline_wide_exp_data, <span class="sc">~</span> <span class="fu">dim</span>(.x))</span>
-<span id="cb59-80"><a href="#cb59-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-81"><a href="#cb59-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-84"><a href="#cb59-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-85"><a href="#cb59-85" aria-hidden="true" tabindex="-1"></a>generate_pca_plots <span class="ot">&lt;-</span> <span class="cf">function</span>(wide_exp_modality, meta_data) {</span>
-<span id="cb59-86"><a href="#cb59-86" aria-hidden="true" tabindex="-1"></a>  <span class="co"># wide_exp_modality &lt;- wide_exp_data$pbmc_cell_frequency</span></span>
-<span id="cb59-87"><a href="#cb59-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb59-88"><a href="#cb59-88" aria-hidden="true" tabindex="-1"></a>  pca_out <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(wide_exp_modality, <span class="at">center=</span><span class="cn">TRUE</span>, <span class="at">retx=</span><span class="cn">TRUE</span>, <span class="at">scale.=</span><span class="cn">TRUE</span>)</span>
-<span id="cb59-89"><a href="#cb59-89" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-90"><a href="#cb59-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>rotation) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(wide_exp_modality)</span>
-<span id="cb59-91"><a href="#cb59-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(pca_out<span class="sc">$</span>x) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(wide_exp_modality)</span>
-<span id="cb59-92"><a href="#cb59-92" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-93"><a href="#cb59-93" aria-hidden="true" tabindex="-1"></a>  wide_exp_modality_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(wide_exp_modality) <span class="sc">%&gt;%</span></span>
-<span id="cb59-94"><a href="#cb59-94" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-95"><a href="#cb59-95" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id))</span>
-<span id="cb59-96"><a href="#cb59-96" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-97"><a href="#cb59-97" aria-hidden="true" tabindex="-1"></a>  dataset_fill <span class="ot">&lt;-</span> wide_exp_modality_df <span class="sc">%&gt;%</span></span>
-<span id="cb59-98"><a href="#cb59-98" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-99"><a href="#cb59-99" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(dataset)</span>
-<span id="cb59-100"><a href="#cb59-100" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-101"><a href="#cb59-101" aria-hidden="true" tabindex="-1"></a>  plot_df <span class="ot">&lt;-</span> pca_out<span class="sc">$</span>x <span class="sc">%&gt;%</span></span>
-<span id="cb59-102"><a href="#cb59-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb59-103"><a href="#cb59-103" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-104"><a href="#cb59-104" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">specimen_id=</span><span class="fu">as.integer</span>(specimen_id)) <span class="sc">%&gt;%</span></span>
-<span id="cb59-105"><a href="#cb59-105" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(wide_exp_modality_df, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-106"><a href="#cb59-106" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>)</span>
-<span id="cb59-107"><a href="#cb59-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-108"><a href="#cb59-108" aria-hidden="true" tabindex="-1"></a>  var_contrib <span class="ot">&lt;-</span> <span class="fu">get_pca_var</span>(pca_out)<span class="sc">$</span>contrib</span>
-<span id="cb59-109"><a href="#cb59-109" aria-hidden="true" tabindex="-1"></a>  top_variables <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(var_contrib) <span class="sc">%&gt;%</span></span>
-<span id="cb59-110"><a href="#cb59-110" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-111"><a href="#cb59-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-112"><a href="#cb59-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
-<span id="cb59-113"><a href="#cb59-113" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-114"><a href="#cb59-114" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb59-115"><a href="#cb59-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb59-116"><a href="#cb59-116" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>dataset),</span>
-<span id="cb59-117"><a href="#cb59-117" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb59-118"><a href="#cb59-118" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb59-119"><a href="#cb59-119" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb59-120"><a href="#cb59-120" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-121"><a href="#cb59-121" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb59-122"><a href="#cb59-122" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb59-123"><a href="#cb59-123" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>actual_day_relative_to_boost),</span>
-<span id="cb59-124"><a href="#cb59-124" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb59-125"><a href="#cb59-125" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb59-126"><a href="#cb59-126" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb59-127"><a href="#cb59-127" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb59-128"><a href="#cb59-128" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-129"><a href="#cb59-129" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-130"><a href="#cb59-130" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> plot_df <span class="sc">%&gt;%</span></span>
-<span id="cb59-131"><a href="#cb59-131" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, top_variables))) <span class="sc">%&gt;%</span></span>
-<span id="cb59-132"><a href="#cb59-132" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(top_variables), </span>
-<span id="cb59-133"><a href="#cb59-133" aria-hidden="true" tabindex="-1"></a>                        <span class="at">values_to =</span> <span class="st">"values"</span>,</span>
-<span id="cb59-134"><a href="#cb59-134" aria-hidden="true" tabindex="-1"></a>                        <span class="at">names_to =</span> <span class="st">"features"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb59-135"><a href="#cb59-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb59-136"><a href="#cb59-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2, <span class="at">color=</span>values), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
-<span id="cb59-137"><a href="#cb59-137" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>features) <span class="sc">+</span></span>
-<span id="cb59-138"><a href="#cb59-138" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb59-139"><a href="#cb59-139" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb59-140"><a href="#cb59-140" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_viridis_c</span>()</span>
-<span id="cb59-141"><a href="#cb59-141" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-142"><a href="#cb59-142" aria-hidden="true" tabindex="-1"></a>  p4 <span class="ot">&lt;-</span> <span class="fu">fviz_pca_biplot</span>(pca_out, </span>
-<span id="cb59-143"><a href="#cb59-143" aria-hidden="true" tabindex="-1"></a>                  <span class="at">geom.ind =</span> <span class="st">"point"</span>,</span>
-<span id="cb59-144"><a href="#cb59-144" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointshape =</span> <span class="dv">21</span>,</span>
-<span id="cb59-145"><a href="#cb59-145" aria-hidden="true" tabindex="-1"></a>                  <span class="at">pointsize =</span> <span class="fl">2.5</span>,</span>
-<span id="cb59-146"><a href="#cb59-146" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill.ind =</span> dataset_fill,</span>
-<span id="cb59-147"><a href="#cb59-147" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col.ind =</span> <span class="st">"black"</span>,</span>
-<span id="cb59-148"><a href="#cb59-148" aria-hidden="true" tabindex="-1"></a>                  <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb59-149"><a href="#cb59-149" aria-hidden="true" tabindex="-1"></a>                  <span class="at">select.var =</span> <span class="fu">list</span>(<span class="at">name =</span> top_variables)</span>
-<span id="cb59-150"><a href="#cb59-150" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
-<span id="cb59-151"><a href="#cb59-151" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb59-152"><a href="#cb59-152" aria-hidden="true" tabindex="-1"></a>    ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb59-153"><a href="#cb59-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
-<span id="cb59-154"><a href="#cb59-154" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">p1=</span>p1, <span class="at">p2=</span>p2, <span class="at">p3=</span>p3, <span class="at">p4=</span>p4)</span>
-<span id="cb59-155"><a href="#cb59-155" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb59-156"><a href="#cb59-156" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb59-157"><a href="#cb59-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-158"><a href="#cb59-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-159"><a href="#cb59-159" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Fractions</span></span>
-<span id="cb59-160"><a href="#cb59-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-163"><a href="#cb59-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-164"><a href="#cb59-164" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb59-165"><a href="#cb59-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_cell_frequency, </span>
-<span id="cb59-166"><a href="#cb59-166" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb59-167"><a href="#cb59-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-168"><a href="#cb59-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-171"><a href="#cb59-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-172"><a href="#cb59-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-173"><a href="#cb59-173" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb59-174"><a href="#cb59-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-175"><a href="#cb59-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-178"><a href="#cb59-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-179"><a href="#cb59-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-180"><a href="#cb59-180" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb59-181"><a href="#cb59-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-182"><a href="#cb59-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-183"><a href="#cb59-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb59-184"><a href="#cb59-184" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb59-185"><a href="#cb59-185" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb59-186"><a href="#cb59-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-187"><a href="#cb59-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-190"><a href="#cb59-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-191"><a href="#cb59-191" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-192"><a href="#cb59-192" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb59-193"><a href="#cb59-193" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-194"><a href="#cb59-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-195"><a href="#cb59-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Gene Expression</span></span>
-<span id="cb59-196"><a href="#cb59-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-199"><a href="#cb59-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-200"><a href="#cb59-200" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb59-201"><a href="#cb59-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>pbmc_gene_expression, </span>
-<span id="cb59-202"><a href="#cb59-202" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb59-203"><a href="#cb59-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-204"><a href="#cb59-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-207"><a href="#cb59-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-208"><a href="#cb59-208" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-209"><a href="#cb59-209" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb59-210"><a href="#cb59-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-211"><a href="#cb59-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-214"><a href="#cb59-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-215"><a href="#cb59-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-216"><a href="#cb59-216" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb59-217"><a href="#cb59-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-218"><a href="#cb59-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-219"><a href="#cb59-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb59-220"><a href="#cb59-220" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb59-221"><a href="#cb59-221" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb59-222"><a href="#cb59-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-223"><a href="#cb59-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-226"><a href="#cb59-226" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-227"><a href="#cb59-227" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-228"><a href="#cb59-228" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb59-229"><a href="#cb59-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-230"><a href="#cb59-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-231"><a href="#cb59-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Antibody Levels</span></span>
-<span id="cb59-232"><a href="#cb59-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-235"><a href="#cb59-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-236"><a href="#cb59-236" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb59-237"><a href="#cb59-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_ab_titer, </span>
-<span id="cb59-238"><a href="#cb59-238" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb59-239"><a href="#cb59-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-240"><a href="#cb59-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-243"><a href="#cb59-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-244"><a href="#cb59-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-245"><a href="#cb59-245" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb59-246"><a href="#cb59-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-247"><a href="#cb59-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-250"><a href="#cb59-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-251"><a href="#cb59-251" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-252"><a href="#cb59-252" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb59-253"><a href="#cb59-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-254"><a href="#cb59-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-255"><a href="#cb59-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb59-256"><a href="#cb59-256" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb59-257"><a href="#cb59-257" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb59-258"><a href="#cb59-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-259"><a href="#cb59-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-262"><a href="#cb59-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-263"><a href="#cb59-263" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-264"><a href="#cb59-264" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb59-265"><a href="#cb59-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-266"><a href="#cb59-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-267"><a href="#cb59-267" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Legendplex</span></span>
-<span id="cb59-268"><a href="#cb59-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-271"><a href="#cb59-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-272"><a href="#cb59-272" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb59-273"><a href="#cb59-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex, </span>
-<span id="cb59-274"><a href="#cb59-274" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb59-275"><a href="#cb59-275" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-276"><a href="#cb59-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-279"><a href="#cb59-279" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-280"><a href="#cb59-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-281"><a href="#cb59-281" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb59-282"><a href="#cb59-282" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-283"><a href="#cb59-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-286"><a href="#cb59-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-287"><a href="#cb59-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-288"><a href="#cb59-288" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb59-289"><a href="#cb59-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-290"><a href="#cb59-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-291"><a href="#cb59-291" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb59-292"><a href="#cb59-292" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb59-293"><a href="#cb59-293" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb59-294"><a href="#cb59-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-295"><a href="#cb59-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-298"><a href="#cb59-298" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-299"><a href="#cb59-299" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-300"><a href="#cb59-300" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb59-301"><a href="#cb59-301" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-302"><a href="#cb59-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-303"><a href="#cb59-303" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Olink</span></span>
-<span id="cb59-304"><a href="#cb59-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-307"><a href="#cb59-307" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-308"><a href="#cb59-308" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb59-309"><a href="#cb59-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink, </span>
-<span id="cb59-310"><a href="#cb59-310" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb59-311"><a href="#cb59-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-312"><a href="#cb59-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-315"><a href="#cb59-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-316"><a href="#cb59-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-317"><a href="#cb59-317" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb59-318"><a href="#cb59-318" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-319"><a href="#cb59-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-322"><a href="#cb59-322" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-323"><a href="#cb59-323" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-324"><a href="#cb59-324" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb59-325"><a href="#cb59-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-326"><a href="#cb59-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-327"><a href="#cb59-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb59-328"><a href="#cb59-328" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb59-329"><a href="#cb59-329" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb59-330"><a href="#cb59-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-331"><a href="#cb59-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-334"><a href="#cb59-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-335"><a href="#cb59-335" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-336"><a href="#cb59-336" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb59-337"><a href="#cb59-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-338"><a href="#cb59-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-339"><a href="#cb59-339" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Activation</span></span>
-<span id="cb59-340"><a href="#cb59-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-343"><a href="#cb59-343" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-344"><a href="#cb59-344" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb59-345"><a href="#cb59-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_activation, </span>
-<span id="cb59-346"><a href="#cb59-346" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb59-347"><a href="#cb59-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-348"><a href="#cb59-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-351"><a href="#cb59-351" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-352"><a href="#cb59-352" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-353"><a href="#cb59-353" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb59-354"><a href="#cb59-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-355"><a href="#cb59-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-358"><a href="#cb59-358" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-359"><a href="#cb59-359" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-360"><a href="#cb59-360" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb59-361"><a href="#cb59-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-362"><a href="#cb59-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-363"><a href="#cb59-363" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb59-364"><a href="#cb59-364" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb59-365"><a href="#cb59-365" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb59-366"><a href="#cb59-366" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-367"><a href="#cb59-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-370"><a href="#cb59-370" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-371"><a href="#cb59-371" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-372"><a href="#cb59-372" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb59-373"><a href="#cb59-373" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-374"><a href="#cb59-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-375"><a href="#cb59-375" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Polarization</span></span>
-<span id="cb59-376"><a href="#cb59-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-379"><a href="#cb59-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-380"><a href="#cb59-380" aria-hidden="true" tabindex="-1"></a>pca_plots <span class="ot">&lt;-</span> </span>
-<span id="cb59-381"><a href="#cb59-381" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_pca_plots</span>(baseline_wide_exp_data<span class="sc">$</span>t_cell_polarization, </span>
-<span id="cb59-382"><a href="#cb59-382" aria-hidden="true" tabindex="-1"></a>                     <span class="at">meta_data=</span>meta_data)</span>
-<span id="cb59-383"><a href="#cb59-383" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-384"><a href="#cb59-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-387"><a href="#cb59-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-388"><a href="#cb59-388" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-389"><a href="#cb59-389" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p1</span>
-<span id="cb59-390"><a href="#cb59-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-391"><a href="#cb59-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-394"><a href="#cb59-394" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-395"><a href="#cb59-395" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-396"><a href="#cb59-396" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p2</span>
-<span id="cb59-397"><a href="#cb59-397" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-398"><a href="#cb59-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-399"><a href="#cb59-399" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=8}</span></span>
-<span id="cb59-400"><a href="#cb59-400" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
-<span id="cb59-401"><a href="#cb59-401" aria-hidden="true" tabindex="-1"></a><span class="in">pca_plots$p3</span></span>
-<span id="cb59-402"><a href="#cb59-402" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-403"><a href="#cb59-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-406"><a href="#cb59-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-407"><a href="#cb59-407" aria-hidden="true" tabindex="-1"></a><span class="co">#| crop: true</span></span>
-<span id="cb59-408"><a href="#cb59-408" aria-hidden="true" tabindex="-1"></a>pca_plots<span class="sc">$</span>p4</span>
-<span id="cb59-409"><a href="#cb59-409" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-410"><a href="#cb59-410" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-411"><a href="#cb59-411" aria-hidden="true" tabindex="-1"></a><span class="fu"># Appendix</span></span>
-<span id="cb59-412"><a href="#cb59-412" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-413"><a href="#cb59-413" aria-hidden="true" tabindex="-1"></a>&lt;button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" &gt;Session Information&lt;/button&gt;&lt;div id="collapseOne" class="accordion-collapse collapse"&gt;&lt;div&gt;</span>
-<span id="cb59-414"><a href="#cb59-414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-417"><a href="#cb59-417" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb59-418"><a href="#cb59-418" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb59-419"><a href="#cb59-419" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb59-420"><a href="#cb59-420" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-421"><a href="#cb59-421" aria-hidden="true" tabindex="-1"></a>&lt;/div&gt;&lt;/div&gt;</span>
+<div class="sourceCode" id="cb22" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Batch Effects"</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(vsn)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(lme4)</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(DESeq2)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"model.R"</span>))</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"batch_effects.R"</span>))</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">experimental_data=</span>experimental_data)</span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>specimen_per_day <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(<span class="at">meta_data=</span>meta_data)</span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Fractions</span></span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For the baseline specimen (day 0), we see a very strong batch effect, because the 2023 dataset is very different</span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Gene Expression</span></span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Very strong cohort-specific effects for baseline specimen and post-booster specimen</span>
+<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Antibody Levels</span></span>
+<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Legendplex</span></span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Olink</span></span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Activation</span></span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Specimen are only available for baseline, no cohort-specific effect</span>
+<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Polarization</span></span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Specimen are only available for baseline, most of the variance is explained by interaction terms <span class="in">`age_at_boost:dataset`</span> and <span class="in">`infancy_vac:dataset`</span>. Not sure what to make of this.</span>
+<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="asis"}</span></span>
+<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a><span class="in">#| crop: true</span></span>
+<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a><span class="in">for (day in names(specimen_per_day)) {</span></span>
+<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a><span class="in">  # day &lt;- names(specimen_per_day)[1]</span></span>
+<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a><span class="in">  cat(paste0("## ", day))</span></span>
+<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a><span class="in">  cat("\n\n")</span></span>
+<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a><span class="in">  specimen_df &lt;- specimen_per_day[[day]]</span></span>
+<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a><span class="in">  for (assay in names(experimental_data)) {</span></span>
+<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a><span class="in">    # assay &lt;- names(experimental_data)[2]</span></span>
+<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a><span class="in">    cat(paste0("### ", assay))</span></span>
+<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a><span class="in">    cat("\n\n")</span></span>
+<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb22-98"><a href="#cb22-98" aria-hidden="true" tabindex="-1"></a><span class="in">    feature_col &lt;- experimental_data_settings[[assay]]$feature_col</span></span>
+<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a><span class="in">    value_col &lt;- experimental_data_settings[[assay]]$value_col</span></span>
+<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a><span class="in">    assay_df_long &lt;- experimental_data[[assay]]</span></span>
+<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a><span class="in">    #str(assay_df_long)</span></span>
+<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a><span class="in">    specimen_df_filtered &lt;- specimen_df %&gt;%</span></span>
+<span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a><span class="in">      dplyr::filter(specimen_id %in% unique(assay_df_long$specimen_id))</span></span>
+<span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb22-107"><a href="#cb22-107" aria-hidden="true" tabindex="-1"></a><span class="in">    if (nrow(specimen_df_filtered) == 0) {</span></span>
+<span id="cb22-108"><a href="#cb22-108" aria-hidden="true" tabindex="-1"></a><span class="in">      cat(paste0("No specimen for this combination of assay and day available"))</span></span>
+<span id="cb22-109"><a href="#cb22-109" aria-hidden="true" tabindex="-1"></a><span class="in">    } else {</span></span>
+<span id="cb22-110"><a href="#cb22-110" aria-hidden="true" tabindex="-1"></a><span class="in">      assay_mtx_wide &lt;- assay_df_long %&gt;%</span></span>
+<span id="cb22-111"><a href="#cb22-111" aria-hidden="true" tabindex="-1"></a><span class="in">        dplyr::select(dplyr::all_of(c("specimen_id", feature_col, value_col))) %&gt;%</span></span>
+<span id="cb22-112"><a href="#cb22-112" aria-hidden="true" tabindex="-1"></a><span class="in">        tidyr::pivot_wider(names_from=dplyr::all_of(feature_col), </span></span>
+<span id="cb22-113"><a href="#cb22-113" aria-hidden="true" tabindex="-1"></a><span class="in">                           values_from=dplyr::all_of(value_col)) %&gt;%</span></span>
+<span id="cb22-114"><a href="#cb22-114" aria-hidden="true" tabindex="-1"></a><span class="in">        tibble::column_to_rownames(var="specimen_id") %&gt;%</span></span>
+<span id="cb22-115"><a href="#cb22-115" aria-hidden="true" tabindex="-1"></a><span class="in">        as.matrix() %&gt;%</span></span>
+<span id="cb22-116"><a href="#cb22-116" aria-hidden="true" tabindex="-1"></a><span class="in">        .[as.character(specimen_df_filtered$specimen_id), ]</span></span>
+<span id="cb22-117"><a href="#cb22-117" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb22-118"><a href="#cb22-118" aria-hidden="true" tabindex="-1"></a><span class="in">      impute_mode &lt;- "knn"</span></span>
+<span id="cb22-119"><a href="#cb22-119" aria-hidden="true" tabindex="-1"></a><span class="in">      stopifnot(impute_mode %in% c("zero", "median_feature", "knn"))</span></span>
+<span id="cb22-120"><a href="#cb22-120" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a><span class="in">      if (any(is.na(assay_mtx_wide))) {</span></span>
+<span id="cb22-122"><a href="#cb22-122" aria-hidden="true" tabindex="-1"></a><span class="in">        cat(paste0("Non-zero fraction of NAs: ", </span></span>
+<span id="cb22-123"><a href="#cb22-123" aria-hidden="true" tabindex="-1"></a><span class="in">                   round(mean(is.na(assay_mtx_wide)), 4)))</span></span>
+<span id="cb22-124"><a href="#cb22-124" aria-hidden="true" tabindex="-1"></a><span class="in">        # data: matrix with genes in the rows, samples in the columns</span></span>
+<span id="cb22-125"><a href="#cb22-125" aria-hidden="true" tabindex="-1"></a><span class="in">        if (impute_mode == "zero") {</span></span>
+<span id="cb22-126"><a href="#cb22-126" aria-hidden="true" tabindex="-1"></a><span class="in">          assay_mtx_wide[is.na(assay_mtx_wide)] &lt;- 0</span></span>
+<span id="cb22-127"><a href="#cb22-127" aria-hidden="true" tabindex="-1"></a><span class="in">        } else if (impute_mode == "knn") {</span></span>
+<span id="cb22-128"><a href="#cb22-128" aria-hidden="true" tabindex="-1"></a><span class="in">          assay_mtx_wide &lt;- t(impute::impute.knn(data=t(assay_mtx_wide))$data)</span></span>
+<span id="cb22-129"><a href="#cb22-129" aria-hidden="true" tabindex="-1"></a><span class="in">        } else if (impute_mode == "median_feature") {</span></span>
+<span id="cb22-130"><a href="#cb22-130" aria-hidden="true" tabindex="-1"></a><span class="in">          col_medians &lt;- matrixStats::colMedians(assay_mtx_wide, na.rm=TRUE)</span></span>
+<span id="cb22-131"><a href="#cb22-131" aria-hidden="true" tabindex="-1"></a><span class="in">          for (colname in colnames(assay_mtx_wide)) {</span></span>
+<span id="cb22-132"><a href="#cb22-132" aria-hidden="true" tabindex="-1"></a><span class="in">            col_vec &lt;- assay_mtx_wide[, colname]</span></span>
+<span id="cb22-133"><a href="#cb22-133" aria-hidden="true" tabindex="-1"></a><span class="in">            col_vec[is.na(col_vec)] &lt;- col_medians[colname]</span></span>
+<span id="cb22-134"><a href="#cb22-134" aria-hidden="true" tabindex="-1"></a><span class="in">            assay_mtx_wide[, colname] &lt;- col_vec</span></span>
+<span id="cb22-135"><a href="#cb22-135" aria-hidden="true" tabindex="-1"></a><span class="in">          }</span></span>
+<span id="cb22-136"><a href="#cb22-136" aria-hidden="true" tabindex="-1"></a><span class="in">        }</span></span>
+<span id="cb22-137"><a href="#cb22-137" aria-hidden="true" tabindex="-1"></a><span class="in">        stopifnot(!any(is.na(assay_mtx_wide)))</span></span>
+<span id="cb22-138"><a href="#cb22-138" aria-hidden="true" tabindex="-1"></a><span class="in">      }</span></span>
+<span id="cb22-139"><a href="#cb22-139" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb22-140"><a href="#cb22-140" aria-hidden="true" tabindex="-1"></a><span class="in">      if (assay == "pbmc_gene_expression") {</span></span>
+<span id="cb22-141"><a href="#cb22-141" aria-hidden="true" tabindex="-1"></a><span class="in">        # normalization using vst from DEseq2</span></span>
+<span id="cb22-142"><a href="#cb22-142" aria-hidden="true" tabindex="-1"></a><span class="in">        #str(assay_mtx_wide)</span></span>
+<span id="cb22-143"><a href="#cb22-143" aria-hidden="true" tabindex="-1"></a><span class="in">        </span></span>
+<span id="cb22-144"><a href="#cb22-144" aria-hidden="true" tabindex="-1"></a><span class="in">        # Create DESeq dataset object</span></span>
+<span id="cb22-145"><a href="#cb22-145" aria-hidden="true" tabindex="-1"></a><span class="in">        min_counts &lt;- 200</span></span>
+<span id="cb22-146"><a href="#cb22-146" aria-hidden="true" tabindex="-1"></a><span class="in">        min_samples &lt;- 20</span></span>
+<span id="cb22-147"><a href="#cb22-147" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb22-148"><a href="#cb22-148" aria-hidden="true" tabindex="-1"></a><span class="in">        genes_to_keep &lt;- colnames(assay_mtx_wide)[</span></span>
+<span id="cb22-149"><a href="#cb22-149" aria-hidden="true" tabindex="-1"></a><span class="in">          (colSums(assay_mtx_wide) &gt;= min_counts) &amp;</span></span>
+<span id="cb22-150"><a href="#cb22-150" aria-hidden="true" tabindex="-1"></a><span class="in">            (colSums(assay_mtx_wide &gt; 0) &gt;= min_samples)</span></span>
+<span id="cb22-151"><a href="#cb22-151" aria-hidden="true" tabindex="-1"></a><span class="in">        ]</span></span>
+<span id="cb22-152"><a href="#cb22-152" aria-hidden="true" tabindex="-1"></a><span class="in">        assay_mtx_wide &lt;- assay_mtx_wide[ , genes_to_keep]</span></span>
+<span id="cb22-153"><a href="#cb22-153" aria-hidden="true" tabindex="-1"></a><span class="in">        #str(assay_mtx_wide)</span></span>
+<span id="cb22-154"><a href="#cb22-154" aria-hidden="true" tabindex="-1"></a><span class="in">        </span></span>
+<span id="cb22-155"><a href="#cb22-155" aria-hidden="true" tabindex="-1"></a><span class="in">        # check that all column (gene) names are unique</span></span>
+<span id="cb22-156"><a href="#cb22-156" aria-hidden="true" tabindex="-1"></a><span class="in">        stopifnot(length(colnames(assay_mtx_wide)) == length(unique(colnames(assay_mtx_wide))))</span></span>
+<span id="cb22-157"><a href="#cb22-157" aria-hidden="true" tabindex="-1"></a><span class="in">        </span></span>
+<span id="cb22-158"><a href="#cb22-158" aria-hidden="true" tabindex="-1"></a><span class="in">        ensemble_to_gene &lt;- tibble(versioned_ensembl_gene_id = colnames(assay_mtx_wide)) %&gt;%</span></span>
+<span id="cb22-159"><a href="#cb22-159" aria-hidden="true" tabindex="-1"></a><span class="in">          dplyr::left_join(gene_meta, by="versioned_ensembl_gene_id") %&gt;%</span></span>
+<span id="cb22-160"><a href="#cb22-160" aria-hidden="true" tabindex="-1"></a><span class="in">          dplyr::group_by(gene_symbol) %&gt;%</span></span>
+<span id="cb22-161"><a href="#cb22-161" aria-hidden="true" tabindex="-1"></a><span class="in">          dplyr::mutate(n = n()) %&gt;%</span></span>
+<span id="cb22-162"><a href="#cb22-162" aria-hidden="true" tabindex="-1"></a><span class="in">          dplyr::arrange(desc(n), gene_symbol) %&gt;%</span></span>
+<span id="cb22-163"><a href="#cb22-163" aria-hidden="true" tabindex="-1"></a><span class="in">          dplyr::filter(n==1) %&gt;%</span></span>
+<span id="cb22-164"><a href="#cb22-164" aria-hidden="true" tabindex="-1"></a><span class="in">          dplyr::ungroup()</span></span>
+<span id="cb22-165"><a href="#cb22-165" aria-hidden="true" tabindex="-1"></a><span class="in">        </span></span>
+<span id="cb22-166"><a href="#cb22-166" aria-hidden="true" tabindex="-1"></a><span class="in">        assay_mtx_wide &lt;- assay_mtx_wide[ , ensemble_to_gene$versioned_ensembl_gene_id]</span></span>
+<span id="cb22-167"><a href="#cb22-167" aria-hidden="true" tabindex="-1"></a><span class="in">        colnames(assay_mtx_wide) &lt;- ensemble_to_gene$gene_symbol</span></span>
+<span id="cb22-168"><a href="#cb22-168" aria-hidden="true" tabindex="-1"></a><span class="in">        </span></span>
+<span id="cb22-169"><a href="#cb22-169" aria-hidden="true" tabindex="-1"></a><span class="in">        stopifnot(length(colnames(assay_mtx_wide)) == length(unique(colnames(assay_mtx_wide))))</span></span>
+<span id="cb22-170"><a href="#cb22-170" aria-hidden="true" tabindex="-1"></a><span class="in">        </span></span>
+<span id="cb22-171"><a href="#cb22-171" aria-hidden="true" tabindex="-1"></a><span class="in">        assay_mtx_wide &lt;- </span></span>
+<span id="cb22-172"><a href="#cb22-172" aria-hidden="true" tabindex="-1"></a><span class="in">          DESeq2::DESeqDataSetFromMatrix(countData = t(assay_mtx_wide),</span></span>
+<span id="cb22-173"><a href="#cb22-173" aria-hidden="true" tabindex="-1"></a><span class="in">                                         colData = tibble::tibble(specimen_id=rownames(assay_mtx_wide)),</span></span>
+<span id="cb22-174"><a href="#cb22-174" aria-hidden="true" tabindex="-1"></a><span class="in">                                         design = ~ 1)</span></span>
+<span id="cb22-175"><a href="#cb22-175" aria-hidden="true" tabindex="-1"></a><span class="in">        </span></span>
+<span id="cb22-176"><a href="#cb22-176" aria-hidden="true" tabindex="-1"></a><span class="in">        # DESeq2 normalization with variance stabilizing transformation (vst)</span></span>
+<span id="cb22-177"><a href="#cb22-177" aria-hidden="true" tabindex="-1"></a><span class="in">        assay_mtx_wide &lt;- DESeq2::estimateSizeFactors(assay_mtx_wide, quiet=TRUE) ## estimate size factor</span></span>
+<span id="cb22-178"><a href="#cb22-178" aria-hidden="true" tabindex="-1"></a><span class="in">        assay_mtx_wide &lt;- DESeq2::estimateDispersions(assay_mtx_wide, quiet=TRUE)</span></span>
+<span id="cb22-179"><a href="#cb22-179" aria-hidden="true" tabindex="-1"></a><span class="in">        assay_mtx_wide &lt;- DESeq2::varianceStabilizingTransformation(assay_mtx_wide, blind=TRUE)</span></span>
+<span id="cb22-180"><a href="#cb22-180" aria-hidden="true" tabindex="-1"></a><span class="in">        assay_mtx_wide &lt;- t(assay(assay_mtx_wide))</span></span>
+<span id="cb22-181"><a href="#cb22-181" aria-hidden="true" tabindex="-1"></a><span class="in">      }</span></span>
+<span id="cb22-182"><a href="#cb22-182" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb22-183"><a href="#cb22-183" aria-hidden="true" tabindex="-1"></a><span class="in">      #str(assay_mtx_wide)</span></span>
+<span id="cb22-184"><a href="#cb22-184" aria-hidden="true" tabindex="-1"></a><span class="in">      suppressMessages({</span></span>
+<span id="cb22-185"><a href="#cb22-185" aria-hidden="true" tabindex="-1"></a><span class="in">        suppressWarnings({</span></span>
+<span id="cb22-186"><a href="#cb22-186" aria-hidden="true" tabindex="-1"></a><span class="in">          p1 &lt;- pvca_analysis(assay_mtx_wide=assay_mtx_wide,</span></span>
+<span id="cb22-187"><a href="#cb22-187" aria-hidden="true" tabindex="-1"></a><span class="in">                        meta_data=meta_data)$p1</span></span>
+<span id="cb22-188"><a href="#cb22-188" aria-hidden="true" tabindex="-1"></a><span class="in">        })</span></span>
+<span id="cb22-189"><a href="#cb22-189" aria-hidden="true" tabindex="-1"></a><span class="in">      })</span></span>
+<span id="cb22-190"><a href="#cb22-190" aria-hidden="true" tabindex="-1"></a><span class="in">      print(p1)</span></span>
+<span id="cb22-191"><a href="#cb22-191" aria-hidden="true" tabindex="-1"></a><span class="in">      </span></span>
+<span id="cb22-192"><a href="#cb22-192" aria-hidden="true" tabindex="-1"></a><span class="in">      plist &lt;- generate_pca_plots(assay_mtx_wide=assay_mtx_wide,</span></span>
+<span id="cb22-193"><a href="#cb22-193" aria-hidden="true" tabindex="-1"></a><span class="in">                                  meta_data=meta_data)</span></span>
+<span id="cb22-194"><a href="#cb22-194" aria-hidden="true" tabindex="-1"></a><span class="in">      print(plist$p1)</span></span>
+<span id="cb22-195"><a href="#cb22-195" aria-hidden="true" tabindex="-1"></a><span class="in">      print(plist$p2)</span></span>
+<span id="cb22-196"><a href="#cb22-196" aria-hidden="true" tabindex="-1"></a><span class="in">      print(plist$p3)</span></span>
+<span id="cb22-197"><a href="#cb22-197" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
+<span id="cb22-198"><a href="#cb22-198" aria-hidden="true" tabindex="-1"></a><span class="in">    cat(paste0("\n\n"))</span></span>
+<span id="cb22-199"><a href="#cb22-199" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb22-200"><a href="#cb22-200" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb22-201"><a href="#cb22-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-202"><a href="#cb22-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-203"><a href="#cb22-203" aria-hidden="true" tabindex="-1"></a><span class="fu"># Appendix</span></span>
+<span id="cb22-204"><a href="#cb22-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-205"><a href="#cb22-205" aria-hidden="true" tabindex="-1"></a>&lt;button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" &gt;Session Information&lt;/button&gt;&lt;div id="collapseOne" class="accordion-collapse collapse"&gt;&lt;div&gt;</span>
+<span id="cb22-206"><a href="#cb22-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-209"><a href="#cb22-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-210"><a href="#cb22-210" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb22-211"><a href="#cb22-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-212"><a href="#cb22-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-213"><a href="#cb22-213" aria-hidden="true" tabindex="-1"></a>&lt;/div&gt;&lt;/div&gt;</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
