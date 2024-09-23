@@ -27,8 +27,10 @@ format:
     theme: darkly
     css: styles.css
     toc: true
-    toc_float: yes
-    toc_depth: 2
+    toc-float: yes
+    toc-depth: 3
+    toc-expand: 1
+    toc-location: right
     number-sections: true
     df-print: paged
     code-tools: true

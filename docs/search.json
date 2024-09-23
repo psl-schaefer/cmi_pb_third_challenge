@@ -319,28 +319,28 @@
     "href": "eda/batch_effects.html#plasma-cytokine-concentration-by-legendplex",
     "title": "Batch Effects",
     "section": "3.4 Plasma Cytokine Concentration by Legendplex",
-    "text": "3.4 Plasma Cytokine Concentration by Legendplex"
+    "text": "3.4 Plasma Cytokine Concentration by Legendplex\n\nAfter removing outlier in the legendplex data…"
   },
   {
     "objectID": "eda/batch_effects.html#plasma-cytokine-concentration-by-olink",
     "href": "eda/batch_effects.html#plasma-cytokine-concentration-by-olink",
     "title": "Batch Effects",
     "section": "3.5 Plasma Cytokine Concentration by Olink",
-    "text": "3.5 Plasma Cytokine Concentration by Olink"
+    "text": "3.5 Plasma Cytokine Concentration by Olink\n\nAt baseline: About 6.5% of the variance is explained by the dataset, probably also due to 3 outliers from the 2022 datasets. TODO: Investigate this in more detail."
   },
   {
     "objectID": "eda/batch_effects.html#t-cell-activation",
     "href": "eda/batch_effects.html#t-cell-activation",
     "title": "Batch Effects",
     "section": "3.6 T Cell Activation",
-    "text": "3.6 T Cell Activation\n\nNo cohort-specific effect"
+    "text": "3.6 T Cell Activation\n\nSpecimen are only available for baseline, no cohort-specific effect"
   },
   {
     "objectID": "eda/batch_effects.html#t-cell-polarization",
     "href": "eda/batch_effects.html#t-cell-polarization",
     "title": "Batch Effects",
     "section": "3.7 T Cell Polarization",
-    "text": "3.7 T Cell Polarization"
+    "text": "3.7 T Cell Polarization\n\nSpecimen are only available for baseline, most of the variance is explained by interaction terms age_at_boost:dataset and infancy_vac:dataset. TODO: Think about what to make of this."
   },
   {
     "objectID": "eda/batch_effects.html#day_0",

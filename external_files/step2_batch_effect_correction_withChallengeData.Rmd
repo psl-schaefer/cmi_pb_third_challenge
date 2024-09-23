@@ -84,7 +84,7 @@ missing_percent <- colMeans(is.na(tcellpol_wide_before_wide)) * 100
 columns_with_high_na <- which(missing_percent > 80)
 
 tcellpol_wide_before_wide = tcellpol_wide_before_wide %>%
-  filter(!specimen_id %in% c(1159)) %>%
+  filter(!specimen_id %in% c(1159)) %>% # specimen with all NAs
   column_to_rownames("specimen_id")%>%
   t() 
 
@@ -157,7 +157,8 @@ ab_data_obj = list(
 
 
 ## Apply data normalization and batch correction
-abtiter_data_processed = processAbtiter(ab_data_obj, BatchCorrection = TRUE)
+abtiter_data_processed = processAbtiter(master_obj=ab_data_obj, 
+                                        BatchCorrection = TRUE)
 
 pvca_analysis(abtiter_data_processed$normalized_data, subject_specimen, batch.factors, plot_title = "Plasma Antibody titer: Normalization")
 pvca_analysis(abtiter_data_processed$batchCorrected_data, subject_specimen, batch.factors, plot_title = "Plasma Antibody titer:  Normalization and batch effect correction")

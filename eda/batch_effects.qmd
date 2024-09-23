@@ -76,12 +76,20 @@ specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
 # Results
 
-```{r results="asis"}
-#| crop: true
+```{r}
+#| results: asis
+
+##| crop: true # interfers with dynamic toc generation
+
+outliers_list <- purrr::set_names(names(specimen_per_day)) %>%
+  purrr::map(~ purrr::set_names(names(experimental_data)) %>%
+               purrr::map(~list()))
+outliers_list$day_0$plasma_cytokine_concentration_by_legendplex <- c(661)
 
 for (day in names(specimen_per_day)) {
   # day <- names(specimen_per_day)[1]
-
+  
+  cat("\n\n")
   cat(paste0("## ", day))
   cat("\n\n")
   
@@ -90,6 +98,7 @@ for (day in names(specimen_per_day)) {
   for (assay in names(experimental_data)) {
     # assay <- names(experimental_data)[2]
     
+    cat("\n\n")
     cat(paste0("### ", assay))
     cat("\n\n")
     
@@ -178,11 +187,23 @@ for (day in names(specimen_per_day)) {
         assay_mtx_wide <- t(assay(assay_mtx_wide))
       }
       
+      # dist_mtx <- as.matrix(dist(assay_mtx_wide))
+      # dist_mtx_median <- median(dist_mtx[lower.tri(dist_mtx)])
+      # dist_mtx_binary <- dist_mtx > (3 * dist_mtx_median)
+      # outliers <- 
+      #   which(rowSums(dist_mtx_binary) > (10*median(rowSums(dist_mtx_binary))))
+      # no_outliers <- rownames(dist_mtx)[!rownames(dist_mtx) %in% names(outliers)]
+      
+      if ( any( rownames(assay_mtx_wide) %in% outliers_list[[day]][[assay]] ) ) {
+        no_outerliers <- rownames(assay_mtx_wide)[!rownames(assay_mtx_wide) %in% outliers_list[[day]][[assay]]]
+        assay_mtx_wide <- assay_mtx_wide[no_outerliers, ]
+      }
+      
       #str(assay_mtx_wide)
       suppressMessages({
         suppressWarnings({
           p1 <- pvca_analysis(assay_mtx_wide=assay_mtx_wide,
-                        meta_data=meta_data)$p1
+                              meta_data=meta_data)$p1
         })
       })
       print(p1)
