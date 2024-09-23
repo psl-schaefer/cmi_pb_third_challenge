@@ -140,6 +140,7 @@ get_cross_cohort_perf_single <- function(model_df, meta_data) {
       predictions <- predict(model, test_df)$predictions
       tibble::tibble(trainset = train_dataset,
                      testset = test_dataset,
+                     test_baseline = test_df$baseline,
                      target = test_df$target, 
                      prediction = predictions,
                      testset_mean = mean(test_df$target))
@@ -154,6 +155,7 @@ get_cross_cohort_perf_single <- function(model_df, meta_data) {
       mse = get_mse(target, prediction),
       r2 = get_r2(target, prediction),
       srho = get_spearman(target, prediction),
+      srho_baseline = get_spearman(target, test_baseline),
       mse_tmean = get_mse(target, testset_mean),
       .groups = "drop"
     ) %>%

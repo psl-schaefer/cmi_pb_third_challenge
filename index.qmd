@@ -17,3 +17,5 @@ title: "Overview"
 # Models
 
 - [Metadata Models](models/metadata_model.qmd)
+
+- [Literature Models](models/literature_model.qmd)

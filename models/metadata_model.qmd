@@ -56,7 +56,15 @@ str(target_list)
 
 # Conclusions
 
-TODO
+- Estimating the predictive accuracy using cross-cohort train/test splits is probably much more trustworthy. Using OOB or LOOCV on the joint dataset probably overestimates the generalizability of the models for new cohorts (i.e. for the 2023 cohort).
+
+- As shown in the previous challenges, using baseline values for the prediction of absolute numbers (tasks 1.1, 2.1, 3.1) works already very good. It will not be easy to beat this baseline.
+
+- The metadata model for task 1.2 works quite well (when looking at the spearman correlation), whereas task 2.2 and 3.2 seem much more difficult.
+
+# Questions
+
+- In the cross-cohort setting, the predictions from 2022 -> 2021 are sometimes much better than 2021 -> 2022 (or the other way around). How can this be?
 
 # Results
 
@@ -128,11 +136,11 @@ for (task in task_meta) {
   set.seed(42)
   
   get_oob_perf(model_df=model_df) %>% 
-    dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2)) %>%
+    dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2), srho = round(srho, 2)) %>%
     make_flextable(.)
   
   get_loocv_perf(model_df=model_df) %>% 
-    dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2)) %>%
+    dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2), srho = round(srho, 2)) %>%
     make_flextable(.)
     
   # get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data) %>%
@@ -141,10 +149,15 @@ for (task in task_meta) {
     
   get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data) %>%
     dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2),
+                  srho = round(srho, 2), srho_baseline = round(srho_baseline, 2),
                   mse_tmean = round(mse_tmean, 2)) %>%
     make_flextable(.)
   
   cat("\n\n")
 }
+```
+
+```{r}
+
 ```
 

@@ -1,0 +1,253 @@
+---
+title: "Literature Models"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(flextable)
+  library(ggdark)
+  library(magick)
+})
+
+knitr::opts_knit$set(output.dir = "./")
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "colors.R"))
+source(file.path("..", "src", "generate_targets.R"))
+source(file.path("..", "src", "model.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+meta_data <- read_harmonized_meta_data(input_dir)
+
+experimental_data <- read_raw_experimental_data(input_dir)
+experimental_data <- filter_experimental_data(meta_data, experimental_data)
+
+meta_data <- filter_meta_data(meta_data, experimental_data)
+wide_experimental_data <- generate_wide_experimental_data(experimental_data=experimental_data,
+                                                 impute="zero")
+
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+protein_meta <- read_protein_meta(input_dir)
+```
+
+```{r}
+target_list <- generate_all_targets(
+  meta_data=meta_data,
+  experimental_data=experimental_data,
+  experimental_data_settings=experimental_data_settings,
+  gene_meta=gene_meta)
+str(target_list)
+```
+
+```{r}
+gene_set <- read_rds(file.path(input_dir, "external_data",
+                               "literature_models_first_challenge-cmipb-challenge", 
+                               "CMI-PB-literature_models_first_challenge-c3c23cb",
+                               "Study-1-Avey-2017",
+                               "gene_set.RDS"))
+length(gene_set)
+```
+
+```{r}
+specimen_per_day <- get_specimen_per_day(meta_data)
+specimen_per_day$day_0 <- specimen_per_day$day_0 %>%
+  dplyr::filter(specimen_id %in% rownames(wide_experimental_data$pbmc_gene_expression)) %>%
+  dplyr::mutate(specimen_id = as.character(specimen_id))
+
+pbmc_gex <- wide_experimental_data$pbmc_gene_expression[specimen_per_day$day_0$specimen_id, ]
+stopifnot(all(dplyr::near(rowSums(pbmc_gex), 1e6, tol=1)))
+str(pbmc_gex)
+
+# filter genes and normalize the gene expression data
+min_counts <- 200
+min_samples <- 20
+
+genes_to_keep <- colnames(pbmc_gex)[
+  (colSums(pbmc_gex) >= min_counts) &
+    (colSums(pbmc_gex > 0) >= min_samples)
+]
+
+pbmc_gex <- pbmc_gex[ , genes_to_keep]
+pbmc_gex <- log1p(pbmc_gex)
+
+str(pbmc_gex)
+
+# check that all column (gene) names are unique
+stopifnot(length(colnames(pbmc_gex)) == length(unique(colnames(pbmc_gex))))
+
+ensemble_to_gene <- tibble(versioned_ensembl_gene_id = colnames(pbmc_gex)) %>%
+  dplyr::left_join(gene_meta, by="versioned_ensembl_gene_id") %>%
+  dplyr::group_by(gene_symbol) %>%
+  dplyr::mutate(n = n()) %>%
+  dplyr::arrange(desc(n), gene_symbol) %>%
+  dplyr::filter(n==1) %>%
+  dplyr::ungroup()
+
+pbmc_gex <- pbmc_gex[ , ensemble_to_gene$versioned_ensembl_gene_id]
+colnames(pbmc_gex) <- ensemble_to_gene$gene_symbol
+
+stopifnot(length(colnames(pbmc_gex)) == length(unique(colnames(pbmc_gex))))
+
+str(pbmc_gex)
+```
+
+```{r}
+score_signature_ulm <- function(gex_mtx, signature_genes) {
+  n_missing <- sum(!signature_genes %in% colnames(gex_mtx))
+  message(paste0(n_missing, " features from signature are missing"))
+  signature_genes <- signature_genes[signature_genes %in% colnames(gex_mtx)]
+  
+  binary_vec <- vector(mode="numeric", length=ncol(gex_mtx))
+  names(binary_vec) <- colnames(gex_mtx)
+  binary_vec[signature_genes] <- 1
+  stopifnot(sum(binary_vec) == length(signature_genes))
+  
+  purrr::map(rownames(gex_mtx), function(rname) {
+    model <- lm(
+      formula = y ~ x,
+      data = tibble(y = gex_mtx[rname, ],
+                    x = binary_vec)
+    )
+    tval <- summary(model)$coefficients["x", "t value"]
+    return(
+      tibble(specimen_id = rname, 
+             stat = tval)
+    )
+  }) %>%
+    dplyr::bind_rows()
+}
+
+score_signature_mean <- function(gex_mtx, signature_genes) {
+  n_missing <- sum(!signature_genes %in% colnames(gex_mtx))
+  message(paste0(n_missing, " features from signature are missing"))
+  signature_genes <- signature_genes[signature_genes %in% colnames(gex_mtx)]
+  
+  return(
+    tibble(
+      specimen_id = rownames(gex_mtx),
+      stat = rowSums(gex_mtx[, signature_genes])
+      )
+  )
+}
+
+signatures_oi <- c(
+  "inflammatory response (M33)",
+  "platelet activation (III) (M42)",
+  "BCR signaling (M54)",
+  "Random"
+)
+
+#random_signatures <- sample(names(gene_set), 3)
+set.seed(42)
+gene_set[["Random"]] <- sample(colnames(pbmc_gex), 20)
+
+sign_scores <- purrr::map(signatures_oi, function(signature_name) {
+  score_signature_ulm(gex_mtx=pbmc_gex, 
+                      signature=gene_set[[signature_name]]) %>%
+    dplyr::mutate(signature = signature_name)
+}) %>%
+  dplyr::bind_rows() %>%
+  tidyr::pivot_wider(names_from="signature", values_from="stat") %>%
+  dplyr::mutate(specimen_id = as.numeric(specimen_id)) %>%
+  dplyr::left_join(meta_data %>% dplyr::select(subject_id, specimen_id), 
+                   by="specimen_id") %>%
+  dplyr::select(-specimen_id)
+
+GGally::ggpairs(sign_scores %>% dplyr::select(-c(subject_id))) +
+  ggdark::dark_mode(verbose=FALSE)
+```
+
+```{r}
+sign_scores
+```
+
+# Concusions
+
+- I cannot quite reproduce the results from the paper. In the paper the signatures from Avey et al. (2017), are very helpful to predict the fold changes, but this is not quite the case here. Maybe I am not using the best scoring function.
+
+# Results
+
+```{r}
+task_meta <- list(
+  task_11 = list(
+    name = "task_11",
+    header = "## Task 1.1",
+    description = "Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations."
+  ),
+  task_12 = list(
+    name = "task_12",
+    header = "## Task 1.2",
+    description = "Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0."
+  )
+)
+```
+
+```{r results="asis"}
+RENDER <- TRUE
+
+make_flextable <- function(x) {
+  if (RENDER) {
+    x %>%
+      flextable() %>% 
+      bg(., bg = "#333333", part = "all") %>%
+      color(., color = "white", part = "all") %>%
+      set_table_properties(., align = "left") %>%
+      flextable_to_rmd(ft) %>%
+      return()
+  } else {
+    return(x)
+  }
+}
+
+for (task in task_meta) {
+
+  cat(task$header)
+  cat("\n\n")
+  cat(task$description)
+  cat("\n\n")
+  
+  for (signature in signatures_oi) {
+    
+    cat(paste0("### ", signature))
+    cat("\n\n")
+    
+    model_df <- target_list[[task$name]] %>%
+      dplyr::left_join(sign_scores %>% dplyr::select(dplyr::all_of(c("subject_id", signature))), 
+                       by="subject_id")
+    model_df %>%
+      dplyr::left_join((meta_data %>% dplyr::select(subject_id, dataset) %>% dplyr::distinct()),
+                       by="subject_id") %>%
+      dplyr::group_by(dataset) %>%
+      dplyr::summarise(
+        "srho_baseline" = round(get_spearman(.data$target, .data$baseline), 2),
+        "srho_signature" = round(get_spearman(.data$target, .data[[signature]]), 2)
+      ) %>%
+      make_flextable()
+  }
+}
+```
+
+# Previous Results
+
+- From: Shinde, P. et al. Putting computational models of immunity to the test - an invited challenge to predict B. pertussis vaccination outcomes. (2024) doi:10.1101/2024.09.04.611290.
+
+```{r}
+knitr::include_graphics(file.path("..", "img", "results_challenge_2.png"))
+```
+
+

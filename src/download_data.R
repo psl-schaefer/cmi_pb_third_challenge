@@ -25,6 +25,11 @@ if (!file.exists(meta_data_dir)) {
   dir.create(meta_data_dir, recursive = TRUE)
 }
 
+external_data_dir <- file.path(data_dir, "external_data")
+if (!file.exists(external_data_dir)) {
+  dir.create(external_data_dir, recursive = TRUE)
+}
+
 base_url <- "https://www.cmi-pb.org/api/v5" # "https://www.cmi-pb.org/api"
 endpoints <- c("/cell_type", "/gene", "/protein")
 for (endpoint in endpoints) {
@@ -234,3 +239,29 @@ for (i in seq_along(classes)) {
 # Download the gene info often used in the recommended processing files
 download.file("https://raw.githubusercontent.com/CMI-PB/second-challenge-train-dataset-preparation/main/data/gene_90_38_export.tsv", 
               file.path(meta_data_dir, "gene_90_38_export.tsv"), method = "curl")
+
+download.file("https://zenodo.org/records/10642079/files/CMI-PB/literature_models_first_challenge-cmipb-challenge.zip?download=1",
+              file.path(external_data_dir, "literature_models_first_challenge-cmipb-challenge.zip"), method="curl")
+
+unzip(file.path(external_data_dir, "literature_models_first_challenge-cmipb-challenge.zip"), 
+      exdir = file.path(external_data_dir, "literature_models_first_challenge-cmipb-challenge"))
+
+
+load(file.path(external_data_dir, 
+               "literature_models_first_challenge-cmipb-challenge", 
+               "CMI-PB-literature_models_first_challenge-c3c23cb",
+               "Study-1-Avey-2017",
+               "geneSetDB.rda"))
+
+gene_set <- strsplit(geneSetDB, "\t")      
+module.names <- as.data.frame(x = sapply(gene_set,"[", 1))
+colnames(module.names) <- 'module'
+gene_set <- lapply(gene_set, "[",-1:-2) # remove name and description columns
+gene_set <- lapply(gene_set, function(x){ x[ which( x != "") ] }) # remove empty strings
+names(gene_set) <- module.names$module # adding module names to gene_set
+
+write_rds(gene_set, file=file.path(external_data_dir, 
+                                   "literature_models_first_challenge-cmipb-challenge", 
+                                   "CMI-PB-literature_models_first_challenge-c3c23cb",
+                                   "Study-1-Avey-2017",
+                                   "gene_set.RDS"))
