@@ -10,9 +10,9 @@ title: "Overview"
 
 - [Batch Effects Raw Data](eda/batch_effects_raw_data.qmd)
 
-- [Batch Effects After Normalization](eda/batch_effects_raw_data.qmd)
+- [Batch Effects After Normalization](eda/batch_effects_after_normalization.qmd)
 
-- [Batch Effects After Batch Correction / Integration](eda/batch_effects_raw_data.qmd)
+- [Batch Effects After Batch Correction / Integration](eda/batch_effects_after_integration.qmd)
 
 - [Prediction Targets](eda/targets.qmd)
 

@@ -46,13 +46,40 @@ experimental_data <- filter_experimental_data(meta_data=meta_data,
 experimental_data <- normalize_experimental_data(meta_data=meta_data, 
                                                  experimental_data=experimental_data,
                                                  gene_meta=gene_meta)
-
+experimental_data <- experimental_data[-which(names(experimental_data) ==
+                                                "pbmc_gene_expression_raw")]
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 ```
 
 # Conclusions
 
+## PBMC Fractions
 
+- No further processing needed I guess.
+
+## PBMC Gene Expression
+
+- Very strong cohort-specific effects for baseline specimen and post-booster specimen
+
+## Plasma Antibody Levels
+
+- Slight batch effect. Not sure whether it needs some kind of batch correction or not.
+
+## Plasma Cytokine Concentration by Legendplex
+
+- Slight batch effect. Not sure whether it needs some kind of batch correction or not. The data distribution looks odd anyway!
+
+## Plasma Cytokine Concentration by Olink
+
+- No further processing needed I guess.
+
+## T Cell Activation
+
+- No further processing needed I guess.
+
+## T Cell Polarization
+
+- Specimen are only available for baseline, most of the variance is explained by interaction terms `age_at_boost:dataset` and `infancy_vac:dataset`. TODO: Think about what to make of this.
 
 # Results
 

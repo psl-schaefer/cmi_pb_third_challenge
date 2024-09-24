@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Philipp Sven Lars Schäfer">
+<meta name="dcterms.date" content="2024-09-24">
 
-<title>batch_effects_after_integration – PSLS @ 3rd CMI-PB Challenge</title>
+<title>Batch Effects After Integrations – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,6 +102,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -152,19 +156,657 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="1">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#packages" id="toc-packages" class="nav-link active" data-scroll-target="#packages"><span class="header-section-number">1</span> Packages</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">2</span> Data</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">3</span> Conclusions</a>
+  <ul class="collapse">
+  <li><a href="#pbmc-fractions" id="toc-pbmc-fractions" class="nav-link" data-scroll-target="#pbmc-fractions"><span class="header-section-number">3.1</span> PBMC Fractions</a></li>
+  <li><a href="#pbmc-gene-expression" id="toc-pbmc-gene-expression" class="nav-link" data-scroll-target="#pbmc-gene-expression"><span class="header-section-number">3.2</span> PBMC Gene Expression</a></li>
+  <li><a href="#plasma-antibody-levels" id="toc-plasma-antibody-levels" class="nav-link" data-scroll-target="#plasma-antibody-levels"><span class="header-section-number">3.3</span> Plasma Antibody Levels</a></li>
+  <li><a href="#plasma-cytokine-concentration-by-legendplex" id="toc-plasma-cytokine-concentration-by-legendplex" class="nav-link" data-scroll-target="#plasma-cytokine-concentration-by-legendplex"><span class="header-section-number">3.4</span> Plasma Cytokine Concentration by Legendplex</a></li>
+  <li><a href="#plasma-cytokine-concentration-by-olink" id="toc-plasma-cytokine-concentration-by-olink" class="nav-link" data-scroll-target="#plasma-cytokine-concentration-by-olink"><span class="header-section-number">3.5</span> Plasma Cytokine Concentration by Olink</a></li>
+  <li><a href="#t-cell-activation" id="toc-t-cell-activation" class="nav-link" data-scroll-target="#t-cell-activation"><span class="header-section-number">3.6</span> T Cell Activation</a></li>
+  <li><a href="#t-cell-polarization" id="toc-t-cell-polarization" class="nav-link" data-scroll-target="#t-cell-polarization"><span class="header-section-number">3.7</span> T Cell Polarization</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">4</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#day_0" id="toc-day_0" class="nav-link" data-scroll-target="#day_0"><span class="header-section-number">4.1</span> day_0</a>
+  <ul class="collapse">
+  <li><a href="#pbmc_cell_frequency" id="toc-pbmc_cell_frequency" class="nav-link" data-scroll-target="#pbmc_cell_frequency"><span class="header-section-number">4.1.1</span> pbmc_cell_frequency</a></li>
+  <li><a href="#pbmc_gene_expression" id="toc-pbmc_gene_expression" class="nav-link" data-scroll-target="#pbmc_gene_expression"><span class="header-section-number">4.1.2</span> pbmc_gene_expression</a></li>
+  <li><a href="#plasma_ab_titer" id="toc-plasma_ab_titer" class="nav-link" data-scroll-target="#plasma_ab_titer"><span class="header-section-number">4.1.3</span> plasma_ab_titer</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_legendplex" id="toc-plasma_cytokine_concentration_by_legendplex" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_legendplex"><span class="header-section-number">4.1.4</span> plasma_cytokine_concentration_by_legendplex</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_olink" id="toc-plasma_cytokine_concentration_by_olink" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_olink"><span class="header-section-number">4.1.5</span> plasma_cytokine_concentration_by_olink</a></li>
+  <li><a href="#t_cell_activation" id="toc-t_cell_activation" class="nav-link" data-scroll-target="#t_cell_activation"><span class="header-section-number">4.1.6</span> t_cell_activation</a></li>
+  <li><a href="#t_cell_polarization" id="toc-t_cell_polarization" class="nav-link" data-scroll-target="#t_cell_polarization"><span class="header-section-number">4.1.7</span> t_cell_polarization</a></li>
+  </ul></li>
+  <li><a href="#day_1" id="toc-day_1" class="nav-link" data-scroll-target="#day_1"><span class="header-section-number">4.2</span> day_1</a>
+  <ul class="collapse">
+  <li><a href="#pbmc_cell_frequency-1" id="toc-pbmc_cell_frequency-1" class="nav-link" data-scroll-target="#pbmc_cell_frequency-1"><span class="header-section-number">4.2.1</span> pbmc_cell_frequency</a></li>
+  <li><a href="#pbmc_gene_expression-1" id="toc-pbmc_gene_expression-1" class="nav-link" data-scroll-target="#pbmc_gene_expression-1"><span class="header-section-number">4.2.2</span> pbmc_gene_expression</a></li>
+  <li><a href="#plasma_ab_titer-1" id="toc-plasma_ab_titer-1" class="nav-link" data-scroll-target="#plasma_ab_titer-1"><span class="header-section-number">4.2.3</span> plasma_ab_titer</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_legendplex-1" id="toc-plasma_cytokine_concentration_by_legendplex-1" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_legendplex-1"><span class="header-section-number">4.2.4</span> plasma_cytokine_concentration_by_legendplex</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_olink-1" id="toc-plasma_cytokine_concentration_by_olink-1" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_olink-1"><span class="header-section-number">4.2.5</span> plasma_cytokine_concentration_by_olink</a></li>
+  <li><a href="#t_cell_activation-1" id="toc-t_cell_activation-1" class="nav-link" data-scroll-target="#t_cell_activation-1"><span class="header-section-number">4.2.6</span> t_cell_activation</a></li>
+  <li><a href="#t_cell_polarization-1" id="toc-t_cell_polarization-1" class="nav-link" data-scroll-target="#t_cell_polarization-1"><span class="header-section-number">4.2.7</span> t_cell_polarization</a></li>
+  </ul></li>
+  <li><a href="#day_3" id="toc-day_3" class="nav-link" data-scroll-target="#day_3"><span class="header-section-number">4.3</span> day_3</a>
+  <ul class="collapse">
+  <li><a href="#pbmc_cell_frequency-2" id="toc-pbmc_cell_frequency-2" class="nav-link" data-scroll-target="#pbmc_cell_frequency-2"><span class="header-section-number">4.3.1</span> pbmc_cell_frequency</a></li>
+  <li><a href="#pbmc_gene_expression-2" id="toc-pbmc_gene_expression-2" class="nav-link" data-scroll-target="#pbmc_gene_expression-2"><span class="header-section-number">4.3.2</span> pbmc_gene_expression</a></li>
+  <li><a href="#plasma_ab_titer-2" id="toc-plasma_ab_titer-2" class="nav-link" data-scroll-target="#plasma_ab_titer-2"><span class="header-section-number">4.3.3</span> plasma_ab_titer</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_legendplex-2" id="toc-plasma_cytokine_concentration_by_legendplex-2" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_legendplex-2"><span class="header-section-number">4.3.4</span> plasma_cytokine_concentration_by_legendplex</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_olink-2" id="toc-plasma_cytokine_concentration_by_olink-2" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_olink-2"><span class="header-section-number">4.3.5</span> plasma_cytokine_concentration_by_olink</a></li>
+  <li><a href="#t_cell_activation-2" id="toc-t_cell_activation-2" class="nav-link" data-scroll-target="#t_cell_activation-2"><span class="header-section-number">4.3.6</span> t_cell_activation</a></li>
+  <li><a href="#t_cell_polarization-2" id="toc-t_cell_polarization-2" class="nav-link" data-scroll-target="#t_cell_polarization-2"><span class="header-section-number">4.3.7</span> t_cell_polarization</a></li>
+  </ul></li>
+  <li><a href="#day_14" id="toc-day_14" class="nav-link" data-scroll-target="#day_14"><span class="header-section-number">4.4</span> day_14</a>
+  <ul class="collapse">
+  <li><a href="#pbmc_cell_frequency-3" id="toc-pbmc_cell_frequency-3" class="nav-link" data-scroll-target="#pbmc_cell_frequency-3"><span class="header-section-number">4.4.1</span> pbmc_cell_frequency</a></li>
+  <li><a href="#pbmc_gene_expression-3" id="toc-pbmc_gene_expression-3" class="nav-link" data-scroll-target="#pbmc_gene_expression-3"><span class="header-section-number">4.4.2</span> pbmc_gene_expression</a></li>
+  <li><a href="#plasma_ab_titer-3" id="toc-plasma_ab_titer-3" class="nav-link" data-scroll-target="#plasma_ab_titer-3"><span class="header-section-number">4.4.3</span> plasma_ab_titer</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_legendplex-3" id="toc-plasma_cytokine_concentration_by_legendplex-3" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_legendplex-3"><span class="header-section-number">4.4.4</span> plasma_cytokine_concentration_by_legendplex</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_olink-3" id="toc-plasma_cytokine_concentration_by_olink-3" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_olink-3"><span class="header-section-number">4.4.5</span> plasma_cytokine_concentration_by_olink</a></li>
+  <li><a href="#t_cell_activation-3" id="toc-t_cell_activation-3" class="nav-link" data-scroll-target="#t_cell_activation-3"><span class="header-section-number">4.4.6</span> t_cell_activation</a></li>
+  <li><a href="#t_cell_polarization-3" id="toc-t_cell_polarization-3" class="nav-link" data-scroll-target="#t_cell_polarization-3"><span class="header-section-number">4.4.7</span> t_cell_polarization</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">5</span> Appendix</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><div class="quarto-title-block"><div class="quarto-title-tools-only"><h1></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Batch Effects After Integrations</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Philipp Sven Lars Schäfer </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 24, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="packages" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Packages</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(vsn)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(lme4)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(DESeq2)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"model.R"</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"batch_effects.R"</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"normalize_integrate.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: mgcv</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: nlme</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'nlme'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:IRanges':
+
+    collapse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:lme4':
+
+    lmList</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    collapse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is mgcv 1.9-1. For overview type 'help("mgcv-package")'.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: genefilter</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'genefilter'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:MatrixGenerics':
+
+    rowSds, rowVars</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:matrixStats':
+
+    rowSds, rowVars</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:readr':
+
+    spec</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: BiocParallel</code></pre>
+</div>
+</div>
+</section>
+<section id="data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">experimental_data=</span>experimental_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>pbmc_cell_frequency | Removed 550 specimens because missing in meta data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_ab_titer | Removed 6931 specimens because missing in meta data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 495 specimens because missing in meta data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pbmc_cell_frequency | Removed 56 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_ab_titer | Removed 48 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 234 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>t_cell_polarization | Removed 3 features because not in feature subset</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 300 features because qc warning</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_ab_titer | Removed 10540 measurements because wrong unit used</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_olink | Removed 2400 measurements because wrong unit used</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>plasma_cytokine_concentration_by_legendplex | Removed 8 because specimen is outlier</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">normalize_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">experimental_data=</span>experimental_data,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">gene_meta=</span>gene_meta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>converting counts to integer mode</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>converting counts to integer mode
+converting counts to integer mode
+converting counts to integer mode</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">integrate_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">experimental_data=</span>experimental_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 4 batches
+Using null model in ComBat-seq.
+Adjusting for 0 covariate(s) or covariate level(s)
+Estimating dispersions
+Fitting the GLM model
+Shrinkage off - using GLM estimates for parameters
+Adjusting the data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.
+-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.
+-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.
+-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.
+-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.
+-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.
+-- note: fitType='parametric', but the dispersion trend was not well captured by the
+   function: y = a/x + b, and a local regression fit was automatically substituted.
+   specify fitType='local' or 'mean' to avoid this message next time.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Found3batches</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adjusting for0covariate(s) or covariate level(s)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Standardizing Data across genes</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Fitting L/S model and finding priors</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Finding parametric adjustments</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adjusting the Data</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> experimental_data[<span class="sc">-</span><span class="fu">which</span>(<span class="fu">names</span>(experimental_data) <span class="sc">==</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>                                                <span class="st">"pbmc_gene_expression_only_corrected"</span>)]</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>specimen_per_day <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(<span class="at">meta_data=</span>meta_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="conclusions" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Conclusions</h1>
+<section id="pbmc-fractions" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="pbmc-fractions"><span class="header-section-number">3.1</span> PBMC Fractions</h2>
+</section>
+<section id="pbmc-gene-expression" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="pbmc-gene-expression"><span class="header-section-number">3.2</span> PBMC Gene Expression</h2>
+</section>
+<section id="plasma-antibody-levels" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="plasma-antibody-levels"><span class="header-section-number">3.3</span> Plasma Antibody Levels</h2>
+</section>
+<section id="plasma-cytokine-concentration-by-legendplex" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="plasma-cytokine-concentration-by-legendplex"><span class="header-section-number">3.4</span> Plasma Cytokine Concentration by Legendplex</h2>
+</section>
+<section id="plasma-cytokine-concentration-by-olink" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="plasma-cytokine-concentration-by-olink"><span class="header-section-number">3.5</span> Plasma Cytokine Concentration by Olink</h2>
+<ul>
+<li>No further processing needed I guess.</li>
+</ul>
+</section>
+<section id="t-cell-activation" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="t-cell-activation"><span class="header-section-number">3.6</span> T Cell Activation</h2>
+<ul>
+<li>No further processing needed I guess.</li>
+</ul>
+</section>
+<section id="t-cell-polarization" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="t-cell-polarization"><span class="header-section-number">3.7</span> T Cell Polarization</h2>
+<ul>
+<li>Specimen are only available for baseline, most of the variance is explained by interaction terms <code>age_at_boost:dataset</code> and <code>infancy_vac:dataset</code>. TODO: Think about what to make of this.</li>
+</ul>
+</section>
+</section>
+<section id="results" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Results</h1>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="do">##| crop: true # interfers with dynamic toc generation</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (day <span class="cf">in</span> <span class="fu">names</span>(specimen_per_day)) {</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># day &lt;- names(specimen_per_day)[1]</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"## "</span>, day))</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  specimen_df <span class="ot">&lt;-</span> specimen_per_day[[day]]</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (assay <span class="cf">in</span> <span class="fu">names</span>(experimental_data)) {</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># assay &lt;- names(experimental_data)[4]</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"### "</span>, assay))</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>    feature_col <span class="ot">&lt;-</span> experimental_data_settings[[assay]]<span class="sc">$</span>feature_col</span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>    value_col <span class="ot">&lt;-</span> experimental_data_settings[[assay]]<span class="sc">$</span>value_col</span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>    assay_df_long <span class="ot">&lt;-</span> experimental_data[[assay]]</span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">#str(assay_df_long)</span></span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>    specimen_df_filtered <span class="ot">&lt;-</span> specimen_df <span class="sc">%&gt;%</span></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> <span class="fu">unique</span>(assay_df_long<span class="sc">$</span>specimen_id))</span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(specimen_df_filtered) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"No specimen for this combination of assay and day available"</span>))</span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a>      assay_mtx_wide <span class="ot">&lt;-</span> assay_df_long <span class="sc">%&gt;%</span></span>
+<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"specimen_id"</span>, feature_col, value_col))) <span class="sc">%&gt;%</span></span>
+<span id="cb42-33"><a href="#cb42-33" aria-hidden="true" tabindex="-1"></a>        tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(feature_col), </span>
+<span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a>                           <span class="at">values_from=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(value_col)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a>        tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-36"><a href="#cb42-36" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb42-37"><a href="#cb42-37" aria-hidden="true" tabindex="-1"></a>        .[<span class="fu">as.character</span>(specimen_df_filtered<span class="sc">$</span>specimen_id), ]</span>
+<span id="cb42-38"><a href="#cb42-38" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb42-39"><a href="#cb42-39" aria-hidden="true" tabindex="-1"></a>      impute_mode <span class="ot">&lt;-</span> <span class="st">"knn"</span></span>
+<span id="cb42-40"><a href="#cb42-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stopifnot</span>(impute_mode <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"zero"</span>, <span class="st">"median_feature"</span>, <span class="st">"knn"</span>))</span>
+<span id="cb42-41"><a href="#cb42-41" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb42-42"><a href="#cb42-42" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide))) {</span>
+<span id="cb42-43"><a href="#cb42-43" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Non-zero fraction of NAs: "</span>, </span>
+<span id="cb42-44"><a href="#cb42-44" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">round</span>(<span class="fu">mean</span>(<span class="fu">is.na</span>(assay_mtx_wide)), <span class="dv">4</span>)))</span>
+<span id="cb42-45"><a href="#cb42-45" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data: matrix with genes in the rows, samples in the columns</span></span>
+<span id="cb42-46"><a href="#cb42-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"zero"</span>) {</span>
+<span id="cb42-47"><a href="#cb42-47" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide[<span class="fu">is.na</span>(assay_mtx_wide)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb42-48"><a href="#cb42-48" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"knn"</span>) {</span>
+<span id="cb42-49"><a href="#cb42-49" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide <span class="ot">&lt;-</span> <span class="fu">t</span>(impute<span class="sc">::</span><span class="fu">impute.knn</span>(<span class="at">data=</span><span class="fu">t</span>(assay_mtx_wide))<span class="sc">$</span>data)</span>
+<span id="cb42-50"><a href="#cb42-50" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"median_feature"</span>) {</span>
+<span id="cb42-51"><a href="#cb42-51" aria-hidden="true" tabindex="-1"></a>          col_medians <span class="ot">&lt;-</span> matrixStats<span class="sc">::</span><span class="fu">colMedians</span>(assay_mtx_wide, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb42-52"><a href="#cb42-52" aria-hidden="true" tabindex="-1"></a>          <span class="cf">for</span> (colname <span class="cf">in</span> <span class="fu">colnames</span>(assay_mtx_wide)) {</span>
+<span id="cb42-53"><a href="#cb42-53" aria-hidden="true" tabindex="-1"></a>            col_vec <span class="ot">&lt;-</span> assay_mtx_wide[, colname]</span>
+<span id="cb42-54"><a href="#cb42-54" aria-hidden="true" tabindex="-1"></a>            col_vec[<span class="fu">is.na</span>(col_vec)] <span class="ot">&lt;-</span> col_medians[colname]</span>
+<span id="cb42-55"><a href="#cb42-55" aria-hidden="true" tabindex="-1"></a>            assay_mtx_wide[, colname] <span class="ot">&lt;-</span> col_vec</span>
+<span id="cb42-56"><a href="#cb42-56" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb42-57"><a href="#cb42-57" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb42-58"><a href="#cb42-58" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="sc">!</span><span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide)))</span>
+<span id="cb42-59"><a href="#cb42-59" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb42-60"><a href="#cb42-60" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb42-61"><a href="#cb42-61" aria-hidden="true" tabindex="-1"></a>      <span class="co"># dist_mtx &lt;- as.matrix(dist(assay_mtx_wide))</span></span>
+<span id="cb42-62"><a href="#cb42-62" aria-hidden="true" tabindex="-1"></a>      <span class="co"># dist_mtx_median &lt;- median(dist_mtx[lower.tri(dist_mtx)])</span></span>
+<span id="cb42-63"><a href="#cb42-63" aria-hidden="true" tabindex="-1"></a>      <span class="co"># dist_mtx_binary &lt;- dist_mtx &gt; (3 * dist_mtx_median)</span></span>
+<span id="cb42-64"><a href="#cb42-64" aria-hidden="true" tabindex="-1"></a>      <span class="co"># outliers &lt;-</span></span>
+<span id="cb42-65"><a href="#cb42-65" aria-hidden="true" tabindex="-1"></a>      <span class="co">#  which(rowSums(dist_mtx_binary) &gt; (10*median(rowSums(dist_mtx_binary))))</span></span>
+<span id="cb42-66"><a href="#cb42-66" aria-hidden="true" tabindex="-1"></a>      <span class="co"># no_outliers &lt;- rownames(dist_mtx)[!rownames(dist_mtx) %in% names(outliers)]</span></span>
+<span id="cb42-67"><a href="#cb42-67" aria-hidden="true" tabindex="-1"></a>      <span class="co"># assay_mtx_wide &lt;- assay_mtx_wide[no_outliers, ]</span></span>
+<span id="cb42-68"><a href="#cb42-68" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb42-69"><a href="#cb42-69" aria-hidden="true" tabindex="-1"></a>      <span class="co">#str(assay_mtx_wide)</span></span>
+<span id="cb42-70"><a href="#cb42-70" aria-hidden="true" tabindex="-1"></a>      <span class="fu">suppressMessages</span>({</span>
+<span id="cb42-71"><a href="#cb42-71" aria-hidden="true" tabindex="-1"></a>        <span class="fu">suppressWarnings</span>({</span>
+<span id="cb42-72"><a href="#cb42-72" aria-hidden="true" tabindex="-1"></a>          p1 <span class="ot">&lt;-</span> <span class="fu">pvca_analysis</span>(<span class="at">assay_mtx_wide=</span>assay_mtx_wide,</span>
+<span id="cb42-73"><a href="#cb42-73" aria-hidden="true" tabindex="-1"></a>                              <span class="at">meta_data=</span>meta_data)<span class="sc">$</span>p1</span>
+<span id="cb42-74"><a href="#cb42-74" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb42-75"><a href="#cb42-75" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb42-76"><a href="#cb42-76" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(p1)</span>
+<span id="cb42-77"><a href="#cb42-77" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb42-78"><a href="#cb42-78" aria-hidden="true" tabindex="-1"></a>      plist <span class="ot">&lt;-</span> <span class="fu">generate_pca_plots</span>(<span class="at">assay_mtx_wide=</span>assay_mtx_wide,</span>
+<span id="cb42-79"><a href="#cb42-79" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb42-80"><a href="#cb42-80" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p1)</span>
+<span id="cb42-81"><a href="#cb42-81" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p2)</span>
+<span id="cb42-82"><a href="#cb42-82" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p3)</span>
+<span id="cb42-83"><a href="#cb42-83" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb42-84"><a href="#cb42-84" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>))</span>
+<span id="cb42-85"><a href="#cb42-85" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb42-86"><a href="#cb42-86" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<section id="day_0" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="day_0"><span class="header-section-number">4.1</span> day_0</h2>
+<section id="pbmc_cell_frequency" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="pbmc_cell_frequency"><span class="header-section-number">4.1.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="pbmc_gene_expression"><span class="header-section-number">4.1.2</span> pbmc_gene_expression</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-5.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-6.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-7.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-8.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="plasma_ab_titer"><span class="header-section-number">4.1.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-9.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-10.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-11.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-12.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex"><span class="header-section-number">4.1.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-13.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-14.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-15.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-16.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink" class="level3" data-number="4.1.5">
+<h3 data-number="4.1.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink"><span class="header-section-number">4.1.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.0039<img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-17.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-18.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-19.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-20.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation" class="level3" data-number="4.1.6">
+<h3 data-number="4.1.6" class="anchored" data-anchor-id="t_cell_activation"><span class="header-section-number">4.1.6</span> t_cell_activation</h3>
+<p>Non-zero fraction of NAs: 0.059<img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-21.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-22.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-23.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-24.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_polarization" class="level3" data-number="4.1.7">
+<h3 data-number="4.1.7" class="anchored" data-anchor-id="t_cell_polarization"><span class="header-section-number">4.1.7</span> t_cell_polarization</h3>
+<p>Non-zero fraction of NAs: 0.0106<img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-25.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-26.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-27.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-28.png" class="img-fluid" width="672"></p>
+</section>
+</section>
+<section id="day_1" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="day_1"><span class="header-section-number">4.2</span> day_1</h2>
+<section id="pbmc_cell_frequency-1" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="pbmc_cell_frequency-1"><span class="header-section-number">4.2.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-29.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-30.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-31.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-32.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression-1" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="pbmc_gene_expression-1"><span class="header-section-number">4.2.2</span> pbmc_gene_expression</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-33.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-34.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-35.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-36.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer-1" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="plasma_ab_titer-1"><span class="header-section-number">4.2.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-37.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-38.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-39.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-40.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex-1" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex-1"><span class="header-section-number">4.2.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-41.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-42.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-43.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-44.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink-1" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink-1"><span class="header-section-number">4.2.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.014<img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-45.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-46.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-47.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-48.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation-1" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="t_cell_activation-1"><span class="header-section-number">4.2.6</span> t_cell_activation</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+<section id="t_cell_polarization-1" class="level3" data-number="4.2.7">
+<h3 data-number="4.2.7" class="anchored" data-anchor-id="t_cell_polarization-1"><span class="header-section-number">4.2.7</span> t_cell_polarization</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+</section>
+<section id="day_3" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="day_3"><span class="header-section-number">4.3</span> day_3</h2>
+<section id="pbmc_cell_frequency-2" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="pbmc_cell_frequency-2"><span class="header-section-number">4.3.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-49.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-50.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-51.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-52.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression-2" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="pbmc_gene_expression-2"><span class="header-section-number">4.3.2</span> pbmc_gene_expression</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-53.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-54.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-55.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-56.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer-2" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="plasma_ab_titer-2"><span class="header-section-number">4.3.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-57.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-58.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-59.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-60.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex-2" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex-2"><span class="header-section-number">4.3.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-61.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-62.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-63.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-64.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink-2" class="level3" data-number="4.3.5">
+<h3 data-number="4.3.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink-2"><span class="header-section-number">4.3.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.0199<img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-65.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-66.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-67.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-68.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation-2" class="level3" data-number="4.3.6">
+<h3 data-number="4.3.6" class="anchored" data-anchor-id="t_cell_activation-2"><span class="header-section-number">4.3.6</span> t_cell_activation</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+<section id="t_cell_polarization-2" class="level3" data-number="4.3.7">
+<h3 data-number="4.3.7" class="anchored" data-anchor-id="t_cell_polarization-2"><span class="header-section-number">4.3.7</span> t_cell_polarization</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+</section>
+<section id="day_14" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="day_14"><span class="header-section-number">4.4</span> day_14</h2>
+<section id="pbmc_cell_frequency-3" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="pbmc_cell_frequency-3"><span class="header-section-number">4.4.1</span> pbmc_cell_frequency</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-69.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-70.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-71.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-72.png" class="img-fluid" width="672"></p>
+</section>
+<section id="pbmc_gene_expression-3" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="pbmc_gene_expression-3"><span class="header-section-number">4.4.2</span> pbmc_gene_expression</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-73.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-74.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-75.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-76.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_ab_titer-3" class="level3" data-number="4.4.3">
+<h3 data-number="4.4.3" class="anchored" data-anchor-id="plasma_ab_titer-3"><span class="header-section-number">4.4.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-77.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-78.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-79.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-80.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex-3" class="level3" data-number="4.4.4">
+<h3 data-number="4.4.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex-3"><span class="header-section-number">4.4.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-81.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-82.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-83.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-84.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink-3" class="level3" data-number="4.4.5">
+<h3 data-number="4.4.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink-3"><span class="header-section-number">4.4.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Non-zero fraction of NAs: 0.0025<img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-85.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-86.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-87.png" class="img-fluid" width="672"><img src="batch_effects_after_integration_files/figure-html/unnamed-chunk-4-88.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_activation-3" class="level3" data-number="4.4.6">
+<h3 data-number="4.4.6" class="anchored" data-anchor-id="t_cell_activation-3"><span class="header-section-number">4.4.6</span> t_cell_activation</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+<section id="t_cell_polarization-3" class="level3" data-number="4.4.7">
+<h3 data-number="4.4.7" class="anchored" data-anchor-id="t_cell_polarization-3"><span class="header-section-number">4.4.7</span> t_cell_polarization</h3>
+<p>No specimen for this combination of assay and day available</p>
+</section>
+</section>
+</section>
+<section id="appendix" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Appendix</h1>
+<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+Session Information
+</button>
+<div id="collapseOne" class="accordion-collapse collapse">
+<div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.2.3 (2023-03-15)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS 14.6.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRlapack.dylib
+
+locale:
+[1] C
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] sva_3.46.0                  BiocParallel_1.32.6        
+ [3] genefilter_1.80.3           mgcv_1.9-1                 
+ [5] nlme_3.1-166                magick_2.8.3               
+ [7] FactoMineR_2.11             factoextra_1.0.7           
+ [9] DESeq2_1.38.3               SummarizedExperiment_1.28.0
+[11] MatrixGenerics_1.10.0       matrixStats_1.4.1          
+[13] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
+[15] IRanges_2.32.0              S4Vectors_0.36.2           
+[17] lme4_1.1-35.5               Matrix_1.6-5               
+[19] vsn_3.66.0                  Biobase_2.58.0             
+[21] BiocGenerics_0.44.0         ggdark_0.2.1               
+[23] lubridate_1.9.3             forcats_1.0.0              
+[25] stringr_1.5.1               dplyr_1.1.4                
+[27] purrr_1.0.2                 readr_2.1.5                
+[29] tidyr_1.3.1                 tibble_3.2.1               
+[31] ggplot2_3.5.1               tidyverse_2.0.0            
+
+loaded via a namespace (and not attached):
+  [1] TH.data_1.1-2          minqa_1.2.8            colorspace_2.1-1      
+  [4] ggsignif_0.6.4         estimability_1.5.1     XVector_0.38.0        
+  [7] ggpubr_0.6.0           farver_2.1.2           affyio_1.68.0         
+ [10] DT_0.33                ggrepel_0.9.6          bit64_4.5.2           
+ [13] AnnotationDbi_1.60.2   fansi_1.0.6            mvtnorm_1.3-1         
+ [16] codetools_0.2-20       splines_4.2.3          leaps_3.2             
+ [19] impute_1.72.3          cachem_1.1.0           geneplotter_1.76.0    
+ [22] knitr_1.48             jsonlite_1.8.9         nloptr_2.1.1          
+ [25] broom_1.0.6            annotate_1.76.0        cluster_2.1.6         
+ [28] png_0.1-8              BiocManager_1.30.25    compiler_4.2.3        
+ [31] httr_1.4.7             backports_1.5.0        emmeans_1.10.4        
+ [34] fastmap_1.2.0          limma_3.54.2           cli_3.6.3             
+ [37] htmltools_0.5.8.1      tools_4.2.3            coda_0.19-4.1         
+ [40] gtable_0.3.5           glue_1.7.0             GenomeInfoDbData_1.2.9
+ [43] affy_1.76.0            Rcpp_1.0.13            carData_3.0-5         
+ [46] vctrs_0.6.5            Biostrings_2.66.0      preprocessCore_1.60.2 
+ [49] xfun_0.47              timechange_0.3.0       lifecycle_1.0.4       
+ [52] rstatix_0.7.2          XML_3.99-0.17          edgeR_3.40.2          
+ [55] zlibbioc_1.44.0        MASS_7.3-60.0.1        zoo_1.8-12            
+ [58] scales_1.3.0           vroom_1.6.5            hms_1.1.3             
+ [61] parallel_4.2.3         sandwich_3.1-1         RColorBrewer_1.1-3    
+ [64] yaml_2.3.10            memoise_2.0.1          stringi_1.8.4         
+ [67] RSQLite_2.3.7          boot_1.3-31            rlang_1.1.4           
+ [70] pkgconfig_2.0.3        bitops_1.0-8           evaluate_1.0.0        
+ [73] lattice_0.22-6         labeling_0.4.3         htmlwidgets_1.6.4     
+ [76] bit_4.5.0              tidyselect_1.2.1       magrittr_2.0.3        
+ [79] R6_2.5.1               multcompView_0.1-10    generics_0.1.3        
+ [82] multcomp_1.4-26        DelayedArray_0.24.0    DBI_1.2.3             
+ [85] pillar_1.9.0           withr_3.0.1            abind_1.4-8           
+ [88] scatterplot3d_0.3-44   survival_3.7-0         KEGGREST_1.38.0       
+ [91] RCurl_1.98-1.14        car_3.1-2              crayon_1.5.3          
+ [94] utf8_1.2.4             tzdb_0.4.0             rmarkdown_2.28        
+ [97] locfit_1.5-9.10        grid_4.2.3             blob_1.2.4            
+[100] flashClust_1.01-2      digest_0.6.37          xtable_1.8-4          
+[103] munsell_0.5.1          viridisLite_0.4.2     </code></pre>
+</div>
+</div>
+</div>
+</div>
 
 
 <!-- -->
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -638,7 +1280,186 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb45" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Batch Effects After Integrations"</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(vsn)</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(lme4)</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(DESeq2)</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(factoextra)</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(FactoMineR)</span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick) <span class="co"># formatting</span></span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>knit_hooks<span class="sc">$</span><span class="fu">set</span>(<span class="at">crop =</span> knitr<span class="sc">::</span>hook_pdfcrop) <span class="co"># formatting</span></span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"model.R"</span>))</span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"batch_effects.R"</span>))</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"normalize_integrate.R"</span>))</span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb45-44"><a href="#cb45-44" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb45-45"><a href="#cb45-45" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb45-46"><a href="#cb45-46" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
+<span id="cb45-47"><a href="#cb45-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-48"><a href="#cb45-48" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb45-49"><a href="#cb45-49" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb45-50"><a href="#cb45-50" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb45-51"><a href="#cb45-51" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">experimental_data=</span>experimental_data)</span>
+<span id="cb45-52"><a href="#cb45-52" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">normalize_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb45-53"><a href="#cb45-53" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">experimental_data=</span>experimental_data,</span>
+<span id="cb45-54"><a href="#cb45-54" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">gene_meta=</span>gene_meta)</span>
+<span id="cb45-55"><a href="#cb45-55" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">integrate_experimental_data</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb45-56"><a href="#cb45-56" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">experimental_data=</span>experimental_data)</span>
+<span id="cb45-57"><a href="#cb45-57" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> experimental_data[<span class="sc">-</span><span class="fu">which</span>(<span class="fu">names</span>(experimental_data) <span class="sc">==</span></span>
+<span id="cb45-58"><a href="#cb45-58" aria-hidden="true" tabindex="-1"></a>                                                <span class="st">"pbmc_gene_expression_only_corrected"</span>)]</span>
+<span id="cb45-59"><a href="#cb45-59" aria-hidden="true" tabindex="-1"></a>specimen_per_day <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(<span class="at">meta_data=</span>meta_data)</span>
+<span id="cb45-60"><a href="#cb45-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-61"><a href="#cb45-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-62"><a href="#cb45-62" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
+<span id="cb45-63"><a href="#cb45-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-64"><a href="#cb45-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Fractions</span></span>
+<span id="cb45-65"><a href="#cb45-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-66"><a href="#cb45-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## PBMC Gene Expression</span></span>
+<span id="cb45-67"><a href="#cb45-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-68"><a href="#cb45-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Antibody Levels</span></span>
+<span id="cb45-69"><a href="#cb45-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-70"><a href="#cb45-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Legendplex</span></span>
+<span id="cb45-71"><a href="#cb45-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-72"><a href="#cb45-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plasma Cytokine Concentration by Olink</span></span>
+<span id="cb45-73"><a href="#cb45-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-74"><a href="#cb45-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No further processing needed I guess.</span>
+<span id="cb45-75"><a href="#cb45-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-76"><a href="#cb45-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Activation</span></span>
+<span id="cb45-77"><a href="#cb45-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-78"><a href="#cb45-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No further processing needed I guess.</span>
+<span id="cb45-79"><a href="#cb45-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-80"><a href="#cb45-80" aria-hidden="true" tabindex="-1"></a><span class="fu">## T Cell Polarization</span></span>
+<span id="cb45-81"><a href="#cb45-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-82"><a href="#cb45-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Specimen are only available for baseline, most of the variance is explained by interaction terms <span class="in">`age_at_boost:dataset`</span> and <span class="in">`infancy_vac:dataset`</span>. TODO: Think about what to make of this.</span>
+<span id="cb45-83"><a href="#cb45-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-84"><a href="#cb45-84" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb45-85"><a href="#cb45-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-88"><a href="#cb45-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb45-89"><a href="#cb45-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: asis</span></span>
+<span id="cb45-90"><a href="#cb45-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-91"><a href="#cb45-91" aria-hidden="true" tabindex="-1"></a><span class="do">##| crop: true # interfers with dynamic toc generation</span></span>
+<span id="cb45-92"><a href="#cb45-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-93"><a href="#cb45-93" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (day <span class="cf">in</span> <span class="fu">names</span>(specimen_per_day)) {</span>
+<span id="cb45-94"><a href="#cb45-94" aria-hidden="true" tabindex="-1"></a>  <span class="co"># day &lt;- names(specimen_per_day)[1]</span></span>
+<span id="cb45-95"><a href="#cb45-95" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-96"><a href="#cb45-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb45-97"><a href="#cb45-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"## "</span>, day))</span>
+<span id="cb45-98"><a href="#cb45-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb45-99"><a href="#cb45-99" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-100"><a href="#cb45-100" aria-hidden="true" tabindex="-1"></a>  specimen_df <span class="ot">&lt;-</span> specimen_per_day[[day]]</span>
+<span id="cb45-101"><a href="#cb45-101" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-102"><a href="#cb45-102" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (assay <span class="cf">in</span> <span class="fu">names</span>(experimental_data)) {</span>
+<span id="cb45-103"><a href="#cb45-103" aria-hidden="true" tabindex="-1"></a>    <span class="co"># assay &lt;- names(experimental_data)[4]</span></span>
+<span id="cb45-104"><a href="#cb45-104" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-105"><a href="#cb45-105" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb45-106"><a href="#cb45-106" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"### "</span>, assay))</span>
+<span id="cb45-107"><a href="#cb45-107" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb45-108"><a href="#cb45-108" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-109"><a href="#cb45-109" aria-hidden="true" tabindex="-1"></a>    feature_col <span class="ot">&lt;-</span> experimental_data_settings[[assay]]<span class="sc">$</span>feature_col</span>
+<span id="cb45-110"><a href="#cb45-110" aria-hidden="true" tabindex="-1"></a>    value_col <span class="ot">&lt;-</span> experimental_data_settings[[assay]]<span class="sc">$</span>value_col</span>
+<span id="cb45-111"><a href="#cb45-111" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-112"><a href="#cb45-112" aria-hidden="true" tabindex="-1"></a>    assay_df_long <span class="ot">&lt;-</span> experimental_data[[assay]]</span>
+<span id="cb45-113"><a href="#cb45-113" aria-hidden="true" tabindex="-1"></a>    <span class="co">#str(assay_df_long)</span></span>
+<span id="cb45-114"><a href="#cb45-114" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-115"><a href="#cb45-115" aria-hidden="true" tabindex="-1"></a>    specimen_df_filtered <span class="ot">&lt;-</span> specimen_df <span class="sc">%&gt;%</span></span>
+<span id="cb45-116"><a href="#cb45-116" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> <span class="fu">unique</span>(assay_df_long<span class="sc">$</span>specimen_id))</span>
+<span id="cb45-117"><a href="#cb45-117" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-118"><a href="#cb45-118" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(specimen_df_filtered) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb45-119"><a href="#cb45-119" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"No specimen for this combination of assay and day available"</span>))</span>
+<span id="cb45-120"><a href="#cb45-120" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb45-121"><a href="#cb45-121" aria-hidden="true" tabindex="-1"></a>      assay_mtx_wide <span class="ot">&lt;-</span> assay_df_long <span class="sc">%&gt;%</span></span>
+<span id="cb45-122"><a href="#cb45-122" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"specimen_id"</span>, feature_col, value_col))) <span class="sc">%&gt;%</span></span>
+<span id="cb45-123"><a href="#cb45-123" aria-hidden="true" tabindex="-1"></a>        tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(feature_col), </span>
+<span id="cb45-124"><a href="#cb45-124" aria-hidden="true" tabindex="-1"></a>                           <span class="at">values_from=</span>dplyr<span class="sc">::</span><span class="fu">all_of</span>(value_col)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-125"><a href="#cb45-125" aria-hidden="true" tabindex="-1"></a>        tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb45-126"><a href="#cb45-126" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb45-127"><a href="#cb45-127" aria-hidden="true" tabindex="-1"></a>        .[<span class="fu">as.character</span>(specimen_df_filtered<span class="sc">$</span>specimen_id), ]</span>
+<span id="cb45-128"><a href="#cb45-128" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb45-129"><a href="#cb45-129" aria-hidden="true" tabindex="-1"></a>      impute_mode <span class="ot">&lt;-</span> <span class="st">"knn"</span></span>
+<span id="cb45-130"><a href="#cb45-130" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stopifnot</span>(impute_mode <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"zero"</span>, <span class="st">"median_feature"</span>, <span class="st">"knn"</span>))</span>
+<span id="cb45-131"><a href="#cb45-131" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb45-132"><a href="#cb45-132" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide))) {</span>
+<span id="cb45-133"><a href="#cb45-133" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Non-zero fraction of NAs: "</span>, </span>
+<span id="cb45-134"><a href="#cb45-134" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">round</span>(<span class="fu">mean</span>(<span class="fu">is.na</span>(assay_mtx_wide)), <span class="dv">4</span>)))</span>
+<span id="cb45-135"><a href="#cb45-135" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data: matrix with genes in the rows, samples in the columns</span></span>
+<span id="cb45-136"><a href="#cb45-136" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"zero"</span>) {</span>
+<span id="cb45-137"><a href="#cb45-137" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide[<span class="fu">is.na</span>(assay_mtx_wide)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb45-138"><a href="#cb45-138" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"knn"</span>) {</span>
+<span id="cb45-139"><a href="#cb45-139" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide <span class="ot">&lt;-</span> <span class="fu">t</span>(impute<span class="sc">::</span><span class="fu">impute.knn</span>(<span class="at">data=</span><span class="fu">t</span>(assay_mtx_wide))<span class="sc">$</span>data)</span>
+<span id="cb45-140"><a href="#cb45-140" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"median_feature"</span>) {</span>
+<span id="cb45-141"><a href="#cb45-141" aria-hidden="true" tabindex="-1"></a>          col_medians <span class="ot">&lt;-</span> matrixStats<span class="sc">::</span><span class="fu">colMedians</span>(assay_mtx_wide, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb45-142"><a href="#cb45-142" aria-hidden="true" tabindex="-1"></a>          <span class="cf">for</span> (colname <span class="cf">in</span> <span class="fu">colnames</span>(assay_mtx_wide)) {</span>
+<span id="cb45-143"><a href="#cb45-143" aria-hidden="true" tabindex="-1"></a>            col_vec <span class="ot">&lt;-</span> assay_mtx_wide[, colname]</span>
+<span id="cb45-144"><a href="#cb45-144" aria-hidden="true" tabindex="-1"></a>            col_vec[<span class="fu">is.na</span>(col_vec)] <span class="ot">&lt;-</span> col_medians[colname]</span>
+<span id="cb45-145"><a href="#cb45-145" aria-hidden="true" tabindex="-1"></a>            assay_mtx_wide[, colname] <span class="ot">&lt;-</span> col_vec</span>
+<span id="cb45-146"><a href="#cb45-146" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb45-147"><a href="#cb45-147" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb45-148"><a href="#cb45-148" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="sc">!</span><span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide)))</span>
+<span id="cb45-149"><a href="#cb45-149" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb45-150"><a href="#cb45-150" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb45-151"><a href="#cb45-151" aria-hidden="true" tabindex="-1"></a>      <span class="co"># dist_mtx &lt;- as.matrix(dist(assay_mtx_wide))</span></span>
+<span id="cb45-152"><a href="#cb45-152" aria-hidden="true" tabindex="-1"></a>      <span class="co"># dist_mtx_median &lt;- median(dist_mtx[lower.tri(dist_mtx)])</span></span>
+<span id="cb45-153"><a href="#cb45-153" aria-hidden="true" tabindex="-1"></a>      <span class="co"># dist_mtx_binary &lt;- dist_mtx &gt; (3 * dist_mtx_median)</span></span>
+<span id="cb45-154"><a href="#cb45-154" aria-hidden="true" tabindex="-1"></a>      <span class="co"># outliers &lt;-</span></span>
+<span id="cb45-155"><a href="#cb45-155" aria-hidden="true" tabindex="-1"></a>      <span class="co">#  which(rowSums(dist_mtx_binary) &gt; (10*median(rowSums(dist_mtx_binary))))</span></span>
+<span id="cb45-156"><a href="#cb45-156" aria-hidden="true" tabindex="-1"></a>      <span class="co"># no_outliers &lt;- rownames(dist_mtx)[!rownames(dist_mtx) %in% names(outliers)]</span></span>
+<span id="cb45-157"><a href="#cb45-157" aria-hidden="true" tabindex="-1"></a>      <span class="co"># assay_mtx_wide &lt;- assay_mtx_wide[no_outliers, ]</span></span>
+<span id="cb45-158"><a href="#cb45-158" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb45-159"><a href="#cb45-159" aria-hidden="true" tabindex="-1"></a>      <span class="co">#str(assay_mtx_wide)</span></span>
+<span id="cb45-160"><a href="#cb45-160" aria-hidden="true" tabindex="-1"></a>      <span class="fu">suppressMessages</span>({</span>
+<span id="cb45-161"><a href="#cb45-161" aria-hidden="true" tabindex="-1"></a>        <span class="fu">suppressWarnings</span>({</span>
+<span id="cb45-162"><a href="#cb45-162" aria-hidden="true" tabindex="-1"></a>          p1 <span class="ot">&lt;-</span> <span class="fu">pvca_analysis</span>(<span class="at">assay_mtx_wide=</span>assay_mtx_wide,</span>
+<span id="cb45-163"><a href="#cb45-163" aria-hidden="true" tabindex="-1"></a>                              <span class="at">meta_data=</span>meta_data)<span class="sc">$</span>p1</span>
+<span id="cb45-164"><a href="#cb45-164" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb45-165"><a href="#cb45-165" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb45-166"><a href="#cb45-166" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(p1)</span>
+<span id="cb45-167"><a href="#cb45-167" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb45-168"><a href="#cb45-168" aria-hidden="true" tabindex="-1"></a>      plist <span class="ot">&lt;-</span> <span class="fu">generate_pca_plots</span>(<span class="at">assay_mtx_wide=</span>assay_mtx_wide,</span>
+<span id="cb45-169"><a href="#cb45-169" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">meta_data=</span>meta_data)</span>
+<span id="cb45-170"><a href="#cb45-170" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p1)</span>
+<span id="cb45-171"><a href="#cb45-171" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p2)</span>
+<span id="cb45-172"><a href="#cb45-172" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(plist<span class="sc">$</span>p3)</span>
+<span id="cb45-173"><a href="#cb45-173" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb45-174"><a href="#cb45-174" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>))</span>
+<span id="cb45-175"><a href="#cb45-175" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb45-176"><a href="#cb45-176" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-177"><a href="#cb45-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-178"><a href="#cb45-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-179"><a href="#cb45-179" aria-hidden="true" tabindex="-1"></a><span class="fu"># Appendix</span></span>
+<span id="cb45-180"><a href="#cb45-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-181"><a href="#cb45-181" aria-hidden="true" tabindex="-1"></a>&lt;button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" &gt;Session Information&lt;/button&gt;&lt;div id="collapseOne" class="accordion-collapse collapse"&gt;&lt;div&gt;</span>
+<span id="cb45-182"><a href="#cb45-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-185"><a href="#cb45-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb45-186"><a href="#cb45-186" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb45-187"><a href="#cb45-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb45-188"><a href="#cb45-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-189"><a href="#cb45-189" aria-hidden="true" tabindex="-1"></a>&lt;/div&gt;&lt;/div&gt;</span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
