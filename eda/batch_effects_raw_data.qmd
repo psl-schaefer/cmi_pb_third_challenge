@@ -35,13 +35,14 @@ input_dir = file.path("..", "data")
 
 ```{r}
 meta_data <- read_harmonized_meta_data(input_dir)
-experimental_data <- read_raw_experimental_data(input_dir)
-experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                              experimental_data=experimental_data)
-
-celltype_meta <- read_celltype_meta(input_dir)
 gene_meta <- read_gene_meta(input_dir)
 protein_meta <- read_protein_meta(input_dir)
+celltype_meta <- read_celltype_meta(input_dir)
+
+experimental_data <- read_raw_experimental_data(input_dir)
+experimental_data <- filter_experimental_data(meta_data=meta_data, 
+                                              experimental_data=experimental_data,
+                                              gene_meta=gene_meta)
 
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 ```
@@ -155,19 +156,6 @@ for (day in names(specimen_per_day)) {
         #str(assay_mtx_wide)
         
         # check that all column (gene) names are unique
-        stopifnot(length(colnames(assay_mtx_wide)) == length(unique(colnames(assay_mtx_wide))))
-        
-        ensemble_to_gene <- tibble(versioned_ensembl_gene_id = colnames(assay_mtx_wide)) %>%
-          dplyr::left_join(gene_meta, by="versioned_ensembl_gene_id") %>%
-          dplyr::group_by(gene_symbol) %>%
-          dplyr::mutate(n = n()) %>%
-          dplyr::arrange(desc(n), gene_symbol) %>%
-          dplyr::filter(n==1) %>%
-          dplyr::ungroup()
-        
-        assay_mtx_wide <- assay_mtx_wide[ , ensemble_to_gene$versioned_ensembl_gene_id]
-        colnames(assay_mtx_wide) <- ensemble_to_gene$gene_symbol
-        
         stopifnot(length(colnames(assay_mtx_wide)) == length(unique(colnames(assay_mtx_wide))))
         
         assay_mtx_wide <- 

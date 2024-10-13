@@ -4,9 +4,25 @@ library(dplyr)
 library(stringr)
 library(lubridate)
 
+# this function should ensure that I can use feature names in formulas
+# while keeping feature names unique of course
+clean_names <- function(orig_features) {
+  new_features <- orig_features %>%
+    str_replace_all(., "\\+", "_P_") %>%
+    str_replace_all(., "\\-", "_N_") %>%
+    str_replace_all(., "\\.", "_") %>%
+    str_replace_all(., "\\:", "_") %>%
+    str_replace_all(., " ", "_") %>%
+    str_replace_all(., "/", "_")
+  stopifnot(length(unique(new_features)) == length(unique(orig_features)))
+  return(new_features)
+}
+
 read_gene_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "gene.csv"), 
                     delim=";", show_col_types = FALSE) %>%
+    dplyr::mutate(gene_symbol_clean = clean_names(gene_symbol)) %>%
+    dplyr::mutate(versioned_ensembl_gene_id_clean = clean_names(versioned_ensembl_gene_id)) %>%
     return()
 }
 
@@ -31,15 +47,16 @@ cytokine_uniprot_mapping <- data.frame(
 read_protein_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "protein.csv"), 
                     delim=";", show_col_types = FALSE) %>%
-    dplyr::left_join(cytokine_uniprot_mapping, by=c("uniprot_id" = "protein_id")) %>%
+    dplyr::left_join(cytokine_uniprot_mapping, by=c("uniprot_id" = "protein_id")) %>% 
+    dplyr::mutate(uniprot_id_clean = clean_names(uniprot_id)) %>%
+    dplyr::mutate(cytokine_clean = clean_names(cytokine)) %>%
     return()
 }
 
 read_celltype_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "celltype.csv"), 
                     delim=";", show_col_types = FALSE) %>%
-    dplyr::mutate(cell_type_name = purrr::map_chr(.data$cell_type_name,
-                                                  ~ str_replace_all(.x, " ", "_"))) %>%
+    dplyr::mutate(cell_type_name_clean = clean_names(cell_type_name)) %>%
     return()
 }
 
@@ -100,14 +117,13 @@ experimental_data_settings <- list(
     feature_subset = c("Monocytes", # no parent, three children: Classical_Monocytes, Intermediate_Monocytes, Non-Classical_Monocytes
                        "Classical_Monocytes", # only parent: Monocytes; no children
                        "Intermediate_Monocytes", # only parent: Monocytes; no children
-                       "Non-Classical_Monocytes", # only parent: Monocytes; no children
+                       "Non_N_Classical_Monocytes", # only parent: Monocytes; no children
                        "CD8Tcells", # four children: NaiveCD8, TcmCD8, TemCD8, TemraCD8
                        "CD4Tcells", # four children: NaiveCD4, TcmCD4, TemCD4, TemraCD4
                        "Bcells", # only has one child: B cells (CD19+CD3-CD14-CD56-)
                        "NK", # only has one child: CD56high NK cells
                        "pDC", # has no children and no parent
-                       "Basophils", # has no children and no parent
-                       "CD56+CD3+T cells" # no children; parent: T cells (CD19-CD3+CD14-) (which is not present in the data)
+                       "Basophils" # has no children and no parent
     )
   ),
   pbmc_gene_expression = list(
@@ -118,11 +134,11 @@ experimental_data_settings <- list(
     feature_col = "isotype_antigen",
     value_col = "MFI",
     feature_subset = c(
-      "IgG_DT", "IgG_FIM2/3", "IgG_OVA", "IgG_TT", "IgG1_DT", "IgG1_FHA", 
-      "IgG1_FIM2/3", "IgG1_OVA", "IgG1_PRN", "IgG1_PT", "IgG1_TT", "IgG2_DT", 
-      "IgG2_FHA", "IgG2_FIM2/3", "IgG2_OVA", "IgG2_PRN", "IgG2_PT", "IgG2_TT", 
-      "IgG3_DT", "IgG3_FHA", "IgG3_FIM2/3", "IgG3_OVA", "IgG3_PRN", "IgG3_PT", 
-      "IgG3_TT", "IgG4_DT", "IgG4_FHA", "IgG4_FIM2/3", "IgG4_OVA", "IgG4_PRN", 
+      "IgG_DT", "IgG_FIM2_3", "IgG_OVA", "IgG_TT", "IgG1_DT", "IgG1_FHA", 
+      "IgG1_FIM2_3", "IgG1_OVA", "IgG1_PRN", "IgG1_PT", "IgG1_TT", "IgG2_DT", 
+      "IgG2_FHA", "IgG2_FIM2_3", "IgG2_OVA", "IgG2_PRN", "IgG2_PT", "IgG2_TT", 
+      "IgG3_DT", "IgG3_FHA", "IgG3_FIM2_3", "IgG3_OVA", "IgG3_PRN", "IgG3_PT", 
+      "IgG3_TT", "IgG4_DT", "IgG4_FHA", "IgG4_FIM2_3", "IgG4_OVA", "IgG4_PRN", 
       "IgG4_PT", "IgG4_TT", "IgG_FHA", "IgG_PRN", "IgG_PT"
     ),
     unit = "MFI"
@@ -191,18 +207,19 @@ read_raw_experimental_data <- function(input_dir) {
   all_exp_data$t_cell_polarization <- all_exp_data$t_cell_polarization %>%
     dplyr::mutate(stimulation_protein_id = paste0(stimulation, "_", protein_id))
   
-  # make sure the feature names have no spaces (such that the wide format works better)
+  # make sure the feature names have no spaces and special symbol
+  # such that wide format works; and model formulae work
   all_exp_data <- purrr::imap(all_exp_data, function(df, modality) {
     # modality <- "pbmc_cell_frequency"; df <- all_exp_data$pbmc_cell_frequency
     df %>%
       dplyr::mutate(!!experimental_data_settings[[modality]]$feature_col := 
-                      str_replace_all(df[[experimental_data_settings[[modality]]$feature_col]], " ", "_"))
+                      clean_names(.data[[experimental_data_settings[[modality]]$feature_col]]))
   })
   
   return(all_exp_data)
 }
 
-filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE) {
+filter_experimental_data <- function(meta_data, experimental_data, gene_meta, verbose=TRUE) {
   # 1. Only keep specimen that are documented in our meta_data
   experimental_data <- purrr::imap(experimental_data, function(df, modality) {
     initial_count <- nrow(df)
@@ -218,9 +235,15 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
   
   # 2. Only keep features that are in the subset for the modality
   experimental_data <- purrr::imap(experimental_data, function(df, modality) {
+    # df <- experimental_data[["plasma_ab_titer"]]; modality <- "plasma_ab_titer"
+    # df <- experimental_data[["pbmc_cell_frequency"]]; modality <- "pbmc_cell_frequency"
     if ("feature_subset" %in% names(experimental_data_settings[[modality]])) {
       feature_col <- experimental_data_settings[[modality]]$feature_col
       initial_feature_count <- length(unique(df[[feature_col]]))
+      stopifnot(all(
+        experimental_data_settings[[modality]][["feature_subset"]] %in% df[[feature_col]]
+        ))
+      
       df <- df %>%
         dplyr::filter(.data[[feature_col]] %in% experimental_data_settings[[modality]][["feature_subset"]])
       final_feature_count <- length(unique(df[[feature_col]]))
@@ -275,6 +298,18 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
     return(df)
   })
   cat("\n")
+  
+  # 6. Only keep genes in pbmc gex data that have a unique mapping from ensemble id to gene symbol
+  ensemble_to_gene <- tibble(versioned_ensembl_gene_id_clean = unique(experimental_data$pbmc_gene_expression$versioned_ensembl_gene_id)) %>%
+    dplyr::left_join(gene_meta, by="versioned_ensembl_gene_id_clean") %>%
+    dplyr::group_by(gene_symbol) %>%
+    dplyr::mutate(n = n()) %>%
+    dplyr::arrange(desc(n), gene_symbol) %>%
+    dplyr::filter(n==1) %>%
+    dplyr::ungroup()
+  
+  experimental_data$pbmc_gene_expression <- experimental_data$pbmc_gene_expression %>%
+    dplyr::filter(versioned_ensembl_gene_id %in% ensemble_to_gene$versioned_ensembl_gene_id_clean)
   
   return(experimental_data)
 }
@@ -359,7 +394,7 @@ read_harmonized_experimental_data_depr <- function(input_dir) {
   experimental_data <- purrr::imap(experimental_data, function(df, modality) {
     # modality <- "pbmc_cell_frequency"; df <- experimental_data$pbmc_cell_frequency
     df %>%
-      dplyr::mutate(!!feature_name_per_modality[[modality]] := str_replace_all(df[[feature_name_per_modality[[modality]]]], " ", "_"))
+      dplyr::mutate(!!feature_name_per_modality[[modality]] := clean_names(df[[feature_name_per_modality[[modality]]]]))
   })
   
   return(experimental_data)

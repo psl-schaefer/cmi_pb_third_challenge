@@ -49,19 +49,6 @@ normalize_experimental_data <- function(meta_data,
   # check that all column (gene) names are unique
   stopifnot(length(colnames(pbmc_gene_expression_wide)) == length(unique(colnames(pbmc_gene_expression_wide))))
   
-  # only keep genes that have a unique mapping from ensemble id to gene symbol
-  ensemble_to_gene <- tibble(versioned_ensembl_gene_id = colnames(pbmc_gene_expression_wide)) %>%
-    dplyr::left_join(gene_meta, by="versioned_ensembl_gene_id") %>%
-    dplyr::group_by(gene_symbol) %>%
-    dplyr::mutate(n = n()) %>%
-    dplyr::arrange(desc(n), gene_symbol) %>%
-    dplyr::filter(n==1) %>%
-    dplyr::ungroup()
-  pbmc_gene_expression_wide <- pbmc_gene_expression_wide[ , ensemble_to_gene$versioned_ensembl_gene_id]
-  colnames(pbmc_gene_expression_wide) <- ensemble_to_gene$gene_symbol
-  
-  stopifnot(length(colnames(pbmc_gene_expression_wide)) == length(unique(colnames(pbmc_gene_expression_wide))))
-  
   # DESeq2 normalization with variance stabilizing transformation (vst)
   # transforms the count data (normalized by division by the size factors or normalization factors), 
   # yielding a matrix of values which are now approximately homoskedastic

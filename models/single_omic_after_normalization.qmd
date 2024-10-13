@@ -38,9 +38,11 @@ specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
 RECOMPUTE <- FALSE
 if (RECOMPUTE) {
+  source(file.path("..", "src", "normalize_integrate.R"))
   experimental_data <- read_raw_experimental_data(input_dir)
   experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                                experimental_data=experimental_data)
+                                                experimental_data=experimental_data,
+                                                gene_meta=gene_meta)
   experimental_data <- normalize_experimental_data(meta_data=meta_data, 
                                                    experimental_data=experimental_data,
                                                    gene_meta=gene_meta)
@@ -61,16 +63,16 @@ experimental_predictors <- generate_wide_experimental_data(experimental_data=exp
 hvg <- gene_meta %>% 
   dplyr::slice_max(mean_rank, n=1000)
 experimental_predictors$pbmc_gene_expression <- 
-  experimental_predictors$pbmc_gene_expression[, hvg$gene_symbol]
-
-raw_experimental_data <- read_raw_experimental_data(input_dir)
-raw_experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                                  experimental_data=raw_experimental_data)
+  experimental_predictors$pbmc_gene_expression[, hvg$versioned_ensembl_gene_id_clean]
 ```
 
-To create the target tracks, I must use the non-normalized / non-integrated data as I don't have this information either for the challenge dataset
-
 ```{r}
+# since I don't have this information for the challenge dataset either
+raw_experimental_data <- read_raw_experimental_data(input_dir)
+raw_experimental_data <- filter_experimental_data(meta_data=meta_data, 
+                                                  experimental_data=raw_experimental_data, 
+                                                  gene_meta=gene_meta)
+
 target_list <- generate_all_targets(
   meta_data=meta_data, 
   experimental_data=raw_experimental_data, 
@@ -180,10 +182,6 @@ for (task in task_meta) {
                        by="specimen_id") %>%
       dplyr::filter(!is.na(subject_id)) %>%
       dplyr::select(-specimen_id)
-    
-    colnames(modality_data) <- stringr::str_replace_all(colnames(modality_data), "-", "_")
-    colnames(modality_data) <- stringr::str_replace_all(colnames(modality_data), "\\+", "_")
-    colnames(modality_data) <- stringr::str_replace_all(colnames(modality_data), "/", "_")
     
     model_df <- target_list[[task$name]] %>%
       dplyr::left_join(modality_data, by="subject_id")

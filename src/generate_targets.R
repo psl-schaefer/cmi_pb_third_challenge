@@ -114,7 +114,7 @@ generate_targets_task_3 <- function(meta_data,
   ccl3_ensemble <- experimental_data$pbmc_gene_expression %>%
     dplyr::select("versioned_ensembl_gene_id") %>%
     dplyr::distinct() %>%
-    dplyr::left_join(gene_meta, by="versioned_ensembl_gene_id") %>%
+    dplyr::left_join(gene_meta, by=c("versioned_ensembl_gene_id"="versioned_ensembl_gene_id_clean")) %>%
     dplyr::filter(gene_symbol=="CCL3") %>%
     dplyr::pull("versioned_ensembl_gene_id")
   stopifnot(length(ccl3_ensemble)==1)

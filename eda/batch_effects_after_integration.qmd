@@ -45,7 +45,8 @@ RECOMPUTE <- FALSE
 if (RECOMPUTE) {
   experimental_data <- read_raw_experimental_data(input_dir)
   experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                                experimental_data=experimental_data)
+                                                experimental_data=experimental_data, 
+                                                gene_meta=gene_meta)
   experimental_data <- normalize_experimental_data(meta_data=meta_data, 
                                                    experimental_data=experimental_data,
                                                    gene_meta=gene_meta)

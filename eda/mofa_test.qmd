@@ -32,10 +32,11 @@ input_dir = file.path("..", "data")
 
 ```{r}
 meta_data <- read_harmonized_meta_data(input_dir)
+gene_meta <- read_gene_meta(input_dir)
 
 #exp_data <- read_harmonized_experimental_data(input_dir)
 exp_data <- read_raw_experimental_data(input_dir)
-exp_data <- filter_experimental_data(meta_data, exp_data)
+exp_data <- filter_experimental_data(meta_data, exp_data, gene_meta)
 wide_exp_data <- generate_wide_experimental_data(experimental_data=exp_data, impute=NULL)
 
 celltype_meta <- read_celltype_meta(input_dir)

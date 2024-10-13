@@ -3,15 +3,15 @@ library(tidyverse)
 source(file.path("src", "read_data.R"))
 source(file.path("src", "generate_targets.R"))
 
-gene_meta <- readr::read_delim(file.path("data", "meta_data", "gene.csv"), 
-                               delim=";", show_col_types = FALSE)
+gene_meta <- read_gene_meta(file.path("data"))
 
 meta_data <- read_harmonized_meta_data(file.path("data"))
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
 raw_experimental_data <- read_raw_experimental_data(file.path("data"))
 raw_experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                                  experimental_data=raw_experimental_data)
+                                                  experimental_data=raw_experimental_data,
+                                                  gene_meta=gene_meta)
 
 gex_df <- raw_experimental_data$pbmc_gene_expression %>%
   dplyr::left_join((meta_data %>% dplyr::select(specimen_id, dataset)),
@@ -83,7 +83,8 @@ gex_df_overall_summary <- gex_df_overall %>%
                    .groups = "drop")
 
 gene_meta_plus <- gene_meta %>%
-  dplyr::left_join(gex_df_overall_summary, by="versioned_ensembl_gene_id")
+  dplyr::left_join(gex_df_overall_summary, 
+                   by=c("versioned_ensembl_gene_id_clean"="versioned_ensembl_gene_id"))
 
 readr::write_csv(x = gene_meta_plus,
                  file = file.path("data", "meta_data", "gene_plus.csv"))

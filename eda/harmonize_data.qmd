@@ -1,5 +1,5 @@
 ---
-title: "Batch Effects"
+title: "Harmonize Data"
 author: "Philipp Sven Lars Schäfer"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 editor: source
@@ -30,9 +30,12 @@ input_dir = file.path("..", "data")
 
 ```{r}
 meta_df <- read_harmonized_meta_data(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+
 data_list <- read_raw_experimental_data(input_dir)
 data_list <- filter_experimental_data(meta_data=meta_df, 
-                                      experimental_data=data_list)
+                                      experimental_data=data_list,
+                                      gene_meta=gene_meta)
 ```
 
 ```{r}
@@ -40,9 +43,9 @@ data_list <- filter_experimental_data(meta_data=meta_df,
   dplyr::left_join(meta_df, by="specimen_id") %>%
   dplyr::select(cell_type_name, dataset) %>%
   dplyr::distinct() %>%
+  dplyr::arrange(cell_type_name) %>%
   dplyr::group_by(cell_type_name) %>%
-  dplyr::mutate(n = n()) %>%
-  dplyr::ungroup() %>%
+  dplyr::summarize(n = n(), .groups="drop") %>%
   dplyr::filter(cell_type_name %in% experimental_data_settings$pbmc_cell_frequency$feature_subset) %>%
   dplyr::pull(n)) == 4) %>%
   all() %>%
