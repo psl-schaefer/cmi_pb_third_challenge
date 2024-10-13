@@ -1,5 +1,5 @@
 ---
-title: "Single-Omic Models After Normalization"
+title: "Single-Omic Models After Integration"
 author: "Philipp Sven Lars Schäfer"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 editor: source
@@ -30,7 +30,7 @@ input_dir = file.path("..", "data")
 
 ```{r}
 celltype_meta <- read_celltype_meta(input_dir)
-gene_meta <- read_gene_meta(input_dir)
+gene_meta <- read_gene_meta_plus(input_dir)
 protein_meta <- read_protein_meta(input_dir)
 
 meta_data <- read_harmonized_meta_data(input_dir)
@@ -56,12 +56,14 @@ if (RECOMPUTE) {
 experimental_data <- 
   experimental_data[-which(names(experimental_data) == "pbmc_gene_expression_only_corrected")]
 
-experimental_predictiors <- generate_wide_experimental_data(experimental_data=experimental_data,
+experimental_predictors <- generate_wide_experimental_data(experimental_data=experimental_data,
                                                             impute="median", 
                                                             verbose=TRUE)
 
-experimental_predictiors <- 
-  experimental_predictiors[-which(names(experimental_data) == "pbmc_gene_expression")]
+hvg <- gene_meta %>% 
+  dplyr::slice_max(mean_rank, n=1000)
+experimental_predictors$pbmc_gene_expression <- 
+  experimental_predictors$pbmc_gene_expression[, hvg$gene_symbol]
 
 raw_experimental_data <- read_raw_experimental_data(input_dir)
 raw_experimental_data <- filter_experimental_data(meta_data=meta_data, 
@@ -80,6 +82,8 @@ str(target_list)
 ```
 
 # Conclusions
+
+- Not sure whether this is a bug, but the performance of models using either normalized or batch corrected data is almost the same, except for olink features (and probably also gex data)
 
 # Questions
 
@@ -167,12 +171,12 @@ for (task in task_meta) {
   
   cat("\n\n")
   
-  for (modality in names(experimental_predictiors)) {
-    #modality <- names(experimental_predictiors)[3]
+  for (modality in names(experimental_predictors)) {
+    #modality <- names(experimental_predictors)[3]
     
     cat(paste0("\n\n### ", modality, "\n\n"))
     
-    modality_data <- experimental_predictiors[[modality]] %>%
+    modality_data <- experimental_predictors[[modality]] %>%
       as.data.frame() %>% 
       tibble::rownames_to_column("specimen_id") %>%
       dplyr::mutate(specimen_id = as.numeric(specimen_id)) %>%

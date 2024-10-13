@@ -4,10 +4,15 @@ library(dplyr)
 library(stringr)
 library(lubridate)
 
-# add here columns regarding dispersion?
 read_gene_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "gene.csv"), 
                     delim=";", show_col_types = FALSE) %>%
+    return()
+}
+
+read_gene_meta_plus <- function(input_dir) {
+  readr::read_csv(file.path(input_dir, "meta_data", "gene_plus.csv"), 
+                  show_col_types = FALSE) %>%
     return()
 }
 
