@@ -22,4 +22,8 @@ title: "Overview"
 
 - [Metadata Models](models/metadata_model.qmd)
 
+- [Single Omic Models after Normalization](models/single_omic_after_normalization.qmd)
+
+- [Single Omic Models after Integration](models/single_omic_after_integration.qmd)
+
 - [Literature Models](models/literature_model.qmd)

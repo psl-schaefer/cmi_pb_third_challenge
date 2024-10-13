@@ -40,12 +40,22 @@ gene_meta <- read_gene_meta(input_dir)
 protein_meta <- read_protein_meta(input_dir)
 
 meta_data <- read_harmonized_meta_data(input_dir)
-experimental_data <- read_raw_experimental_data(input_dir)
-experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                              experimental_data=experimental_data)
-experimental_data <- normalize_experimental_data(meta_data=meta_data, 
-                                                 experimental_data=experimental_data,
-                                                 gene_meta=gene_meta)
+
+RECOMPUTE <- FALSE
+if (RECOMPUTE) {
+  experimental_data <- read_raw_experimental_data(input_dir)
+  experimental_data <- filter_experimental_data(meta_data=meta_data, 
+                                                experimental_data=experimental_data)
+  experimental_data <- normalize_experimental_data(meta_data=meta_data, 
+                                                   experimental_data=experimental_data,
+                                                   gene_meta=gene_meta)
+  write_rds(experimental_data, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "normalized_experimental_data.RDS"))
+} else {
+  experimental_data <- read_rds(file = file.path(input_dir, "prc_datasets", 
+                                                 "normalized_experimental_data.RDS"))
+}
 experimental_data <- experimental_data[-which(names(experimental_data) ==
                                                 "pbmc_gene_expression_raw")]
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)

@@ -345,7 +345,8 @@ purrr::imap(exp_data, function(df, modality) {
 ## Wide format
 
 ```{r}
-purrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, impute=""),
+purrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, 
+                                                impute=NULL),
                   function(mtx, modality) {
                     rmeans <- rowMeans(is.na(mtx))
                     tibble(modality=modality, 

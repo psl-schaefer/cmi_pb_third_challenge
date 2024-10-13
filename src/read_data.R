@@ -4,6 +4,7 @@ library(dplyr)
 library(stringr)
 library(lubridate)
 
+# add here columns regarding dispersion?
 read_gene_meta <- function(input_dir) {
   readr::read_delim(file.path(input_dir, "meta_data", "gene.csv"), 
                     delim=";", show_col_types = FALSE) %>%
@@ -276,6 +277,7 @@ filter_experimental_data <- function(meta_data, experimental_data, verbose=TRUE)
 
 generate_wide_experimental_data <- function(experimental_data, impute="zero", verbose=TRUE) {
   wide_experimental_data <- purrr::imap(experimental_data, function(df, modality) {
+    #df <- experimental_data[[6]]; modality <- names(experimental_data)[6]
     feature_col <- experimental_data_settings[[modality]]$feature_col
     value_col <- experimental_data_settings[[modality]]$value_col
     mtx <- df %>%
@@ -285,15 +287,26 @@ generate_wide_experimental_data <- function(experimental_data, impute="zero", ve
       tibble::column_to_rownames(var="specimen_id") %>%
       as.matrix()
     
-    if (!is.null(impute)) {
+    na_frac <- mean(is.na(mtx))
+    if (!is.null(impute) & (na_frac > 0)) {
       if (impute == "zero") {
-        na_frac <- mean(is.na(mtx))
-        if (verbose & na_frac > 0) {
-          message(modality, " | NA Fraction: ", na_frac, " | Imputed with zeros")
-        }
         mtx[is.na(mtx)] <- 0
-      } else if (impute == "median") {
-        # TODO
+        if (verbose) message(modality, " | NA Fraction: ", na_frac, " | Imputed with zeros")
+      }
+      else if (impute == "median") {
+        medians <- matrixStats::colMedians(mtx, na.rm=TRUE)
+        for (col in colnames(mtx)) {
+          mtx[is.na(mtx[, col]), col] <- medians[col]
+        }
+      } 
+      else if (impute == "mean") {
+        means <- matrixStats::colMeans2(mtx, na.rm=TRUE)
+        for (col in colnames(mtx)) {
+          mtx[is.na(mtx[, col]), col] <- means[col]
+        }
+      } 
+      else {
+        stop(paste0(impute, " impute strategey not implemented"))
       }
     }
     return(mtx)

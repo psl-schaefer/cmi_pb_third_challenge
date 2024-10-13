@@ -1,0 +1,226 @@
+---
+title: "Single-Omic Models After Normalization"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(flextable)
+  library(ggdark)
+  library(magick)
+})
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "colors.R"))
+source(file.path("..", "src", "generate_targets.R"))
+source(file.path("..", "src", "model.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+protein_meta <- read_protein_meta(input_dir)
+
+meta_data <- read_harmonized_meta_data(input_dir)
+specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
+
+RECOMPUTE <- FALSE
+if (RECOMPUTE) {
+  experimental_data <- read_raw_experimental_data(input_dir)
+  experimental_data <- filter_experimental_data(meta_data=meta_data, 
+                                                experimental_data=experimental_data)
+  experimental_data <- normalize_experimental_data(meta_data=meta_data, 
+                                                   experimental_data=experimental_data,
+                                                   gene_meta=gene_meta)
+  write_rds(experimental_data, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "normalized_experimental_data.RDS"))
+} else {
+  experimental_data <- read_rds(file = file.path(input_dir, "prc_datasets", 
+                                                 "normalized_experimental_data.RDS"))
+}
+experimental_data <- 
+  experimental_data[-which(names(experimental_data) == "pbmc_gene_expression_raw")]
+
+experimental_predictiors <- generate_wide_experimental_data(experimental_data=experimental_data,
+                                                            impute="median", 
+                                                            verbose=TRUE)
+
+experimental_predictiors <- 
+  experimental_predictiors[-which(names(experimental_data) == "pbmc_gene_expression")]
+
+raw_experimental_data <- read_raw_experimental_data(input_dir)
+raw_experimental_data <- filter_experimental_data(meta_data=meta_data, 
+                                                  experimental_data=raw_experimental_data)
+```
+
+To create the target tracks, I must use the non-normalized / non-integrated data as I don't have this information either for the challenge dataset
+
+```{r}
+target_list <- generate_all_targets(
+  meta_data=meta_data, 
+  experimental_data=raw_experimental_data, 
+  experimental_data_settings=experimental_data_settings, 
+  gene_meta=gene_meta)
+str(target_list)
+```
+
+# Conclusions
+
+# Questions
+
+# Results
+
+```{r}
+task_meta <- list(
+  task_11 = list(
+    name = "task_11",
+    header = "## Task 1.1",
+    description = "Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations."
+  ),
+  task_12 = list(
+    name = "task_12",
+    header = "## Task 1.2",
+    description = "Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0."
+  ),
+  task_21 = list(
+    name = "task_21",
+    header = "## Task 2.1",
+    description = "Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination."
+  ),
+  task_22 = list(
+    name = "task_22",
+    header = "## Task 2.2",
+    description = "Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0."
+  ),
+  task_31 = list(
+    name = "task_31",
+    header = "## Task 3.1",
+    description = "Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination."
+  ),
+  task_32 = list(
+    name = "task_32",
+    header = "## Task 3.2",
+    description = "Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0."
+  )
+)
+```
+
+```{r results="asis"}
+RENDER <- TRUE
+
+make_flextable <- function(x) {
+  if (RENDER) {
+    x %>%
+      flextable() %>% 
+      bg(., bg = "#333333", part = "all") %>%
+      color(., color = "white", part = "all") %>%
+      set_table_properties(., align = "left") %>%
+      flextable_to_rmd(ft) %>%
+      return()
+  } else {
+    return(x)
+  }
+}
+
+meta_data_covariates <- get_metadata_covariates(meta_data)
+
+for (task in task_meta) {
+  #task <- task_meta[[3]]
+  
+  cat(task$header)
+  cat("\n\n")
+  cat(task$description)
+  cat("\n\n")
+  
+  cat(paste0("\n\n### ", "metadata model", "\n\n"))
+  model_df <- target_list[[task$name]] %>%
+    dplyr::left_join(meta_data_covariates, by="subject_id")
+  set.seed(42)
+  
+  get_oob_perf(model_df=model_df) %>% 
+    dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2), srho = round(srho, 2)) %>%
+    make_flextable(.)
+  
+  get_loocv_perf(model_df=model_df) %>% 
+    dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2), srho = round(srho, 2)) %>%
+    make_flextable(.)
+    
+  get_cross_cohort_perf_single_repeated(model_df=model_df, meta_data=meta_data) %>%
+    dplyr::mutate(srho_mean = round(srho_mean, 2), srho_sd = round(srho_sd, 2),
+                  srho_baseline = round(srho_baseline, 2)) %>%
+    make_flextable(.)
+  
+  cat("\n\n")
+  
+  for (modality in names(experimental_predictiors)) {
+    #modality <- names(experimental_predictiors)[3]
+    
+    cat(paste0("\n\n### ", modality, "\n\n"))
+    
+    modality_data <- experimental_predictiors[[modality]] %>%
+      as.data.frame() %>% 
+      tibble::rownames_to_column("specimen_id") %>%
+      dplyr::mutate(specimen_id = as.numeric(specimen_id)) %>%
+      dplyr::left_join((specimen_per_day$day_0 %>% dplyr::select(subject_id, specimen_id)),
+                       by="specimen_id") %>%
+      dplyr::filter(!is.na(subject_id)) %>%
+      dplyr::select(-specimen_id)
+    
+    colnames(modality_data) <- stringr::str_replace_all(colnames(modality_data), "-", "_")
+    colnames(modality_data) <- stringr::str_replace_all(colnames(modality_data), "\\+", "_")
+    colnames(modality_data) <- stringr::str_replace_all(colnames(modality_data), "/", "_")
+    
+    model_df <- target_list[[task$name]] %>%
+      dplyr::left_join(modality_data, by="subject_id")
+    
+    if (sum(rowMeans(is.na(model_df)) > 0.1) > 0) {
+      cat(paste0("\n\nRemoving ", sum(rowMeans(is.na(model_df)) > 0.1),
+                 " targets because training data is missing\n\n"))
+    }
+    
+    model_df <- model_df %>%
+      tidyr::drop_na()
+    
+    set.seed(42)
+    
+    get_oob_perf(model_df=model_df) %>% 
+      dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2), srho = round(srho, 2)) %>%
+      make_flextable(.)
+    
+    get_loocv_perf(model_df=model_df) %>% 
+      dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2), srho = round(srho, 2)) %>%
+      make_flextable(.)
+      
+    # get_cross_cohort_perf_combinations(model_df=model_df, meta_data=meta_data) %>%
+    #   dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2)) %>%
+    # make_flextable(.)
+      
+    # get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data) %>%
+    #   dplyr::mutate(mse = round(mse, 2), r2 = round(r2, 2),
+    #                 srho = round(srho, 2), srho_baseline = round(srho_baseline, 2),
+    #                 mse_tmean = round(mse_tmean, 2)) %>%
+    #   make_flextable(.)
+    
+    get_cross_cohort_perf_single_repeated(model_df=model_df, meta_data=meta_data) %>%
+      dplyr::mutate(srho_mean = round(srho_mean, 2), srho_sd = round(srho_sd, 2),
+                    srho_baseline = round(srho_baseline, 2)) %>%
+      make_flextable(.)
+    
+    cat("\n\n")
+  }
+}
+```
+

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Philipp Sven Lars Schäfer">
-<meta name="dcterms.date" content="2024-09-24">
+<meta name="dcterms.date" content="2024-10-13">
 
 <title>Data Overview – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
@@ -248,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 24, 2024</p>
+      <p class="date">October 13, 2024</p>
     </div>
   </div>
   
@@ -807,15 +807,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap_dfr</span>(<span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>exp_data, <span class="at">impute=</span><span class="st">""</span>),</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(mtx, modality) {</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                    rmeans <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">is.na</span>(mtx))</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">tibble</span>(<span class="at">modality=</span>modality, </span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">subject_id =</span> <span class="fu">names</span>(rmeans), </span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">na_frac=</span>rmeans)</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>           }) <span class="sc">%&gt;%</span></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(modality) <span class="sc">%&gt;%</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean_na_frac =</span> <span class="fu">mean</span>(na_frac))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap_dfr</span>(<span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>exp_data, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">impute=</span><span class="cn">NULL</span>),</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(mtx, modality) {</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                    rmeans <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">is.na</span>(mtx))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">tibble</span>(<span class="at">modality=</span>modality, </span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">subject_id =</span> <span class="fu">names</span>(rmeans), </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">na_frac=</span>rmeans)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>           }) <span class="sc">%&gt;%</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(modality) <span class="sc">%&gt;%</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean_na_frac =</span> <span class="fu">mean</span>(na_frac))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
@@ -2320,392 +2321,393 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb61-380"><a href="#cb61-380" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wide format</span></span>
 <span id="cb61-381"><a href="#cb61-381" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb61-384"><a href="#cb61-384" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-385"><a href="#cb61-385" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap_dfr</span>(<span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>exp_data, <span class="at">impute=</span><span class="st">""</span>),</span>
-<span id="cb61-386"><a href="#cb61-386" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(mtx, modality) {</span>
-<span id="cb61-387"><a href="#cb61-387" aria-hidden="true" tabindex="-1"></a>                    rmeans <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">is.na</span>(mtx))</span>
-<span id="cb61-388"><a href="#cb61-388" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">tibble</span>(<span class="at">modality=</span>modality, </span>
-<span id="cb61-389"><a href="#cb61-389" aria-hidden="true" tabindex="-1"></a>                           <span class="at">subject_id =</span> <span class="fu">names</span>(rmeans), </span>
-<span id="cb61-390"><a href="#cb61-390" aria-hidden="true" tabindex="-1"></a>                           <span class="at">na_frac=</span>rmeans)</span>
-<span id="cb61-391"><a href="#cb61-391" aria-hidden="true" tabindex="-1"></a>           }) <span class="sc">%&gt;%</span></span>
-<span id="cb61-392"><a href="#cb61-392" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(modality) <span class="sc">%&gt;%</span></span>
-<span id="cb61-393"><a href="#cb61-393" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean_na_frac =</span> <span class="fu">mean</span>(na_frac))</span>
-<span id="cb61-394"><a href="#cb61-394" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-395"><a href="#cb61-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-385"><a href="#cb61-385" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap_dfr</span>(<span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>exp_data, </span>
+<span id="cb61-386"><a href="#cb61-386" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">impute=</span><span class="cn">NULL</span>),</span>
+<span id="cb61-387"><a href="#cb61-387" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(mtx, modality) {</span>
+<span id="cb61-388"><a href="#cb61-388" aria-hidden="true" tabindex="-1"></a>                    rmeans <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(<span class="fu">is.na</span>(mtx))</span>
+<span id="cb61-389"><a href="#cb61-389" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">tibble</span>(<span class="at">modality=</span>modality, </span>
+<span id="cb61-390"><a href="#cb61-390" aria-hidden="true" tabindex="-1"></a>                           <span class="at">subject_id =</span> <span class="fu">names</span>(rmeans), </span>
+<span id="cb61-391"><a href="#cb61-391" aria-hidden="true" tabindex="-1"></a>                           <span class="at">na_frac=</span>rmeans)</span>
+<span id="cb61-392"><a href="#cb61-392" aria-hidden="true" tabindex="-1"></a>           }) <span class="sc">%&gt;%</span></span>
+<span id="cb61-393"><a href="#cb61-393" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(modality) <span class="sc">%&gt;%</span></span>
+<span id="cb61-394"><a href="#cb61-394" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean_na_frac =</span> <span class="fu">mean</span>(na_frac))</span>
+<span id="cb61-395"><a href="#cb61-395" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb61-396"><a href="#cb61-396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-397"><a href="#cb61-397" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is the fraction of NA values in the PBMC Cell Type Frequencies</span></span>
-<span id="cb61-398"><a href="#cb61-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-399"><a href="#cb61-399" aria-hidden="true" tabindex="-1"></a>With the current selection of cell types, there is no specimen with NA values.</span>
-<span id="cb61-400"><a href="#cb61-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-401"><a href="#cb61-401" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Cell Type</span></span>
-<span id="cb61-402"><a href="#cb61-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-405"><a href="#cb61-405" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-406"><a href="#cb61-406" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
-<span id="cb61-407"><a href="#cb61-407" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(percent_live_cell)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-408"><a href="#cb61-408" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(cell_type_name) <span class="sc">%&gt;%</span></span>
-<span id="cb61-409"><a href="#cb61-409" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb61-410"><a href="#cb61-410" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(frac_na)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-411"><a href="#cb61-411" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">cell_type_name =</span> <span class="fu">factor</span>(cell_type_name, <span class="at">levels=</span><span class="fu">rev</span>(cell_type_name))) <span class="sc">%&gt;%</span></span>
-<span id="cb61-412"><a href="#cb61-412" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb61-413"><a href="#cb61-413" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y=</span>cell_type_name, <span class="at">x=</span>frac_na)) <span class="sc">+</span></span>
-<span id="cb61-414"><a href="#cb61-414" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb61-415"><a href="#cb61-415" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Fraction of NA Values per Cell Type"</span>)</span>
-<span id="cb61-416"><a href="#cb61-416" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-417"><a href="#cb61-417" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-418"><a href="#cb61-418" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Cell Specimen</span></span>
-<span id="cb61-419"><a href="#cb61-419" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-422"><a href="#cb61-422" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-423"><a href="#cb61-423" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
-<span id="cb61-424"><a href="#cb61-424" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(percent_live_cell)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-425"><a href="#cb61-425" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-426"><a href="#cb61-426" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb61-427"><a href="#cb61-427" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> frac_na)) <span class="sc">+</span></span>
-<span id="cb61-428"><a href="#cb61-428" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span>  <span class="co"># Add color for better visibility</span></span>
-<span id="cb61-429"><a href="#cb61-429" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">bins =</span> <span class="dv">20</span>, <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb61-430"><a href="#cb61-430" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Display bin counts at the top</span></span>
-<span id="cb61-431"><a href="#cb61-431" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb61-432"><a href="#cb61-432" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Fraction of NA Values per Specimen"</span>)</span>
-<span id="cb61-433"><a href="#cb61-433" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-434"><a href="#cb61-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-435"><a href="#cb61-435" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is the fraction of NA values in the Olink Data?</span></span>
-<span id="cb61-436"><a href="#cb61-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-437"><a href="#cb61-437" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Protein</span></span>
-<span id="cb61-438"><a href="#cb61-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-439"><a href="#cb61-439" aria-hidden="true" tabindex="-1"></a>After excluding Q969D9, the largest fraction of NA values is about 5% which is acceptable I guess.</span>
-<span id="cb61-440"><a href="#cb61-440" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-441"><a href="#cb61-441" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=6}</span></span>
-<span id="cb61-442"><a href="#cb61-442" aria-hidden="true" tabindex="-1"></a><span class="in">exp_data$plasma_cytokine_concentration_by_olink %&gt;%</span></span>
-<span id="cb61-443"><a href="#cb61-443" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(is_na = is.na(concentration)) %&gt;%</span></span>
-<span id="cb61-444"><a href="#cb61-444" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::group_by(protein_id) %&gt;%</span></span>
-<span id="cb61-445"><a href="#cb61-445" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%</span></span>
-<span id="cb61-446"><a href="#cb61-446" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::arrange(desc(frac_na)) %&gt;%</span></span>
-<span id="cb61-447"><a href="#cb61-447" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(protein_id = factor(protein_id, levels=rev(protein_id))) %&gt;%</span></span>
-<span id="cb61-448"><a href="#cb61-448" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot() +</span></span>
-<span id="cb61-449"><a href="#cb61-449" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_col(aes(y=protein_id, x=frac_na)) +</span></span>
-<span id="cb61-450"><a href="#cb61-450" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode(verbose=FALSE) +</span></span>
-<span id="cb61-451"><a href="#cb61-451" aria-hidden="true" tabindex="-1"></a><span class="in">  labs(x="Fraction of NA Values per Protein")</span></span>
-<span id="cb61-452"><a href="#cb61-452" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-453"><a href="#cb61-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-454"><a href="#cb61-454" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Specimen</span></span>
-<span id="cb61-455"><a href="#cb61-455" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-456"><a href="#cb61-456" aria-hidden="true" tabindex="-1"></a>There are 6 specimen with more than 50% NA values, I am not sure whether I should exlcude those?</span>
-<span id="cb61-457"><a href="#cb61-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-460"><a href="#cb61-460" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-461"><a href="#cb61-461" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
-<span id="cb61-462"><a href="#cb61-462" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(concentration)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-463"><a href="#cb61-463" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-464"><a href="#cb61-464" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb61-465"><a href="#cb61-465" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> frac_na)) <span class="sc">+</span></span>
-<span id="cb61-466"><a href="#cb61-466" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span>  <span class="co"># Add color for better visibility</span></span>
-<span id="cb61-467"><a href="#cb61-467" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">bins =</span> <span class="dv">20</span>, <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb61-468"><a href="#cb61-468" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Display bin counts at the top</span></span>
-<span id="cb61-469"><a href="#cb61-469" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb61-470"><a href="#cb61-470" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Fraction of NA Values per Specimen"</span>)</span>
-<span id="cb61-471"><a href="#cb61-471" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-472"><a href="#cb61-472" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-475"><a href="#cb61-475" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-476"><a href="#cb61-476" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
-<span id="cb61-477"><a href="#cb61-477" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(concentration)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-478"><a href="#cb61-478" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-479"><a href="#cb61-479" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb61-480"><a href="#cb61-480" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(frac_na <span class="sc">&gt;</span> <span class="fl">0.2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-481"><a href="#cb61-481" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-482"><a href="#cb61-482" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, frac_na, subject_id, dataset, </span>
-<span id="cb61-483"><a href="#cb61-483" aria-hidden="true" tabindex="-1"></a>                actual_day_relative_to_boost, planned_day_relative_to_boost)</span>
-<span id="cb61-484"><a href="#cb61-484" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-485"><a href="#cb61-485" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-486"><a href="#cb61-486" aria-hidden="true" tabindex="-1"></a><span class="fu"># Question for Assay Metadata</span></span>
-<span id="cb61-487"><a href="#cb61-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-488"><a href="#cb61-488" aria-hidden="true" tabindex="-1"></a><span class="fu">## How does the quality control for Olink look like?</span></span>
-<span id="cb61-489"><a href="#cb61-489" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-492"><a href="#cb61-492" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-493"><a href="#cb61-493" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
-<span id="cb61-494"><a href="#cb61-494" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(quality_control)</span>
-<span id="cb61-495"><a href="#cb61-495" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-496"><a href="#cb61-496" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-499"><a href="#cb61-499" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-500"><a href="#cb61-500" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
-<span id="cb61-501"><a href="#cb61-501" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-502"><a href="#cb61-502" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(partition, dataset)</span>
-<span id="cb61-503"><a href="#cb61-503" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-504"><a href="#cb61-504" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex <span class="sc">%&gt;%</span></span>
-<span id="cb61-505"><a href="#cb61-505" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-506"><a href="#cb61-506" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(partition, dataset)</span>
-<span id="cb61-507"><a href="#cb61-507" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-508"><a href="#cb61-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-509"><a href="#cb61-509" aria-hidden="true" tabindex="-1"></a><span class="fu">## How often is the Cytokine Concentration below the LOD in Olink</span></span>
-<span id="cb61-510"><a href="#cb61-510" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-513"><a href="#cb61-513" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-514"><a href="#cb61-514" aria-hidden="true" tabindex="-1"></a><span class="co"># check how often is it below the limit of detection?</span></span>
-<span id="cb61-515"><a href="#cb61-515" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
-<span id="cb61-516"><a href="#cb61-516" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">below_lod =</span> concentration <span class="sc">&lt;</span> lower_limit_of_quantitation) <span class="sc">%&gt;%</span></span>
-<span id="cb61-517"><a href="#cb61-517" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(below_lod)</span>
-<span id="cb61-518"><a href="#cb61-518" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-519"><a href="#cb61-519" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-520"><a href="#cb61-520" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=4}</span></span>
-<span id="cb61-521"><a href="#cb61-521" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(1)</span></span>
-<span id="cb61-522"><a href="#cb61-522" aria-hidden="true" tabindex="-1"></a><span class="in">p1 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%</span></span>
-<span id="cb61-523"><a href="#cb61-523" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%</span></span>
-<span id="cb61-524"><a href="#cb61-524" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(qc_warning = quality_control == "Warning") %&gt;%</span></span>
-<span id="cb61-525"><a href="#cb61-525" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::group_by(protein_id) %&gt;%</span></span>
-<span id="cb61-526"><a href="#cb61-526" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),</span></span>
-<span id="cb61-527"><a href="#cb61-527" aria-hidden="true" tabindex="-1"></a><span class="in">                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%</span></span>
-<span id="cb61-528"><a href="#cb61-528" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::left_join(cytokine_uniprot_mapping, by="protein_id") %&gt;%</span></span>
-<span id="cb61-529"><a href="#cb61-529" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot() +</span></span>
-<span id="cb61-530"><a href="#cb61-530" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +</span></span>
-<span id="cb61-531"><a href="#cb61-531" aria-hidden="true" tabindex="-1"></a><span class="in">  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, </span></span>
-<span id="cb61-532"><a href="#cb61-532" aria-hidden="true" tabindex="-1"></a><span class="in">                      label = ifelse(mean_below_lod &gt; 0.2, protein_id, '')),</span></span>
-<span id="cb61-533"><a href="#cb61-533" aria-hidden="true" tabindex="-1"></a><span class="in">                  max.overlaps = Inf, color="grey") + # This ensures all labels are shown</span></span>
-<span id="cb61-534"><a href="#cb61-534" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode()</span></span>
-<span id="cb61-535"><a href="#cb61-535" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-536"><a href="#cb61-536" aria-hidden="true" tabindex="-1"></a><span class="in">p2 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%</span></span>
-<span id="cb61-537"><a href="#cb61-537" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%</span></span>
-<span id="cb61-538"><a href="#cb61-538" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(qc_warning = quality_control == "Warning") %&gt;%</span></span>
-<span id="cb61-539"><a href="#cb61-539" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::group_by(protein_id) %&gt;%</span></span>
-<span id="cb61-540"><a href="#cb61-540" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),</span></span>
-<span id="cb61-541"><a href="#cb61-541" aria-hidden="true" tabindex="-1"></a><span class="in">                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%</span></span>
-<span id="cb61-542"><a href="#cb61-542" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::left_join(cytokine_uniprot_mapping, by="protein_id") %&gt;%</span></span>
-<span id="cb61-543"><a href="#cb61-543" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot() +</span></span>
-<span id="cb61-544"><a href="#cb61-544" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +</span></span>
-<span id="cb61-545"><a href="#cb61-545" aria-hidden="true" tabindex="-1"></a><span class="in">  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, </span></span>
-<span id="cb61-546"><a href="#cb61-546" aria-hidden="true" tabindex="-1"></a><span class="in">                      label = ifelse(mean_below_lod &gt; 0.2, cytokine, '')),</span></span>
-<span id="cb61-547"><a href="#cb61-547" aria-hidden="true" tabindex="-1"></a><span class="in">                  max.overlaps = Inf, color="grey") + # This ensures all labels are shown</span></span>
-<span id="cb61-548"><a href="#cb61-548" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode()</span></span>
-<span id="cb61-549"><a href="#cb61-549" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-550"><a href="#cb61-550" aria-hidden="true" tabindex="-1"></a><span class="in">cowplot::plot_grid(p1, p2, ncol=2)</span></span>
-<span id="cb61-551"><a href="#cb61-551" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-552"><a href="#cb61-552" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-555"><a href="#cb61-555" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-556"><a href="#cb61-556" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-557"><a href="#cb61-557" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-558"><a href="#cb61-558" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is the fraction of unspecific antibody measurements</span></span>
-<span id="cb61-559"><a href="#cb61-559" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-560"><a href="#cb61-560" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Isotype-Antigen</span></span>
-<span id="cb61-561"><a href="#cb61-561" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-564"><a href="#cb61-564" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-565"><a href="#cb61-565" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_ab_titer <span class="sc">%&gt;%</span></span>
-<span id="cb61-566"><a href="#cb61-566" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(isotype_antigen) <span class="sc">%&gt;%</span></span>
-<span id="cb61-567"><a href="#cb61-567" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">is_antigen_specific_fraction =</span> <span class="fu">mean</span>(is_antigen_specific)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-568"><a href="#cb61-568" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>is_antigen_specific_fraction)) <span class="sc">+</span></span>
-<span id="cb61-569"><a href="#cb61-569" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">30</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb61-570"><a href="#cb61-570" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">bins=</span><span class="dv">30</span>, <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  </span>
-<span id="cb61-571"><a href="#cb61-571" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb61-572"><a href="#cb61-572" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-573"><a href="#cb61-573" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-574"><a href="#cb61-574" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Specimen</span></span>
-<span id="cb61-575"><a href="#cb61-575" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-576"><a href="#cb61-576" aria-hidden="true" tabindex="-1"></a>So in some specimen we have non-specific antibody measurements? What does that mean?</span>
-<span id="cb61-577"><a href="#cb61-577" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-580"><a href="#cb61-580" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-581"><a href="#cb61-581" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_ab_titer <span class="sc">%&gt;%</span></span>
-<span id="cb61-582"><a href="#cb61-582" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-583"><a href="#cb61-583" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">is_antigen_specific_fraction =</span> <span class="fu">mean</span>(is_antigen_specific)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-584"><a href="#cb61-584" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>is_antigen_specific_fraction)) <span class="sc">+</span></span>
-<span id="cb61-585"><a href="#cb61-585" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth=</span><span class="dv">1</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb61-586"><a href="#cb61-586" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">binwidth=</span><span class="dv">1</span>, <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  </span>
-<span id="cb61-587"><a href="#cb61-587" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb61-588"><a href="#cb61-588" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-589"><a href="#cb61-589" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-590"><a href="#cb61-590" aria-hidden="true" tabindex="-1"></a><span class="fu"># Hierarchy in PBMC Frequency Data</span></span>
-<span id="cb61-591"><a href="#cb61-591" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-592"><a href="#cb61-592" aria-hidden="true" tabindex="-1"></a><span class="fu">## NK</span></span>
-<span id="cb61-593"><a href="#cb61-593" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-594"><a href="#cb61-594" aria-hidden="true" tabindex="-1"></a>There are 3 types of NK cells:</span>
-<span id="cb61-595"><a href="#cb61-595" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-596"><a href="#cb61-596" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>NK cells (CD3-CD19-CD56+): CD19-CD3-CD56+/++</span>
-<span id="cb61-597"><a href="#cb61-597" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>NK: CD19-CD3-CD56+</span>
-<span id="cb61-598"><a href="#cb61-598" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>CD56high NK cells: CD19-CD3-CD56++</span>
-<span id="cb61-599"><a href="#cb61-599" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-600"><a href="#cb61-600" aria-hidden="true" tabindex="-1"></a>And I don't know what to do with that information!</span>
-<span id="cb61-601"><a href="#cb61-601" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-602"><a href="#cb61-602" aria-hidden="true" tabindex="-1"></a><span class="fu">## No Gating Info for 2023</span></span>
-<span id="cb61-603"><a href="#cb61-603" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-604"><a href="#cb61-604" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>I just assume it is the same as in 2022, but this might not be true since the data look so different</span>
-<span id="cb61-605"><a href="#cb61-605" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-606"><a href="#cb61-606" aria-hidden="true" tabindex="-1"></a><span class="fu">## No Gating Info for Basophils and CD19 in 2020</span></span>
-<span id="cb61-607"><a href="#cb61-607" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-608"><a href="#cb61-608" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>I just assume it is the same as in 2021 and 2022</span>
-<span id="cb61-609"><a href="#cb61-609" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-610"><a href="#cb61-610" aria-hidden="true" tabindex="-1"></a><span class="fu">## No Gating Info for non-pDCs at all </span></span>
-<span id="cb61-611"><a href="#cb61-611" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-612"><a href="#cb61-612" aria-hidden="true" tabindex="-1"></a>Not sure how to fix this)</span>
-<span id="cb61-613"><a href="#cb61-613" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-616"><a href="#cb61-616" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-617"><a href="#cb61-617" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
-<span id="cb61-618"><a href="#cb61-618" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb61-619"><a href="#cb61-619" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb61-620"><a href="#cb61-620" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-621"><a href="#cb61-621" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-622"><a href="#cb61-622" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
-<span id="cb61-623"><a href="#cb61-623" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
-<span id="cb61-624"><a href="#cb61-624" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-625"><a href="#cb61-625" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-626"><a href="#cb61-626" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">is.na</span>(level)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-627"><a href="#cb61-627" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(dataset, cell_type_name) <span class="sc">%&gt;%</span></span>
-<span id="cb61-628"><a href="#cb61-628" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
-<span id="cb61-629"><a href="#cb61-629" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-630"><a href="#cb61-630" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-631"><a href="#cb61-631" aria-hidden="true" tabindex="-1"></a><span class="fu">## Should the Proportions sum up to 1 at level 0?</span></span>
-<span id="cb61-632"><a href="#cb61-632" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-633"><a href="#cb61-633" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Trying to take the hierarchical information into account, it still does not make sense</span>
-<span id="cb61-634"><a href="#cb61-634" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-637"><a href="#cb61-637" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-638"><a href="#cb61-638" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
-<span id="cb61-639"><a href="#cb61-639" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb61-640"><a href="#cb61-640" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb61-641"><a href="#cb61-641" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-642"><a href="#cb61-642" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-643"><a href="#cb61-643" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
-<span id="cb61-644"><a href="#cb61-644" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
-<span id="cb61-645"><a href="#cb61-645" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-646"><a href="#cb61-646" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-647"><a href="#cb61-647" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(level <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-648"><a href="#cb61-648" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-649"><a href="#cb61-649" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">percent_live_cell_sum =</span> <span class="fu">sum</span>(percent_live_cell, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-650"><a href="#cb61-650" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-651"><a href="#cb61-651" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb61-652"><a href="#cb61-652" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">x=</span>dataset, <span class="at">y=</span>percent_live_cell_sum)) <span class="sc">+</span></span>
-<span id="cb61-653"><a href="#cb61-653" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb61-654"><a href="#cb61-654" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-655"><a href="#cb61-655" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-656"><a href="#cb61-656" aria-hidden="true" tabindex="-1"></a><span class="fu">## Difference in 2023 Dataset</span></span>
-<span id="cb61-657"><a href="#cb61-657" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-658"><a href="#cb61-658" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It seems like the 2023 data are very very different, which makes me hesitant to use it for any kind of predictions on the challenge data. E.g. just looking at level 0 which should make sense I get the following</span>
-<span id="cb61-659"><a href="#cb61-659" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-662"><a href="#cb61-662" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-663"><a href="#cb61-663" aria-hidden="true" tabindex="-1"></a><span class="co"># first check for NAs for the levels</span></span>
-<span id="cb61-664"><a href="#cb61-664" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
-<span id="cb61-665"><a href="#cb61-665" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb61-666"><a href="#cb61-666" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb61-667"><a href="#cb61-667" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-668"><a href="#cb61-668" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-669"><a href="#cb61-669" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
-<span id="cb61-670"><a href="#cb61-670" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
-<span id="cb61-671"><a href="#cb61-671" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-672"><a href="#cb61-672" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-673"><a href="#cb61-673" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">is.na</span>(level))</span>
-<span id="cb61-674"><a href="#cb61-674" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-675"><a href="#cb61-675" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-678"><a href="#cb61-678" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-679"><a href="#cb61-679" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
-<span id="cb61-680"><a href="#cb61-680" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb61-681"><a href="#cb61-681" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb61-682"><a href="#cb61-682" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-683"><a href="#cb61-683" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-684"><a href="#cb61-684" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
-<span id="cb61-685"><a href="#cb61-685" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
-<span id="cb61-686"><a href="#cb61-686" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-687"><a href="#cb61-687" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-688"><a href="#cb61-688" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(level <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-689"><a href="#cb61-689" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-690"><a href="#cb61-690" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">percent_live_cell_sum =</span> <span class="fu">sum</span>(percent_live_cell, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-691"><a href="#cb61-691" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-692"><a href="#cb61-692" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb61-693"><a href="#cb61-693" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">x=</span>dataset, <span class="at">y=</span>percent_live_cell_sum)) <span class="sc">+</span></span>
-<span id="cb61-694"><a href="#cb61-694" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb61-695"><a href="#cb61-695" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-696"><a href="#cb61-696" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-697"><a href="#cb61-697" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Especially, when completely ignoring the hierarchy in the gating information, I would expect to have more than 100% in <span class="in">`percelt_live_cell_sum`</span>, but this is not true for the specimens from the 2023 dataset</span>
-<span id="cb61-698"><a href="#cb61-698" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-701"><a href="#cb61-701" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-702"><a href="#cb61-702" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
-<span id="cb61-703"><a href="#cb61-703" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb61-704"><a href="#cb61-704" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
-<span id="cb61-705"><a href="#cb61-705" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-706"><a href="#cb61-706" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-707"><a href="#cb61-707" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
-<span id="cb61-708"><a href="#cb61-708" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
-<span id="cb61-709"><a href="#cb61-709" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb61-710"><a href="#cb61-710" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-711"><a href="#cb61-711" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-712"><a href="#cb61-712" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">percent_live_cell_sum =</span> <span class="fu">sum</span>(percent_live_cell, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-713"><a href="#cb61-713" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-714"><a href="#cb61-714" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb61-715"><a href="#cb61-715" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">x=</span>dataset, <span class="at">y=</span>percent_live_cell_sum)) <span class="sc">+</span></span>
-<span id="cb61-716"><a href="#cb61-716" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
-<span id="cb61-717"><a href="#cb61-717" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-718"><a href="#cb61-718" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-719"><a href="#cb61-719" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Or what I use a list of predefined cell types of interest?</span>
-<span id="cb61-720"><a href="#cb61-720" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-721"><a href="#cb61-721" aria-hidden="true" tabindex="-1"></a><span class="fu"># Features for T cell Activation Assay (AIM)</span></span>
-<span id="cb61-722"><a href="#cb61-722" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-725"><a href="#cb61-725" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-726"><a href="#cb61-726" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_activation <span class="sc">%&gt;%</span></span>
-<span id="cb61-727"><a href="#cb61-727" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(stimulation) <span class="sc">%&gt;%</span></span>
-<span id="cb61-728"><a href="#cb61-728" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
-<span id="cb61-729"><a href="#cb61-729" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-730"><a href="#cb61-730" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-733"><a href="#cb61-733" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-734"><a href="#cb61-734" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_activation <span class="sc">%&gt;%</span></span>
-<span id="cb61-735"><a href="#cb61-735" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb61-736"><a href="#cb61-736" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>analyte_percentages), <span class="at">bins=</span><span class="dv">100</span>) <span class="sc">+</span></span>
-<span id="cb61-737"><a href="#cb61-737" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stimulation) <span class="sc">+</span></span>
-<span id="cb61-738"><a href="#cb61-738" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb61-739"><a href="#cb61-739" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-740"><a href="#cb61-740" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-741"><a href="#cb61-741" aria-hidden="true" tabindex="-1"></a><span class="fu"># Features for T cell Polarization Assay (FluoroSpot)</span></span>
-<span id="cb61-742"><a href="#cb61-742" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-745"><a href="#cb61-745" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-746"><a href="#cb61-746" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
-<span id="cb61-747"><a href="#cb61-747" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(protein_meta, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"protein_id"</span><span class="ot">=</span><span class="st">"uniprot_id"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-748"><a href="#cb61-748" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(protein_id, cytokine) <span class="sc">%&gt;%</span></span>
-<span id="cb61-749"><a href="#cb61-749" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
-<span id="cb61-750"><a href="#cb61-750" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-751"><a href="#cb61-751" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-754"><a href="#cb61-754" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-755"><a href="#cb61-755" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
-<span id="cb61-756"><a href="#cb61-756" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(stimulation) <span class="sc">%&gt;%</span></span>
-<span id="cb61-757"><a href="#cb61-757" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
-<span id="cb61-758"><a href="#cb61-758" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-759"><a href="#cb61-759" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-760"><a href="#cb61-760" aria-hidden="true" tabindex="-1"></a>where</span>
-<span id="cb61-761"><a href="#cb61-761" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-762"><a href="#cb61-762" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>DMSO: "Negative" Control (solvent where peptides are dissolved in)</span>
-<span id="cb61-763"><a href="#cb61-763" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-764"><a href="#cb61-764" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PHA (Phytohaemagglutinin): "Postive" Control (this should elicit strong T cell response?)</span>
-<span id="cb61-765"><a href="#cb61-765" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-766"><a href="#cb61-766" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PT: Bordetella Pertussis Toxin</span>
-<span id="cb61-767"><a href="#cb61-767" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-770"><a href="#cb61-770" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-771"><a href="#cb61-771" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
-<span id="cb61-772"><a href="#cb61-772" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(protein_meta, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"protein_id"</span><span class="ot">=</span><span class="st">"uniprot_id"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-773"><a href="#cb61-773" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb61-774"><a href="#cb61-774" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>analyte_counts), <span class="at">bins=</span><span class="dv">100</span>) <span class="sc">+</span></span>
-<span id="cb61-775"><a href="#cb61-775" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="at">rows=</span><span class="fu">vars</span>(stimulation), <span class="at">cols=</span><span class="fu">vars</span>(cytokine)) <span class="sc">+</span></span>
-<span id="cb61-776"><a href="#cb61-776" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
-<span id="cb61-777"><a href="#cb61-777" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb61-778"><a href="#cb61-778" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-779"><a href="#cb61-779" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: the assay has been normalized relative to DMSO</span></span>
-<span id="cb61-780"><a href="#cb61-780" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
-<span id="cb61-781"><a href="#cb61-781" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(stimulation<span class="sc">==</span><span class="st">"DMSO"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-782"><a href="#cb61-782" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(analyte_counts) <span class="sc">%&gt;%</span></span>
-<span id="cb61-783"><a href="#cb61-783" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">near</span>(., <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-784"><a href="#cb61-784" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span>
-<span id="cb61-785"><a href="#cb61-785" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-786"><a href="#cb61-786" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
-<span id="cb61-787"><a href="#cb61-787" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(stimulation<span class="sc">!=</span><span class="st">"DMSO"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb61-788"><a href="#cb61-788" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(stimulation_protein_id) <span class="sc">%&gt;%</span></span>
-<span id="cb61-789"><a href="#cb61-789" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
-<span id="cb61-790"><a href="#cb61-790" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-791"><a href="#cb61-791" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-792"><a href="#cb61-792" aria-hidden="true" tabindex="-1"></a><span class="fu"># Other Notes</span></span>
-<span id="cb61-793"><a href="#cb61-793" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-794"><a href="#cb61-794" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Only from 2022 onwards do we have time-course baseline measurements, i.e. <span class="in">`-30, -14/15, 0`</span></span>
-<span id="cb61-795"><a href="#cb61-795" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-798"><a href="#cb61-798" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-799"><a href="#cb61-799" aria-hidden="true" tabindex="-1"></a>meta_data <span class="sc">%&gt;%</span></span>
-<span id="cb61-800"><a href="#cb61-800" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(partition, dataset, planned_day_relative_to_boost) <span class="sc">%&gt;%</span></span>
-<span id="cb61-801"><a href="#cb61-801" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost <span class="sc">&lt;</span> <span class="dv">0</span>)</span>
-<span id="cb61-802"><a href="#cb61-802" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-803"><a href="#cb61-803" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-804"><a href="#cb61-804" aria-hidden="true" tabindex="-1"></a><span class="fu"># Appendix</span></span>
-<span id="cb61-805"><a href="#cb61-805" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-806"><a href="#cb61-806" aria-hidden="true" tabindex="-1"></a>&lt;button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" &gt;Session Information&lt;/button&gt;&lt;div id="collapseOne" class="accordion-collapse collapse"&gt;&lt;div&gt;</span>
-<span id="cb61-807"><a href="#cb61-807" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-810"><a href="#cb61-810" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb61-811"><a href="#cb61-811" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb61-812"><a href="#cb61-812" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb61-813"><a href="#cb61-813" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-814"><a href="#cb61-814" aria-hidden="true" tabindex="-1"></a>&lt;/div&gt;&lt;/div&gt;</span>
+<span id="cb61-397"><a href="#cb61-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-398"><a href="#cb61-398" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is the fraction of NA values in the PBMC Cell Type Frequencies</span></span>
+<span id="cb61-399"><a href="#cb61-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-400"><a href="#cb61-400" aria-hidden="true" tabindex="-1"></a>With the current selection of cell types, there is no specimen with NA values.</span>
+<span id="cb61-401"><a href="#cb61-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-402"><a href="#cb61-402" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Cell Type</span></span>
+<span id="cb61-403"><a href="#cb61-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-406"><a href="#cb61-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-407"><a href="#cb61-407" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb61-408"><a href="#cb61-408" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(percent_live_cell)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-409"><a href="#cb61-409" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(cell_type_name) <span class="sc">%&gt;%</span></span>
+<span id="cb61-410"><a href="#cb61-410" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb61-411"><a href="#cb61-411" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(frac_na)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-412"><a href="#cb61-412" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">cell_type_name =</span> <span class="fu">factor</span>(cell_type_name, <span class="at">levels=</span><span class="fu">rev</span>(cell_type_name))) <span class="sc">%&gt;%</span></span>
+<span id="cb61-413"><a href="#cb61-413" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb61-414"><a href="#cb61-414" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y=</span>cell_type_name, <span class="at">x=</span>frac_na)) <span class="sc">+</span></span>
+<span id="cb61-415"><a href="#cb61-415" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb61-416"><a href="#cb61-416" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Fraction of NA Values per Cell Type"</span>)</span>
+<span id="cb61-417"><a href="#cb61-417" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-418"><a href="#cb61-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-419"><a href="#cb61-419" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Cell Specimen</span></span>
+<span id="cb61-420"><a href="#cb61-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-423"><a href="#cb61-423" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-424"><a href="#cb61-424" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb61-425"><a href="#cb61-425" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(percent_live_cell)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-426"><a href="#cb61-426" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-427"><a href="#cb61-427" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb61-428"><a href="#cb61-428" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> frac_na)) <span class="sc">+</span></span>
+<span id="cb61-429"><a href="#cb61-429" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span>  <span class="co"># Add color for better visibility</span></span>
+<span id="cb61-430"><a href="#cb61-430" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">bins =</span> <span class="dv">20</span>, <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb61-431"><a href="#cb61-431" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Display bin counts at the top</span></span>
+<span id="cb61-432"><a href="#cb61-432" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb61-433"><a href="#cb61-433" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Fraction of NA Values per Specimen"</span>)</span>
+<span id="cb61-434"><a href="#cb61-434" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-435"><a href="#cb61-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-436"><a href="#cb61-436" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is the fraction of NA values in the Olink Data?</span></span>
+<span id="cb61-437"><a href="#cb61-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-438"><a href="#cb61-438" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Protein</span></span>
+<span id="cb61-439"><a href="#cb61-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-440"><a href="#cb61-440" aria-hidden="true" tabindex="-1"></a>After excluding Q969D9, the largest fraction of NA values is about 5% which is acceptable I guess.</span>
+<span id="cb61-441"><a href="#cb61-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-442"><a href="#cb61-442" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.height=6}</span></span>
+<span id="cb61-443"><a href="#cb61-443" aria-hidden="true" tabindex="-1"></a><span class="in">exp_data$plasma_cytokine_concentration_by_olink %&gt;%</span></span>
+<span id="cb61-444"><a href="#cb61-444" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(is_na = is.na(concentration)) %&gt;%</span></span>
+<span id="cb61-445"><a href="#cb61-445" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::group_by(protein_id) %&gt;%</span></span>
+<span id="cb61-446"><a href="#cb61-446" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::summarise(frac_na = sum(is_na) / n()) %&gt;%</span></span>
+<span id="cb61-447"><a href="#cb61-447" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::arrange(desc(frac_na)) %&gt;%</span></span>
+<span id="cb61-448"><a href="#cb61-448" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(protein_id = factor(protein_id, levels=rev(protein_id))) %&gt;%</span></span>
+<span id="cb61-449"><a href="#cb61-449" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot() +</span></span>
+<span id="cb61-450"><a href="#cb61-450" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_col(aes(y=protein_id, x=frac_na)) +</span></span>
+<span id="cb61-451"><a href="#cb61-451" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode(verbose=FALSE) +</span></span>
+<span id="cb61-452"><a href="#cb61-452" aria-hidden="true" tabindex="-1"></a><span class="in">  labs(x="Fraction of NA Values per Protein")</span></span>
+<span id="cb61-453"><a href="#cb61-453" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-454"><a href="#cb61-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-455"><a href="#cb61-455" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Specimen</span></span>
+<span id="cb61-456"><a href="#cb61-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-457"><a href="#cb61-457" aria-hidden="true" tabindex="-1"></a>There are 6 specimen with more than 50% NA values, I am not sure whether I should exlcude those?</span>
+<span id="cb61-458"><a href="#cb61-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-461"><a href="#cb61-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-462"><a href="#cb61-462" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
+<span id="cb61-463"><a href="#cb61-463" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(concentration)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-464"><a href="#cb61-464" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-465"><a href="#cb61-465" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb61-466"><a href="#cb61-466" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> frac_na)) <span class="sc">+</span></span>
+<span id="cb61-467"><a href="#cb61-467" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span>  <span class="co"># Add color for better visibility</span></span>
+<span id="cb61-468"><a href="#cb61-468" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">bins =</span> <span class="dv">20</span>, <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb61-469"><a href="#cb61-469" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Display bin counts at the top</span></span>
+<span id="cb61-470"><a href="#cb61-470" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb61-471"><a href="#cb61-471" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Fraction of NA Values per Specimen"</span>)</span>
+<span id="cb61-472"><a href="#cb61-472" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-473"><a href="#cb61-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-476"><a href="#cb61-476" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-477"><a href="#cb61-477" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
+<span id="cb61-478"><a href="#cb61-478" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">is_na =</span> <span class="fu">is.na</span>(concentration)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-479"><a href="#cb61-479" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-480"><a href="#cb61-480" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">frac_na =</span> <span class="fu">sum</span>(is_na) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb61-481"><a href="#cb61-481" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(frac_na <span class="sc">&gt;</span> <span class="fl">0.2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-482"><a href="#cb61-482" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-483"><a href="#cb61-483" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, frac_na, subject_id, dataset, </span>
+<span id="cb61-484"><a href="#cb61-484" aria-hidden="true" tabindex="-1"></a>                actual_day_relative_to_boost, planned_day_relative_to_boost)</span>
+<span id="cb61-485"><a href="#cb61-485" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-486"><a href="#cb61-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-487"><a href="#cb61-487" aria-hidden="true" tabindex="-1"></a><span class="fu"># Question for Assay Metadata</span></span>
+<span id="cb61-488"><a href="#cb61-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-489"><a href="#cb61-489" aria-hidden="true" tabindex="-1"></a><span class="fu">## How does the quality control for Olink look like?</span></span>
+<span id="cb61-490"><a href="#cb61-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-493"><a href="#cb61-493" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-494"><a href="#cb61-494" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
+<span id="cb61-495"><a href="#cb61-495" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(quality_control)</span>
+<span id="cb61-496"><a href="#cb61-496" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-497"><a href="#cb61-497" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-500"><a href="#cb61-500" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-501"><a href="#cb61-501" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
+<span id="cb61-502"><a href="#cb61-502" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-503"><a href="#cb61-503" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(partition, dataset)</span>
+<span id="cb61-504"><a href="#cb61-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-505"><a href="#cb61-505" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_legendplex <span class="sc">%&gt;%</span></span>
+<span id="cb61-506"><a href="#cb61-506" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-507"><a href="#cb61-507" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(partition, dataset)</span>
+<span id="cb61-508"><a href="#cb61-508" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-509"><a href="#cb61-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-510"><a href="#cb61-510" aria-hidden="true" tabindex="-1"></a><span class="fu">## How often is the Cytokine Concentration below the LOD in Olink</span></span>
+<span id="cb61-511"><a href="#cb61-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-514"><a href="#cb61-514" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-515"><a href="#cb61-515" aria-hidden="true" tabindex="-1"></a><span class="co"># check how often is it below the limit of detection?</span></span>
+<span id="cb61-516"><a href="#cb61-516" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_cytokine_concentration_by_olink <span class="sc">%&gt;%</span></span>
+<span id="cb61-517"><a href="#cb61-517" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">below_lod =</span> concentration <span class="sc">&lt;</span> lower_limit_of_quantitation) <span class="sc">%&gt;%</span></span>
+<span id="cb61-518"><a href="#cb61-518" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(below_lod)</span>
+<span id="cb61-519"><a href="#cb61-519" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-520"><a href="#cb61-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-521"><a href="#cb61-521" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig.width=10, fig.height=4}</span></span>
+<span id="cb61-522"><a href="#cb61-522" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(1)</span></span>
+<span id="cb61-523"><a href="#cb61-523" aria-hidden="true" tabindex="-1"></a><span class="in">p1 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%</span></span>
+<span id="cb61-524"><a href="#cb61-524" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%</span></span>
+<span id="cb61-525"><a href="#cb61-525" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(qc_warning = quality_control == "Warning") %&gt;%</span></span>
+<span id="cb61-526"><a href="#cb61-526" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::group_by(protein_id) %&gt;%</span></span>
+<span id="cb61-527"><a href="#cb61-527" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),</span></span>
+<span id="cb61-528"><a href="#cb61-528" aria-hidden="true" tabindex="-1"></a><span class="in">                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%</span></span>
+<span id="cb61-529"><a href="#cb61-529" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::left_join(cytokine_uniprot_mapping, by="protein_id") %&gt;%</span></span>
+<span id="cb61-530"><a href="#cb61-530" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot() +</span></span>
+<span id="cb61-531"><a href="#cb61-531" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +</span></span>
+<span id="cb61-532"><a href="#cb61-532" aria-hidden="true" tabindex="-1"></a><span class="in">  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, </span></span>
+<span id="cb61-533"><a href="#cb61-533" aria-hidden="true" tabindex="-1"></a><span class="in">                      label = ifelse(mean_below_lod &gt; 0.2, protein_id, '')),</span></span>
+<span id="cb61-534"><a href="#cb61-534" aria-hidden="true" tabindex="-1"></a><span class="in">                  max.overlaps = Inf, color="grey") + # This ensures all labels are shown</span></span>
+<span id="cb61-535"><a href="#cb61-535" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode()</span></span>
+<span id="cb61-536"><a href="#cb61-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-537"><a href="#cb61-537" aria-hidden="true" tabindex="-1"></a><span class="in">p2 &lt;- exp_data$plasma_cytokine_concentration_by_olink %&gt;%</span></span>
+<span id="cb61-538"><a href="#cb61-538" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(below_lod = concentration &lt; lower_limit_of_quantitation) %&gt;%</span></span>
+<span id="cb61-539"><a href="#cb61-539" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::mutate(qc_warning = quality_control == "Warning") %&gt;%</span></span>
+<span id="cb61-540"><a href="#cb61-540" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::group_by(protein_id) %&gt;%</span></span>
+<span id="cb61-541"><a href="#cb61-541" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::summarize(mean_below_lod = mean(below_lod, na.rm=TRUE),</span></span>
+<span id="cb61-542"><a href="#cb61-542" aria-hidden="true" tabindex="-1"></a><span class="in">                   mean_qc_warning = mean(qc_warning, na.rm=TRUE)) %&gt;%</span></span>
+<span id="cb61-543"><a href="#cb61-543" aria-hidden="true" tabindex="-1"></a><span class="in">  dplyr::left_join(cytokine_uniprot_mapping, by="protein_id") %&gt;%</span></span>
+<span id="cb61-544"><a href="#cb61-544" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot() +</span></span>
+<span id="cb61-545"><a href="#cb61-545" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point(aes(x = mean_below_lod, y = mean_qc_warning)) +</span></span>
+<span id="cb61-546"><a href="#cb61-546" aria-hidden="true" tabindex="-1"></a><span class="in">  ggrepel::geom_text_repel(aes(x = mean_below_lod, y = mean_qc_warning, </span></span>
+<span id="cb61-547"><a href="#cb61-547" aria-hidden="true" tabindex="-1"></a><span class="in">                      label = ifelse(mean_below_lod &gt; 0.2, cytokine, '')),</span></span>
+<span id="cb61-548"><a href="#cb61-548" aria-hidden="true" tabindex="-1"></a><span class="in">                  max.overlaps = Inf, color="grey") + # This ensures all labels are shown</span></span>
+<span id="cb61-549"><a href="#cb61-549" aria-hidden="true" tabindex="-1"></a><span class="in">  ggdark::dark_mode()</span></span>
+<span id="cb61-550"><a href="#cb61-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-551"><a href="#cb61-551" aria-hidden="true" tabindex="-1"></a><span class="in">cowplot::plot_grid(p1, p2, ncol=2)</span></span>
+<span id="cb61-552"><a href="#cb61-552" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-553"><a href="#cb61-553" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-556"><a href="#cb61-556" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-557"><a href="#cb61-557" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-558"><a href="#cb61-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-559"><a href="#cb61-559" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is the fraction of unspecific antibody measurements</span></span>
+<span id="cb61-560"><a href="#cb61-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-561"><a href="#cb61-561" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Isotype-Antigen</span></span>
+<span id="cb61-562"><a href="#cb61-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-565"><a href="#cb61-565" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-566"><a href="#cb61-566" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_ab_titer <span class="sc">%&gt;%</span></span>
+<span id="cb61-567"><a href="#cb61-567" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(isotype_antigen) <span class="sc">%&gt;%</span></span>
+<span id="cb61-568"><a href="#cb61-568" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">is_antigen_specific_fraction =</span> <span class="fu">mean</span>(is_antigen_specific)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-569"><a href="#cb61-569" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>is_antigen_specific_fraction)) <span class="sc">+</span></span>
+<span id="cb61-570"><a href="#cb61-570" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">30</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb61-571"><a href="#cb61-571" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">bins=</span><span class="dv">30</span>, <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  </span>
+<span id="cb61-572"><a href="#cb61-572" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb61-573"><a href="#cb61-573" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-574"><a href="#cb61-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-575"><a href="#cb61-575" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per Specimen</span></span>
+<span id="cb61-576"><a href="#cb61-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-577"><a href="#cb61-577" aria-hidden="true" tabindex="-1"></a>So in some specimen we have non-specific antibody measurements? What does that mean?</span>
+<span id="cb61-578"><a href="#cb61-578" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-581"><a href="#cb61-581" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-582"><a href="#cb61-582" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>plasma_ab_titer <span class="sc">%&gt;%</span></span>
+<span id="cb61-583"><a href="#cb61-583" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-584"><a href="#cb61-584" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">is_antigen_specific_fraction =</span> <span class="fu">mean</span>(is_antigen_specific)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-585"><a href="#cb61-585" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>is_antigen_specific_fraction)) <span class="sc">+</span></span>
+<span id="cb61-586"><a href="#cb61-586" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth=</span><span class="dv">1</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb61-587"><a href="#cb61-587" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_bin</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">after_stat</span>(count)), <span class="at">binwidth=</span><span class="dv">1</span>, <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  </span>
+<span id="cb61-588"><a href="#cb61-588" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb61-589"><a href="#cb61-589" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-590"><a href="#cb61-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-591"><a href="#cb61-591" aria-hidden="true" tabindex="-1"></a><span class="fu"># Hierarchy in PBMC Frequency Data</span></span>
+<span id="cb61-592"><a href="#cb61-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-593"><a href="#cb61-593" aria-hidden="true" tabindex="-1"></a><span class="fu">## NK</span></span>
+<span id="cb61-594"><a href="#cb61-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-595"><a href="#cb61-595" aria-hidden="true" tabindex="-1"></a>There are 3 types of NK cells:</span>
+<span id="cb61-596"><a href="#cb61-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-597"><a href="#cb61-597" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>NK cells (CD3-CD19-CD56+): CD19-CD3-CD56+/++</span>
+<span id="cb61-598"><a href="#cb61-598" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>NK: CD19-CD3-CD56+</span>
+<span id="cb61-599"><a href="#cb61-599" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>CD56high NK cells: CD19-CD3-CD56++</span>
+<span id="cb61-600"><a href="#cb61-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-601"><a href="#cb61-601" aria-hidden="true" tabindex="-1"></a>And I don't know what to do with that information!</span>
+<span id="cb61-602"><a href="#cb61-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-603"><a href="#cb61-603" aria-hidden="true" tabindex="-1"></a><span class="fu">## No Gating Info for 2023</span></span>
+<span id="cb61-604"><a href="#cb61-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-605"><a href="#cb61-605" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>I just assume it is the same as in 2022, but this might not be true since the data look so different</span>
+<span id="cb61-606"><a href="#cb61-606" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-607"><a href="#cb61-607" aria-hidden="true" tabindex="-1"></a><span class="fu">## No Gating Info for Basophils and CD19 in 2020</span></span>
+<span id="cb61-608"><a href="#cb61-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-609"><a href="#cb61-609" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>I just assume it is the same as in 2021 and 2022</span>
+<span id="cb61-610"><a href="#cb61-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-611"><a href="#cb61-611" aria-hidden="true" tabindex="-1"></a><span class="fu">## No Gating Info for non-pDCs at all </span></span>
+<span id="cb61-612"><a href="#cb61-612" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-613"><a href="#cb61-613" aria-hidden="true" tabindex="-1"></a>Not sure how to fix this)</span>
+<span id="cb61-614"><a href="#cb61-614" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-617"><a href="#cb61-617" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-618"><a href="#cb61-618" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb61-619"><a href="#cb61-619" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb61-620"><a href="#cb61-620" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb61-621"><a href="#cb61-621" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-622"><a href="#cb61-622" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-623"><a href="#cb61-623" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
+<span id="cb61-624"><a href="#cb61-624" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
+<span id="cb61-625"><a href="#cb61-625" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-626"><a href="#cb61-626" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-627"><a href="#cb61-627" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">is.na</span>(level)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-628"><a href="#cb61-628" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(dataset, cell_type_name) <span class="sc">%&gt;%</span></span>
+<span id="cb61-629"><a href="#cb61-629" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
+<span id="cb61-630"><a href="#cb61-630" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-631"><a href="#cb61-631" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-632"><a href="#cb61-632" aria-hidden="true" tabindex="-1"></a><span class="fu">## Should the Proportions sum up to 1 at level 0?</span></span>
+<span id="cb61-633"><a href="#cb61-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-634"><a href="#cb61-634" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Trying to take the hierarchical information into account, it still does not make sense</span>
+<span id="cb61-635"><a href="#cb61-635" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-638"><a href="#cb61-638" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-639"><a href="#cb61-639" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb61-640"><a href="#cb61-640" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb61-641"><a href="#cb61-641" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb61-642"><a href="#cb61-642" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-643"><a href="#cb61-643" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-644"><a href="#cb61-644" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
+<span id="cb61-645"><a href="#cb61-645" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
+<span id="cb61-646"><a href="#cb61-646" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-647"><a href="#cb61-647" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-648"><a href="#cb61-648" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(level <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-649"><a href="#cb61-649" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-650"><a href="#cb61-650" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">percent_live_cell_sum =</span> <span class="fu">sum</span>(percent_live_cell, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-651"><a href="#cb61-651" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-652"><a href="#cb61-652" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb61-653"><a href="#cb61-653" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">x=</span>dataset, <span class="at">y=</span>percent_live_cell_sum)) <span class="sc">+</span></span>
+<span id="cb61-654"><a href="#cb61-654" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb61-655"><a href="#cb61-655" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-656"><a href="#cb61-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-657"><a href="#cb61-657" aria-hidden="true" tabindex="-1"></a><span class="fu">## Difference in 2023 Dataset</span></span>
+<span id="cb61-658"><a href="#cb61-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-659"><a href="#cb61-659" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It seems like the 2023 data are very very different, which makes me hesitant to use it for any kind of predictions on the challenge data. E.g. just looking at level 0 which should make sense I get the following</span>
+<span id="cb61-660"><a href="#cb61-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-663"><a href="#cb61-663" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-664"><a href="#cb61-664" aria-hidden="true" tabindex="-1"></a><span class="co"># first check for NAs for the levels</span></span>
+<span id="cb61-665"><a href="#cb61-665" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb61-666"><a href="#cb61-666" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb61-667"><a href="#cb61-667" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb61-668"><a href="#cb61-668" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-669"><a href="#cb61-669" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-670"><a href="#cb61-670" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
+<span id="cb61-671"><a href="#cb61-671" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
+<span id="cb61-672"><a href="#cb61-672" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-673"><a href="#cb61-673" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-674"><a href="#cb61-674" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">is.na</span>(level))</span>
+<span id="cb61-675"><a href="#cb61-675" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-676"><a href="#cb61-676" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-679"><a href="#cb61-679" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-680"><a href="#cb61-680" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb61-681"><a href="#cb61-681" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb61-682"><a href="#cb61-682" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb61-683"><a href="#cb61-683" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-684"><a href="#cb61-684" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-685"><a href="#cb61-685" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
+<span id="cb61-686"><a href="#cb61-686" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
+<span id="cb61-687"><a href="#cb61-687" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-688"><a href="#cb61-688" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-689"><a href="#cb61-689" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(level <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-690"><a href="#cb61-690" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-691"><a href="#cb61-691" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">percent_live_cell_sum =</span> <span class="fu">sum</span>(percent_live_cell, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-692"><a href="#cb61-692" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-693"><a href="#cb61-693" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb61-694"><a href="#cb61-694" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">x=</span>dataset, <span class="at">y=</span>percent_live_cell_sum)) <span class="sc">+</span></span>
+<span id="cb61-695"><a href="#cb61-695" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb61-696"><a href="#cb61-696" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-697"><a href="#cb61-697" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-698"><a href="#cb61-698" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Especially, when completely ignoring the hierarchy in the gating information, I would expect to have more than 100% in <span class="in">`percelt_live_cell_sum`</span>, but this is not true for the specimens from the 2023 dataset</span>
+<span id="cb61-699"><a href="#cb61-699" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-702"><a href="#cb61-702" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-703"><a href="#cb61-703" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>pbmc_cell_frequency <span class="sc">%&gt;%</span></span>
+<span id="cb61-704"><a href="#cb61-704" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb61-705"><a href="#cb61-705" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(specimen_id, dataset) <span class="sc">%&gt;%</span></span>
+<span id="cb61-706"><a href="#cb61-706" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-707"><a href="#cb61-707" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-708"><a href="#cb61-708" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((celltype_meta <span class="sc">%&gt;%</span></span>
+<span id="cb61-709"><a href="#cb61-709" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">select</span>(cell_type_name, dataset, level) <span class="sc">%&gt;%</span></span>
+<span id="cb61-710"><a href="#cb61-710" aria-hidden="true" tabindex="-1"></a>                      dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb61-711"><a href="#cb61-711" aria-hidden="true" tabindex="-1"></a>                    <span class="at">by=</span><span class="fu">c</span>(<span class="st">"dataset"</span>, <span class="st">"cell_type_name"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-712"><a href="#cb61-712" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(specimen_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-713"><a href="#cb61-713" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">percent_live_cell_sum =</span> <span class="fu">sum</span>(percent_live_cell, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-714"><a href="#cb61-714" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(meta_data, <span class="at">by=</span><span class="st">"specimen_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-715"><a href="#cb61-715" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb61-716"><a href="#cb61-716" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">x=</span>dataset, <span class="at">y=</span>percent_live_cell_sum)) <span class="sc">+</span></span>
+<span id="cb61-717"><a href="#cb61-717" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>)</span>
+<span id="cb61-718"><a href="#cb61-718" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-719"><a href="#cb61-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-720"><a href="#cb61-720" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Or what I use a list of predefined cell types of interest?</span>
+<span id="cb61-721"><a href="#cb61-721" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-722"><a href="#cb61-722" aria-hidden="true" tabindex="-1"></a><span class="fu"># Features for T cell Activation Assay (AIM)</span></span>
+<span id="cb61-723"><a href="#cb61-723" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-726"><a href="#cb61-726" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-727"><a href="#cb61-727" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_activation <span class="sc">%&gt;%</span></span>
+<span id="cb61-728"><a href="#cb61-728" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(stimulation) <span class="sc">%&gt;%</span></span>
+<span id="cb61-729"><a href="#cb61-729" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
+<span id="cb61-730"><a href="#cb61-730" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-731"><a href="#cb61-731" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-734"><a href="#cb61-734" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-735"><a href="#cb61-735" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_activation <span class="sc">%&gt;%</span></span>
+<span id="cb61-736"><a href="#cb61-736" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb61-737"><a href="#cb61-737" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>analyte_percentages), <span class="at">bins=</span><span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb61-738"><a href="#cb61-738" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stimulation) <span class="sc">+</span></span>
+<span id="cb61-739"><a href="#cb61-739" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb61-740"><a href="#cb61-740" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-741"><a href="#cb61-741" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-742"><a href="#cb61-742" aria-hidden="true" tabindex="-1"></a><span class="fu"># Features for T cell Polarization Assay (FluoroSpot)</span></span>
+<span id="cb61-743"><a href="#cb61-743" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-746"><a href="#cb61-746" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-747"><a href="#cb61-747" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
+<span id="cb61-748"><a href="#cb61-748" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(protein_meta, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"protein_id"</span><span class="ot">=</span><span class="st">"uniprot_id"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-749"><a href="#cb61-749" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(protein_id, cytokine) <span class="sc">%&gt;%</span></span>
+<span id="cb61-750"><a href="#cb61-750" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
+<span id="cb61-751"><a href="#cb61-751" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-752"><a href="#cb61-752" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-755"><a href="#cb61-755" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-756"><a href="#cb61-756" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
+<span id="cb61-757"><a href="#cb61-757" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(stimulation) <span class="sc">%&gt;%</span></span>
+<span id="cb61-758"><a href="#cb61-758" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
+<span id="cb61-759"><a href="#cb61-759" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-760"><a href="#cb61-760" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-761"><a href="#cb61-761" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb61-762"><a href="#cb61-762" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-763"><a href="#cb61-763" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>DMSO: "Negative" Control (solvent where peptides are dissolved in)</span>
+<span id="cb61-764"><a href="#cb61-764" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-765"><a href="#cb61-765" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PHA (Phytohaemagglutinin): "Postive" Control (this should elicit strong T cell response?)</span>
+<span id="cb61-766"><a href="#cb61-766" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-767"><a href="#cb61-767" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PT: Bordetella Pertussis Toxin</span>
+<span id="cb61-768"><a href="#cb61-768" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-771"><a href="#cb61-771" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-772"><a href="#cb61-772" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
+<span id="cb61-773"><a href="#cb61-773" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(protein_meta, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"protein_id"</span><span class="ot">=</span><span class="st">"uniprot_id"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-774"><a href="#cb61-774" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb61-775"><a href="#cb61-775" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>analyte_counts), <span class="at">bins=</span><span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb61-776"><a href="#cb61-776" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="at">rows=</span><span class="fu">vars</span>(stimulation), <span class="at">cols=</span><span class="fu">vars</span>(cytokine)) <span class="sc">+</span></span>
+<span id="cb61-777"><a href="#cb61-777" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb61-778"><a href="#cb61-778" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb61-779"><a href="#cb61-779" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-780"><a href="#cb61-780" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: the assay has been normalized relative to DMSO</span></span>
+<span id="cb61-781"><a href="#cb61-781" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
+<span id="cb61-782"><a href="#cb61-782" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(stimulation<span class="sc">==</span><span class="st">"DMSO"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-783"><a href="#cb61-783" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(analyte_counts) <span class="sc">%&gt;%</span></span>
+<span id="cb61-784"><a href="#cb61-784" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">near</span>(., <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-785"><a href="#cb61-785" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span>
+<span id="cb61-786"><a href="#cb61-786" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-787"><a href="#cb61-787" aria-hidden="true" tabindex="-1"></a>exp_data<span class="sc">$</span>t_cell_polarization <span class="sc">%&gt;%</span></span>
+<span id="cb61-788"><a href="#cb61-788" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(stimulation<span class="sc">!=</span><span class="st">"DMSO"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-789"><a href="#cb61-789" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(stimulation_protein_id) <span class="sc">%&gt;%</span></span>
+<span id="cb61-790"><a href="#cb61-790" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb61-791"><a href="#cb61-791" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-792"><a href="#cb61-792" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-793"><a href="#cb61-793" aria-hidden="true" tabindex="-1"></a><span class="fu"># Other Notes</span></span>
+<span id="cb61-794"><a href="#cb61-794" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-795"><a href="#cb61-795" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Only from 2022 onwards do we have time-course baseline measurements, i.e. <span class="in">`-30, -14/15, 0`</span></span>
+<span id="cb61-796"><a href="#cb61-796" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-799"><a href="#cb61-799" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-800"><a href="#cb61-800" aria-hidden="true" tabindex="-1"></a>meta_data <span class="sc">%&gt;%</span></span>
+<span id="cb61-801"><a href="#cb61-801" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(partition, dataset, planned_day_relative_to_boost) <span class="sc">%&gt;%</span></span>
+<span id="cb61-802"><a href="#cb61-802" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(planned_day_relative_to_boost <span class="sc">&lt;</span> <span class="dv">0</span>)</span>
+<span id="cb61-803"><a href="#cb61-803" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-804"><a href="#cb61-804" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-805"><a href="#cb61-805" aria-hidden="true" tabindex="-1"></a><span class="fu"># Appendix</span></span>
+<span id="cb61-806"><a href="#cb61-806" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-807"><a href="#cb61-807" aria-hidden="true" tabindex="-1"></a>&lt;button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" &gt;Session Information&lt;/button&gt;&lt;div id="collapseOne" class="accordion-collapse collapse"&gt;&lt;div&gt;</span>
+<span id="cb61-808"><a href="#cb61-808" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-811"><a href="#cb61-811" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-812"><a href="#cb61-812" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb61-813"><a href="#cb61-813" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-814"><a href="#cb61-814" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-815"><a href="#cb61-815" aria-hidden="true" tabindex="-1"></a>&lt;/div&gt;&lt;/div&gt;</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

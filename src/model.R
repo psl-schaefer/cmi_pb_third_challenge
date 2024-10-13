@@ -173,6 +173,23 @@ get_cross_cohort_perf_single <- function(model_df, meta_data) {
     dplyr::mutate(testset = str_remove_all(testset, "_dataset"))
 }
 
+get_cross_cohort_perf_single_repeated <- function(model_df, meta_data, n_iter=25) {
+  df_long <- purrr::map(1:n_iter, function(iter) {
+    get_cross_cohort_perf_single(model_df=model_df, meta_data=meta_data) %>%
+      dplyr::mutate(iteration=iter)
+  }) %>%
+    dplyr::bind_rows()
+  df_out <- df_long %>%
+    dplyr::group_by(trainset, testset) %>%
+    dplyr::summarise(srho_mean = mean(srho),
+                     srho_sd = sd(srho),
+                     srho_baseline = mean(srho_baseline),
+                     train_n = mean(train_n),
+                     test_n = mean(test_n), 
+                     .groups = "drop")
+  return(df_out)
+  }
+
 get_metadata_covariates <- function(meta_data) {
   specimen_list <- get_specimen_per_day(meta_data)
   
