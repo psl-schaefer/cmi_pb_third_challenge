@@ -61,7 +61,7 @@ if (RECOMPUTE) {
 }
 
 experimental_data <- experimental_data[-which(names(experimental_data) ==
-                                                "pbmc_gene_expression_only_corrected")]
+                                                "pbmc_gene_expression_counts")]
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 ```
 
@@ -70,6 +70,8 @@ specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 ## PBMC Fractions
 
 ## PBMC Gene Expression
+
+- This is still troubling me. The 2022 dataset is very very different, even after running ComBat-seq. Maybe I am doing something wrong here!
 
 ## Plasma Antibody Levels
 
@@ -119,8 +121,8 @@ for (day in names(specimen_per_day)) {
     specimen_df_filtered <- specimen_df %>%
       dplyr::filter(specimen_id %in% unique(assay_df_long$specimen_id))
     
-    if (nrow(specimen_df_filtered) == 0) {
-      cat(paste0("No specimen for this combination of assay and day available"))
+    if (nrow(specimen_df_filtered) <= 3) {
+      cat(paste0("Fewer than 3 specimen for this combination of assay and day available"))
     } else {
       assay_mtx_wide <- assay_df_long %>%
         dplyr::select(dplyr::all_of(c("specimen_id", feature_col, value_col))) %>%

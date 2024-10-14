@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Philipp Sven Lars Schäfer">
-<meta name="dcterms.date" content="2024-10-13">
+<meta name="dcterms.date" content="2024-10-14">
 
 <title>Prediction Targets – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
@@ -196,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 13, 2024</p>
+      <p class="date">October 14, 2024</p>
     </div>
   </div>
   
@@ -306,10 +306,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap</span>(specimen_list, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day=</span>.y)) <span class="sc">%&gt;%</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">factor</span>(day, <span class="at">levels=</span><span class="fu">paste0</span>(<span class="st">"day_"</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">14</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">factor</span>(day, <span class="at">levels=</span><span class="fu">paste0</span>(<span class="st">"day_"</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">14</span>, <span class="dv">30</span>)))) <span class="sc">%&gt;%</span></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>actual_day_relative_to_boost), <span class="at">binwidth=</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">14</span>), <span class="at">color=</span><span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">14</span>, <span class="dv">30</span>), <span class="at">color=</span><span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="fu">min</span>(<span class="fu">unlist</span>(acceptable_differences)),</span>
@@ -392,6 +392,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>task12)) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="task-2-cell-frequency-tasks" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="task-2-cell-frequency-tasks"><span class="header-section-number">4.2</span> Task 2) Cell frequency tasks</h2>
@@ -402,16 +421,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_2</span>(<span class="at">meta_data=</span>meta_data, </span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>targets_task_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_2</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>targets_task_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["subject_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["day_0"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["day_1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fc"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["baseline"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["task21"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["task22"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"5.490838","3":"7.211965","4":"1.3134544","5":"5.490838","6":"7.211965","7":"1.3134544"},{"1":"6","2":"22.793028","3":"41.380502","4":"1.8154894","5":"22.793028","6":"41.380502","7":"1.8154894"},{"1":"15","2":"15.637368","3":"10.585489","4":"0.6769355","5":"15.637368","6":"10.585489","7":"0.6769355"},{"1":"20","2":"21.399162","3":"26.605583","4":"1.2433002","5":"21.399162","6":"26.605583","7":"1.2433002"},{"1":"21","2":"15.226645","3":"34.812168","4":"2.2862664","5":"15.226645","6":"34.812168","7":"2.2862664"},{"1":"26","2":"5.532067","3":"16.108508","4":"2.9118426","5":"5.532067","6":"16.108508","7":"2.9118426"},{"1":"29","2":"16.094765","3":"25.083209","4":"1.5584700","5":"16.094765","6":"25.083209","7":"1.5584700"},{"1":"31","2":"4.879023","3":"8.545243","4":"1.7514250","5":"4.879023","6":"8.545243","7":"1.7514250"},{"1":"33","2":"7.651833","3":"17.703064","4":"2.3135717","5":"7.651833","6":"17.703064","7":"2.3135717"},{"1":"36","2":"11.243799","3":"17.446750","4":"1.5516776","5":"11.243799","6":"17.446750","7":"1.5516776"},{"1":"44","2":"23.103276","3":"35.241054","4":"1.5253704","5":"23.103276","6":"35.241054","7":"1.5253704"},{"1":"46","2":"25.504783","3":"30.018793","4":"1.1769868","5":"25.504783","6":"30.018793","7":"1.1769868"},{"1":"63","2":"15.300000","3":"18.700000","4":"1.2222222","5":"15.300000","6":"18.700000","7":"1.2222222"},{"1":"64","2":"12.900000","3":"13.800000","4":"1.0697674","5":"12.900000","6":"13.800000","7":"1.0697674"},{"1":"65","2":"15.800000","3":"20.400000","4":"1.2911392","5":"15.800000","6":"20.400000","7":"1.2911392"},{"1":"66","2":"15.800000","3":"13.900000","4":"0.8797468","5":"15.800000","6":"13.900000","7":"0.8797468"},{"1":"67","2":"34.600000","3":"31.100000","4":"0.8988439","5":"34.600000","6":"31.100000","7":"0.8988439"},{"1":"68","2":"13.500000","3":"15.500000","4":"1.1481481","5":"13.500000","6":"15.500000","7":"1.1481481"},{"1":"69","2":"13.100000","3":"18.900000","4":"1.4427481","5":"13.100000","6":"18.900000","7":"1.4427481"},{"1":"70","2":"32.300000","3":"46.100000","4":"1.4272446","5":"32.300000","6":"46.100000","7":"1.4272446"},{"1":"71","2":"12.200000","3":"18.200000","4":"1.4918033","5":"12.200000","6":"18.200000","7":"1.4918033"},{"1":"72","2":"19.900000","3":"27.500000","4":"1.3819095","5":"19.900000","6":"27.500000","7":"1.3819095"},{"1":"73","2":"15.700000","3":"23.400000","4":"1.4904459","5":"15.700000","6":"23.400000","7":"1.4904459"},{"1":"74","2":"36.300000","3":"50.000000","4":"1.3774105","5":"36.300000","6":"50.000000","7":"1.3774105"},{"1":"76","2":"18.000000","3":"22.300000","4":"1.2388889","5":"18.000000","6":"22.300000","7":"1.2388889"},{"1":"77","2":"28.800000","3":"31.000000","4":"1.0763889","5":"28.800000","6":"31.000000","7":"1.0763889"},{"1":"78","2":"29.000000","3":"35.700000","4":"1.2310345","5":"29.000000","6":"35.700000","7":"1.2310345"},{"1":"79","2":"41.500000","3":"52.600000","4":"1.2674699","5":"41.500000","6":"52.600000","7":"1.2674699"},{"1":"80","2":"21.900000","3":"26.400000","4":"1.2054795","5":"21.900000","6":"26.400000","7":"1.2054795"},{"1":"81","2":"34.900000","3":"35.600000","4":"1.0200573","5":"34.900000","6":"35.600000","7":"1.0200573"},{"1":"82","2":"22.500000","3":"20.500000","4":"0.9111111","5":"22.500000","6":"20.500000","7":"0.9111111"},{"1":"83","2":"32.400000","3":"27.700000","4":"0.8549383","5":"32.400000","6":"27.700000","7":"0.8549383"},{"1":"84","2":"18.900000","3":"25.100000","4":"1.3280423","5":"18.900000","6":"25.100000","7":"1.3280423"},{"1":"85","2":"19.700000","3":"18.700000","4":"0.9492386","5":"19.700000","6":"18.700000","7":"0.9492386"},{"1":"86","2":"23.500000","3":"25.200000","4":"1.0723404","5":"23.500000","6":"25.200000","7":"1.0723404"},{"1":"87","2":"22.900000","3":"22.500000","4":"0.9825328","5":"22.900000","6":"22.500000","7":"0.9825328"},{"1":"88","2":"17.600000","3":"20.200000","4":"1.1477273","5":"17.600000","6":"20.200000","7":"1.1477273"},{"1":"89","2":"15.700000","3":"16.600000","4":"1.0573248","5":"15.700000","6":"16.600000","7":"1.0573248"},{"1":"90","2":"20.600000","3":"21.600000","4":"1.0485437","5":"20.600000","6":"21.600000","7":"1.0485437"},{"1":"91","2":"25.400000","3":"40.400000","4":"1.5905512","5":"25.400000","6":"40.400000","7":"1.5905512"},{"1":"92","2":"40.600000","3":"33.000000","4":"0.8128079","5":"40.600000","6":"33.000000","7":"0.8128079"},{"1":"93","2":"16.300000","3":"15.000000","4":"0.9202454","5":"16.300000","6":"15.000000","7":"0.9202454"},{"1":"94","2":"26.200000","3":"39.500000","4":"1.5076336","5":"26.200000","6":"39.500000","7":"1.5076336"},{"1":"95","2":"17.300000","3":"23.500000","4":"1.3583815","5":"17.300000","6":"23.500000","7":"1.3583815"},{"1":"96","2":"34.200000","3":"35.000000","4":"1.0233918","5":"34.200000","6":"35.000000","7":"1.0233918"},{"1":"97","2":"21.000000","3":"30.800000","4":"1.4666667","5":"21.000000","6":"30.800000","7":"1.4666667"},{"1":"98","2":"14.300000","3":"11.300000","4":"0.7902098","5":"14.300000","6":"11.300000","7":"0.7902098"},{"1":"99","2":"25.800000","3":"13.300000","4":"0.5155039","5":"25.800000","6":"13.300000","7":"0.5155039"},{"1":"100","2":"22.900000","3":"23.700000","4":"1.0349345","5":"22.900000","6":"23.700000","7":"1.0349345"},{"1":"101","2":"20.300000","3":"24.400000","4":"1.2019704","5":"20.300000","6":"24.400000","7":"1.2019704"},{"1":"102","2":"29.300000","3":"26.900000","4":"0.9180887","5":"29.300000","6":"26.900000","7":"0.9180887"},{"1":"103","2":"24.800000","3":"21.200000","4":"0.8548387","5":"24.800000","6":"21.200000","7":"0.8548387"},{"1":"104","2":"17.000000","3":"11.700000","4":"0.6882353","5":"17.000000","6":"11.700000","7":"0.6882353"},{"1":"105","2":"27.500000","3":"25.200000","4":"0.9163636","5":"27.500000","6":"25.200000","7":"0.9163636"},{"1":"106","2":"18.500000","3":"16.400000","4":"0.8864865","5":"18.500000","6":"16.400000","7":"0.8864865"},{"1":"107","2":"19.600000","3":"20.500000","4":"1.0459184","5":"19.600000","6":"20.500000","7":"1.0459184"},{"1":"108","2":"22.000000","3":"15.300000","4":"0.6954545","5":"22.000000","6":"15.300000","7":"0.6954545"},{"1":"109","2":"19.400000","3":"11.900000","4":"0.6134021","5":"19.400000","6":"11.900000","7":"0.6134021"},{"1":"110","2":"28.400000","3":"16.200000","4":"0.5704225","5":"28.400000","6":"16.200000","7":"0.5704225"},{"1":"111","2":"36.200000","3":"27.800000","4":"0.7679558","5":"36.200000","6":"27.800000","7":"0.7679558"},{"1":"112","2":"22.000000","3":"23.000000","4":"1.0454545","5":"22.000000","6":"23.000000","7":"1.0454545"},{"1":"114","2":"18.500000","3":"23.700000","4":"1.2810811","5":"18.500000","6":"23.700000","7":"1.2810811"},{"1":"115","2":"18.000000","3":"15.200000","4":"0.8444444","5":"18.000000","6":"15.200000","7":"0.8444444"},{"1":"116","2":"22.200000","3":"13.100000","4":"0.5900901","5":"22.200000","6":"13.100000","7":"0.5900901"},{"1":"117","2":"11.900000","3":"9.140000","4":"0.7680672","5":"11.900000","6":"9.140000","7":"0.7680672"},{"1":"118","2":"14.100000","3":"19.100000","4":"1.3546099","5":"14.100000","6":"19.100000","7":"1.3546099"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["subject_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["day_0"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["day_1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fc"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["log_fc"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["baseline"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["task21"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["task22"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"5.490838","3":"7.211965","4":"1.3134544","5":"0.27266060","6":"5.490838","7":"7.211965","8":"0.27266060"},{"1":"6","2":"22.793028","3":"41.380502","4":"1.8154894","5":"0.59635508","6":"22.793028","7":"41.380502","8":"0.59635508"},{"1":"15","2":"15.637368","3":"10.585489","4":"0.6769355","5":"-0.39017930","6":"15.637368","7":"10.585489","8":"-0.39017930"},{"1":"20","2":"21.399162","3":"26.605583","4":"1.2433002","5":"0.21776930","6":"21.399162","7":"26.605583","8":"0.21776930"},{"1":"21","2":"15.226645","3":"34.812168","4":"2.2862664","5":"0.82692011","6":"15.226645","7":"34.812168","8":"0.82692011"},{"1":"26","2":"5.532067","3":"16.108508","4":"2.9118426","5":"1.06878609","6":"5.532067","7":"16.108508","8":"1.06878609"},{"1":"29","2":"16.094765","3":"25.083209","4":"1.5584700","5":"0.44370459","6":"16.094765","7":"25.083209","8":"0.44370459"},{"1":"31","2":"4.879023","3":"8.545243","4":"1.7514250","5":"0.56042972","6":"4.879023","7":"8.545243","8":"0.56042972"},{"1":"33","2":"7.651833","3":"17.703064","4":"2.3135717","5":"0.83879251","6":"7.651833","7":"17.703064","8":"0.83879251"},{"1":"36","2":"11.243799","3":"17.446750","4":"1.5516776","5":"0.43933664","6":"11.243799","7":"17.446750","8":"0.43933664"},{"1":"44","2":"23.103276","3":"35.241054","4":"1.5253704","5":"0.42223727","6":"23.103276","7":"35.241054","8":"0.42223727"},{"1":"46","2":"25.504783","3":"30.018793","4":"1.1769868","5":"0.16295765","6":"25.504783","7":"30.018793","8":"0.16295765"},{"1":"63","2":"15.300000","3":"18.700000","4":"1.2222222","5":"0.20067070","6":"15.300000","7":"18.700000","8":"0.20067070"},{"1":"64","2":"12.900000","3":"13.800000","4":"1.0697674","5":"0.06744128","6":"12.900000","7":"13.800000","8":"0.06744128"},{"1":"65","2":"15.800000","3":"20.400000","4":"1.2911392","5":"0.25552496","6":"15.800000","7":"20.400000","8":"0.25552496"},{"1":"66","2":"15.800000","3":"13.900000","4":"0.8797468","5":"-0.12812110","6":"15.800000","7":"13.900000","8":"-0.12812110"},{"1":"67","2":"34.600000","3":"31.100000","4":"0.8988439","5":"-0.10664586","6":"34.600000","7":"31.100000","8":"-0.10664586"},{"1":"68","2":"13.500000","3":"15.500000","4":"1.1481481","5":"0.13815034","6":"13.500000","7":"15.500000","8":"0.13815034"},{"1":"69","2":"13.100000","3":"18.900000","4":"1.4427481","5":"0.36654969","6":"13.100000","7":"18.900000","8":"0.36654969"},{"1":"70","2":"32.300000","3":"46.100000","4":"1.4272446","5":"0.35574572","6":"32.300000","7":"46.100000","8":"0.35574572"},{"1":"71","2":"12.200000","3":"18.200000","4":"1.4918033","5":"0.39998564","6":"12.200000","7":"18.200000","8":"0.39998564"},{"1":"72","2":"19.900000","3":"27.500000","4":"1.3819095","5":"0.32346627","6":"19.900000","7":"27.500000","8":"0.32346627"},{"1":"73","2":"15.700000","3":"23.400000","4":"1.4904459","5":"0.39907531","6":"15.700000","7":"23.400000","8":"0.39907531"},{"1":"74","2":"36.300000","3":"50.000000","4":"1.3774105","5":"0.32020526","6":"36.300000","7":"50.000000","8":"0.32020526"},{"1":"76","2":"18.000000","3":"22.300000","4":"1.2388889","5":"0.21421492","6":"18.000000","7":"22.300000","8":"0.21421492"},{"1":"77","2":"28.800000","3":"31.000000","4":"1.0763889","5":"0.07361182","6":"28.800000","7":"31.000000","8":"0.07361182"},{"1":"78","2":"29.000000","3":"35.700000","4":"1.2310345","5":"0.20785486","6":"29.000000","7":"35.700000","8":"0.20785486"},{"1":"79","2":"41.500000","3":"52.600000","4":"1.2674699","5":"0.23702269","6":"41.500000","7":"52.600000","8":"0.23702269"},{"1":"80","2":"21.900000","3":"26.400000","4":"1.2054795","5":"0.18687737","6":"21.900000","7":"26.400000","8":"0.18687737"},{"1":"81","2":"34.900000","3":"35.600000","4":"1.0200573","5":"0.01985881","6":"34.900000","7":"35.600000","8":"0.01985881"},{"1":"82","2":"22.500000","3":"20.500000","4":"0.9111111","5":"-0.09309042","6":"22.500000","7":"20.500000","8":"-0.09309042"},{"1":"83","2":"32.400000","3":"27.700000","4":"0.8549383","5":"-0.15672601","6":"32.400000","7":"27.700000","8":"-0.15672601"},{"1":"84","2":"18.900000","3":"25.100000","4":"1.3280423","5":"0.28370592","6":"18.900000","7":"25.100000","8":"0.28370592"},{"1":"85","2":"19.700000","3":"18.700000","4":"0.9492386","5":"-0.05209511","6":"19.700000","7":"18.700000","8":"-0.05209511"},{"1":"86","2":"23.500000","3":"25.200000","4":"1.0723404","5":"0.06984357","6":"23.500000","7":"25.200000","8":"0.06984357"},{"1":"87","2":"22.900000","3":"22.500000","4":"0.9825328","5":"-0.01762160","6":"22.900000","7":"22.500000","8":"-0.01762160"},{"1":"88","2":"17.600000","3":"20.200000","4":"1.1477273","5":"0.13778370","6":"17.600000","7":"20.200000","8":"0.13778370"},{"1":"89","2":"15.700000","3":"16.600000","4":"1.0573248","5":"0.05574198","6":"15.700000","7":"16.600000","8":"0.05574198"},{"1":"90","2":"20.600000","3":"21.600000","4":"1.0485437","5":"0.04740224","6":"20.600000","7":"21.600000","8":"0.04740224"},{"1":"91","2":"25.400000","3":"40.400000","4":"1.5905512","5":"0.46408061","6":"25.400000","7":"40.400000","8":"0.46408061"},{"1":"92","2":"40.600000","3":"33.000000","4":"0.8128079","5":"-0.20726051","6":"40.600000","7":"33.000000","8":"-0.20726051"},{"1":"93","2":"16.300000","3":"15.000000","4":"0.9202454","5":"-0.08311491","6":"16.300000","7":"15.000000","8":"-0.08311491"},{"1":"94","2":"26.200000","3":"39.500000","4":"1.5076336","5":"0.41054126","6":"26.200000","7":"39.500000","8":"0.41054126"},{"1":"95","2":"17.300000","3":"23.500000","4":"1.3583815","5":"0.30629392","6":"17.300000","7":"23.500000","8":"0.30629392"},{"1":"96","2":"34.200000","3":"35.000000","4":"1.0233918","5":"0.02312242","6":"34.200000","7":"35.000000","8":"0.02312242"},{"1":"97","2":"21.000000","3":"30.800000","4":"1.4666667","5":"0.38299225","6":"21.000000","7":"30.800000","8":"0.38299225"},{"1":"98","2":"14.300000","3":"11.300000","4":"0.7902098","5":"-0.23545681","6":"14.300000","7":"11.300000","8":"-0.23545681"},{"1":"99","2":"25.800000","3":"13.300000","4":"0.5155039","5":"-0.66261046","6":"25.800000","7":"13.300000","8":"-0.66261046"},{"1":"100","2":"22.900000","3":"23.700000","4":"1.0349345","5":"0.03433814","6":"22.900000","7":"23.700000","8":"0.03433814"},{"1":"101","2":"20.300000","3":"24.400000","4":"1.2019704","5":"0.18396225","6":"20.300000","7":"24.400000","8":"0.18396225"},{"1":"102","2":"29.300000","3":"26.900000","4":"0.9180887","5":"-0.08546123","6":"29.300000","7":"26.900000","8":"-0.08546123"},{"1":"103","2":"24.800000","3":"21.200000","4":"0.8548387","5":"-0.15684247","6":"24.800000","7":"21.200000","8":"-0.15684247"},{"1":"104","2":"17.000000","3":"11.700000","4":"0.6882353","5":"-0.37362450","6":"17.000000","7":"11.700000","8":"-0.37362450"},{"1":"105","2":"27.500000","3":"25.200000","4":"0.9163636","5":"-0.08734201","6":"27.500000","7":"25.200000","8":"-0.08734201"},{"1":"106","2":"18.500000","3":"16.400000","4":"0.8864865","5":"-0.12048940","6":"18.500000","7":"16.400000","8":"-0.12048940"},{"1":"107","2":"19.600000","3":"20.500000","4":"1.0459184","5":"0.04489532","6":"19.600000","7":"20.500000","8":"0.04489532"},{"1":"108","2":"22.000000","3":"15.300000","4":"0.6954545","5":"-0.36318962","6":"22.000000","7":"15.300000","8":"-0.36318962"},{"1":"109","2":"19.400000","3":"11.900000","4":"0.6134021","5":"-0.48873467","6":"19.400000","7":"11.900000","8":"-0.48873467"},{"1":"110","2":"28.400000","3":"16.200000","4":"0.5704225","5":"-0.56137790","6":"28.400000","7":"16.200000","8":"-0.56137790"},{"1":"111","2":"36.200000","3":"27.800000","4":"0.7679558","5":"-0.26402310","6":"36.200000","7":"27.800000","8":"-0.26402310"},{"1":"112","2":"22.000000","3":"23.000000","4":"1.0454545","5":"0.04445176","6":"22.000000","7":"23.000000","8":"0.04445176"},{"1":"114","2":"18.500000","3":"23.700000","4":"1.2810811","5":"0.24770432","6":"18.500000","7":"23.700000","8":"0.24770432"},{"1":"115","2":"18.000000","3":"15.200000","4":"0.8444444","5":"-0.16907633","6":"18.000000","7":"15.200000","8":"-0.16907633"},{"1":"116","2":"22.200000","3":"13.100000","4":"0.5900901","5":"-0.52748006","6":"22.200000","7":"13.100000","8":"-0.52748006"},{"1":"117","2":"11.900000","3":"9.140000","4":"0.7680672","5":"-0.26387801","6":"11.900000","7":"9.140000","8":"-0.26387801"},{"1":"118","2":"14.100000","3":"19.100000","4":"1.3546099","5":"0.30351354","6":"14.100000","7":"19.100000","8":"0.30351354"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -419,26 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="targets_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task21), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -455,7 +455,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task21), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -463,6 +463,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <figure class="figure">
 <p><img src="targets_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22)) <span class="sc">+</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -477,17 +515,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_3</span>(<span class="at">meta_data=</span>meta_data, </span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list,</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">gene_meta=</span>gene_meta)</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>targets_task_3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_3</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">gene_meta=</span>gene_meta)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>targets_task_3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["subject_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["day_0"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["day_3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fc"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["baseline"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["task31"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["task32"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"292","3":"369","4":"1.26369863","5":"292","6":"369","7":"1.26369863"},{"1":"3","2":"222","3":"236","4":"1.06306306","5":"222","6":"236","7":"1.06306306"},{"1":"4","2":"154","3":"133","4":"0.86363636","5":"154","6":"133","7":"0.86363636"},{"1":"5","2":"287","3":"187","4":"0.65156794","5":"287","6":"187","7":"0.65156794"},{"1":"6","2":"230","3":"216","4":"0.93913043","5":"230","6":"216","7":"0.93913043"},{"1":"9","2":"149","3":"334","4":"2.24161074","5":"149","6":"334","7":"2.24161074"},{"1":"10","2":"172","3":"179","4":"1.04069767","5":"172","6":"179","7":"1.04069767"},{"1":"13","2":"84","3":"911","4":"10.84523810","5":"84","6":"911","7":"10.84523810"},{"1":"15","2":"288","3":"277","4":"0.96180556","5":"288","6":"277","7":"0.96180556"},{"1":"20","2":"141","3":"480","4":"3.40425532","5":"141","6":"480","7":"3.40425532"},{"1":"21","2":"129","3":"238","4":"1.84496124","5":"129","6":"238","7":"1.84496124"},{"1":"22","2":"227","3":"82","4":"0.36123348","5":"227","6":"82","7":"0.36123348"},{"1":"24","2":"165","3":"73","4":"0.44242424","5":"165","6":"73","7":"0.44242424"},{"1":"25","2":"174","3":"118","4":"0.67816092","5":"174","6":"118","7":"0.67816092"},{"1":"26","2":"289","3":"148","4":"0.51211073","5":"289","6":"148","7":"0.51211073"},{"1":"27","2":"104","3":"192","4":"1.84615385","5":"104","6":"192","7":"1.84615385"},{"1":"29","2":"190","3":"284","4":"1.49473684","5":"190","6":"284","7":"1.49473684"},{"1":"31","2":"275","3":"476","4":"1.73090909","5":"275","6":"476","7":"1.73090909"},{"1":"33","2":"374","3":"749","4":"2.00267380","5":"374","6":"749","7":"2.00267380"},{"1":"35","2":"440","3":"218","4":"0.49545455","5":"440","6":"218","7":"0.49545455"},{"1":"36","2":"65","3":"191","4":"2.93846154","5":"65","6":"191","7":"2.93846154"},{"1":"38","2":"77","3":"62","4":"0.80519481","5":"77","6":"62","7":"0.80519481"},{"1":"42","2":"338","3":"504","4":"1.49112426","5":"338","6":"504","7":"1.49112426"},{"1":"43","2":"137","3":"318","4":"2.32116788","5":"137","6":"318","7":"2.32116788"},{"1":"44","2":"264","3":"147","4":"0.55681818","5":"264","6":"147","7":"0.55681818"},{"1":"50","2":"3026","3":"8629","4":"2.85161930","5":"3026","6":"8629","7":"2.85161930"},{"1":"61","2":"38809","3":"420","4":"0.01082223","5":"38809","6":"420","7":"0.01082223"},{"1":"62","2":"1643","3":"1532","4":"0.93244066","5":"1643","6":"1532","7":"0.93244066"},{"1":"63","2":"1147","3":"615","4":"0.53618134","5":"1147","6":"615","7":"0.53618134"},{"1":"64","2":"1424","3":"644","4":"0.45224719","5":"1424","6":"644","7":"0.45224719"},{"1":"65","2":"1930","3":"2353","4":"1.21917098","5":"1930","6":"2353","7":"1.21917098"},{"1":"66","2":"296","3":"989","4":"3.34121622","5":"296","6":"989","7":"3.34121622"},{"1":"67","2":"434","3":"453","4":"1.04377880","5":"434","6":"453","7":"1.04377880"},{"1":"68","2":"467","3":"324","4":"0.69379015","5":"467","6":"324","7":"0.69379015"},{"1":"69","2":"449","3":"792","4":"1.76391982","5":"449","6":"792","7":"1.76391982"},{"1":"70","2":"427","3":"360","4":"0.84309133","5":"427","6":"360","7":"0.84309133"},{"1":"71","2":"587","3":"942","4":"1.60477002","5":"587","6":"942","7":"1.60477002"},{"1":"72","2":"513","3":"302","4":"0.58869396","5":"513","6":"302","7":"0.58869396"},{"1":"73","2":"189","3":"420","4":"2.22222222","5":"189","6":"420","7":"2.22222222"},{"1":"74","2":"117","3":"207","4":"1.76923077","5":"117","6":"207","7":"1.76923077"},{"1":"75","2":"372","3":"242","4":"0.65053763","5":"372","6":"242","7":"0.65053763"},{"1":"76","2":"193","3":"205","4":"1.06217617","5":"193","6":"205","7":"1.06217617"},{"1":"77","2":"2350","3":"1928","4":"0.82042553","5":"2350","6":"1928","7":"0.82042553"},{"1":"78","2":"1601","3":"312","4":"0.19487820","5":"1601","6":"312","7":"0.19487820"},{"1":"79","2":"997","3":"2348","4":"2.35506520","5":"997","6":"2348","7":"2.35506520"},{"1":"80","2":"1255","3":"3592","4":"2.86215139","5":"1255","6":"3592","7":"2.86215139"},{"1":"81","2":"12941","3":"2426","4":"0.18746619","5":"12941","6":"2426","7":"0.18746619"},{"1":"82","2":"4995","3":"8124","4":"1.62642643","5":"4995","6":"8124","7":"1.62642643"},{"1":"83","2":"2861","3":"130","4":"0.04543866","5":"2861","6":"130","7":"0.04543866"},{"1":"84","2":"2445","3":"595","4":"0.24335378","5":"2445","6":"595","7":"0.24335378"},{"1":"85","2":"246","3":"356","4":"1.44715447","5":"246","6":"356","7":"1.44715447"},{"1":"86","2":"384","3":"571","4":"1.48697917","5":"384","6":"571","7":"1.48697917"},{"1":"87","2":"262","3":"1068","4":"4.07633588","5":"262","6":"1068","7":"4.07633588"},{"1":"88","2":"465","3":"4288","4":"9.22150538","5":"465","6":"4288","7":"9.22150538"},{"1":"89","2":"319","3":"664","4":"2.08150470","5":"319","6":"664","7":"2.08150470"},{"1":"90","2":"324","3":"439","4":"1.35493827","5":"324","6":"439","7":"1.35493827"},{"1":"91","2":"158","3":"175","4":"1.10759494","5":"158","6":"175","7":"1.10759494"},{"1":"92","2":"219","3":"275","4":"1.25570776","5":"219","6":"275","7":"1.25570776"},{"1":"93","2":"272","3":"291","4":"1.06985294","5":"272","6":"291","7":"1.06985294"},{"1":"94","2":"178","3":"140","4":"0.78651685","5":"178","6":"140","7":"0.78651685"},{"1":"95","2":"260","3":"210","4":"0.80769231","5":"260","6":"210","7":"0.80769231"},{"1":"96","2":"145","3":"177","4":"1.22068966","5":"145","6":"177","7":"1.22068966"},{"1":"97","2":"41","3":"366","4":"8.92682927","5":"41","6":"366","7":"8.92682927"},{"1":"98","2":"273","3":"1098","4":"4.02197802","5":"273","6":"1098","7":"4.02197802"},{"1":"99","2":"26","3":"92","4":"3.53846154","5":"26","6":"92","7":"3.53846154"},{"1":"100","2":"922","3":"122","4":"0.13232104","5":"922","6":"122","7":"0.13232104"},{"1":"101","2":"123","3":"78","4":"0.63414634","5":"123","6":"78","7":"0.63414634"},{"1":"102","2":"94","3":"71","4":"0.75531915","5":"94","6":"71","7":"0.75531915"},{"1":"103","2":"125","3":"44","4":"0.35200000","5":"125","6":"44","7":"0.35200000"},{"1":"104","2":"167","3":"192","4":"1.14970060","5":"167","6":"192","7":"1.14970060"},{"1":"105","2":"254","3":"1084","4":"4.26771654","5":"254","6":"1084","7":"4.26771654"},{"1":"106","2":"61","3":"92","4":"1.50819672","5":"61","6":"92","7":"1.50819672"},{"1":"107","2":"56","3":"57","4":"1.01785714","5":"56","6":"57","7":"1.01785714"},{"1":"108","2":"211","3":"1481","4":"7.01895735","5":"211","6":"1481","7":"7.01895735"},{"1":"109","2":"124","3":"733","4":"5.91129032","5":"124","6":"733","7":"5.91129032"},{"1":"110","2":"769","3":"963","4":"1.25227568","5":"769","6":"963","7":"1.25227568"},{"1":"111","2":"271","3":"480","4":"1.77121771","5":"271","6":"480","7":"1.77121771"},{"1":"112","2":"305","3":"400","4":"1.31147541","5":"305","6":"400","7":"1.31147541"},{"1":"114","2":"127","3":"135","4":"1.06299213","5":"127","6":"135","7":"1.06299213"},{"1":"115","2":"1419","3":"346","4":"0.24383369","5":"1419","6":"346","7":"0.24383369"},{"1":"116","2":"254","3":"1140","4":"4.48818898","5":"254","6":"1140","7":"4.48818898"},{"1":"117","2":"84","3":"223","4":"2.65476190","5":"84","6":"223","7":"2.65476190"},{"1":"118","2":"117","3":"82","4":"0.70085470","5":"117","6":"82","7":"0.70085470"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["subject_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["day_0"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["day_3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["fc"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["log_fc"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["baseline"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["task31"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["task32"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"292","3":"369","4":"1.26369863","5":"0.23404284","6":"5.676754","7":"5.910797","8":"0.23404284"},{"1":"3","2":"222","3":"236","4":"1.06306306","5":"0.06115442","6":"5.402677","7":"5.463832","8":"0.06115442"},{"1":"4","2":"154","3":"133","4":"0.86363636","5":"-0.14660347","6":"5.036953","7":"4.890349","8":"-0.14660347"},{"1":"5","2":"287","3":"187","4":"0.65156794","5":"-0.42837360","6":"5.659482","7":"5.231109","8":"-0.42837360"},{"1":"6","2":"230","3":"216","4":"0.93913043","5":"-0.06280090","6":"5.438079","7":"5.375278","8":"-0.06280090"},{"1":"9","2":"149","3":"334","4":"2.24161074","5":"0.80719469","6":"5.003946","7":"5.811141","8":"0.80719469"},{"1":"10","2":"172","3":"179","4":"1.04069767","5":"0.03989133","6":"5.147494","7":"5.187386","8":"0.03989133"},{"1":"13","2":"84","3":"911","4":"10.84523810","5":"2.38372610","6":"4.430817","7":"6.814543","8":"2.38372610"},{"1":"15","2":"288","3":"277","4":"0.96180556","5":"-0.03894297","6":"5.662960","7":"5.624018","8":"-0.03894297"},{"1":"20","2":"141","3":"480","4":"3.40425532","5":"1.22502621","6":"4.948760","7":"6.173786","8":"1.22502621"},{"1":"21","2":"129","3":"238","4":"1.84496124","5":"0.61245827","6":"4.859812","7":"5.472271","8":"0.61245827"},{"1":"22","2":"227","3":"82","4":"0.36123348","5":"-1.01823077","6":"5.424950","7":"4.406719","8":"-1.01823077"},{"1":"24","2":"165","3":"73","4":"0.44242424","5":"-0.81548603","6":"5.105945","7":"4.290459","8":"-0.81548603"},{"1":"25","2":"174","3":"118","4":"0.67816092","5":"-0.38837067","6":"5.159055","7":"4.770685","8":"-0.38837067"},{"1":"26","2":"289","3":"148","4":"0.51211073","5":"-0.66921441","6":"5.666427","7":"4.997212","8":"-0.66921441"},{"1":"27","2":"104","3":"192","4":"1.84615385","5":"0.61310447","6":"4.644391","7":"5.257495","8":"0.61310447"},{"1":"29","2":"190","3":"284","4":"1.49473684","5":"0.40195017","6":"5.247024","7":"5.648974","8":"0.40195017"},{"1":"31","2":"275","3":"476","4":"1.73090909","5":"0.54864676","6":"5.616771","7":"6.165418","8":"0.54864676"},{"1":"33","2":"374","3":"749","4":"2.00267380","5":"0.69448319","6":"5.924256","7":"6.618739","8":"0.69448319"},{"1":"35","2":"440","3":"218","4":"0.49545455","5":"-0.70227966","6":"6.086775","7":"5.384495","8":"-0.70227966"},{"1":"36","2":"65","3":"191","4":"2.93846154","5":"1.07788616","6":"4.174387","7":"5.252273","8":"1.07788616"},{"1":"38","2":"77","3":"62","4":"0.80519481","5":"-0.21667104","6":"4.343805","7":"4.127134","8":"-0.21667104"},{"1":"42","2":"338","3":"504","4":"1.49112426","5":"0.39953037","6":"5.823046","7":"6.222576","8":"0.39953037"},{"1":"43","2":"137","3":"318","4":"2.32116788","5":"0.84207046","6":"4.919981","7":"5.762051","8":"0.84207046"},{"1":"44","2":"264","3":"147","4":"0.55681818","5":"-0.58551652","6":"5.575949","7":"4.990433","8":"-0.58551652"},{"1":"50","2":"3026","3":"8629","4":"2.85161930","5":"1.04788701","6":"8.014997","7":"9.062884","8":"1.04788701"},{"1":"61","2":"38809","3":"420","4":"0.01082223","5":"-4.52615275","6":"10.566407","7":"6.040255","8":"-4.52615275"},{"1":"62","2":"1643","3":"1532","4":"0.93244066","5":"-0.06994977","6":"7.404279","7":"7.334329","8":"-0.06994977"},{"1":"63","2":"1147","3":"615","4":"0.53618134","5":"-0.62328285","6":"7.044905","7":"6.421622","8":"-0.62328285"},{"1":"64","2":"1424","3":"644","4":"0.45224719","5":"-0.79352637","6":"7.261225","7":"6.467699","8":"-0.79352637"},{"1":"65","2":"1930","3":"2353","4":"1.21917098","5":"0.19817111","6":"7.565275","7":"7.763446","8":"0.19817111"},{"1":"66","2":"296","3":"989","4":"3.34121622","5":"1.20633488","6":"5.690359","7":"6.896694","8":"1.20633488"},{"1":"67","2":"434","3":"453","4":"1.04377880","5":"0.04284759","6":"6.073045","7":"6.115892","8":"0.04284759"},{"1":"68","2":"467","3":"324","4":"0.69379015","5":"-0.36558574","6":"6.146329","7":"5.780744","8":"-0.36558574"},{"1":"69","2":"449","3":"792","4":"1.76391982","5":"0.56753850","6":"6.107023","7":"6.674561","8":"0.56753850"},{"1":"70","2":"427","3":"360","4":"0.84309133","5":"-0.17067998","6":"6.056784","7":"5.886104","8":"-0.17067998"},{"1":"71","2":"587","3":"942","4":"1.60477002","5":"0.47298045","6":"6.375025","7":"6.848005","8":"0.47298045"},{"1":"72","2":"513","3":"302","4":"0.58869396","5":"-0.52984883","6":"6.240276","7":"5.710427","8":"-0.52984883"},{"1":"73","2":"189","3":"420","4":"2.22222222","5":"0.79850770","6":"5.241747","7":"6.040255","8":"0.79850770"},{"1":"74","2":"117","3":"207","4":"1.76923077","5":"0.57054486","6":"4.762174","7":"5.332719","8":"0.57054486"},{"1":"75","2":"372","3":"242","4":"0.65053763","5":"-0.42995613","6":"5.918894","7":"5.488938","8":"-0.42995613"},{"1":"76","2":"193","3":"205","4":"1.06217617","5":"0.06031979","6":"5.262690","7":"5.323010","8":"0.06031979"},{"1":"77","2":"2350","3":"1928","4":"0.82042553","5":"-0.19793213","6":"7.762171","7":"7.564238","8":"-0.19793213"},{"1":"78","2":"1601","3":"312","4":"0.19487820","5":"-1.63538053","6":"7.378384","7":"5.743003","8":"-1.63538053"},{"1":"79","2":"997","3":"2348","4":"2.35506520","5":"0.85656841","6":"6.904751","7":"7.761319","8":"0.85656841"},{"1":"80","2":"1255","3":"3592","4":"2.86215139","5":"1.05157358","6":"7.134891","7":"8.186464","8":"1.05157358"},{"1":"81","2":"12941","3":"2426","4":"0.18746619","5":"-1.67415676","6":"9.468156","7":"7.793999","8":"-1.67415676"},{"1":"82","2":"4995","3":"8124","4":"1.62642643","5":"0.48638523","6":"8.516193","7":"9.002578","8":"0.48638523"},{"1":"83","2":"2861","3":"130","4":"0.04543866","5":"-3.09139204","6":"7.958926","7":"4.867534","8":"-3.09139204"},{"1":"84","2":"2445","3":"595","4":"0.24335378","5":"-1.41323900","6":"7.801800","7":"6.388561","8":"-1.41323900"},{"1":"85","2":"246","3":"356","4":"1.44715447","5":"0.36959919","6":"5.505332","7":"5.874931","8":"0.36959919"},{"1":"86","2":"384","3":"571","4":"1.48697917","5":"0.39674666","6":"5.950643","7":"6.347389","8":"0.39674666"},{"1":"87","2":"262","3":"1068","4":"4.07633588","5":"1.40519852","6":"5.568345","7":"6.973543","8":"1.40519852"},{"1":"88","2":"465","3":"4288","4":"9.22150538","5":"2.22153830","6":"6.142037","7":"8.363576","8":"2.22153830"},{"1":"89","2":"319","3":"664","4":"2.08150470","5":"0.73309105","6":"5.765191","7":"6.498282","8":"0.73309105"},{"1":"90","2":"324","3":"439","4":"1.35493827","5":"0.30375590","6":"5.780744","7":"6.084499","8":"0.30375590"},{"1":"91","2":"158","3":"175","4":"1.10759494","5":"0.10219094","6":"5.062595","7":"5.164786","8":"0.10219094"},{"1":"92","2":"219","3":"275","4":"1.25570776","5":"0.22769937","6":"5.389072","7":"5.616771","8":"0.22769937"},{"1":"93","2":"272","3":"291","4":"1.06985294","5":"0.06752120","6":"5.605802","7":"5.673323","8":"0.06752120"},{"1":"94","2":"178","3":"140","4":"0.78651685","5":"-0.24014113","6":"5.181784","7":"4.941642","8":"-0.24014113"},{"1":"95","2":"260","3":"210","4":"0.80769231","5":"-0.21357410","6":"5.560682","7":"5.347108","8":"-0.21357410"},{"1":"96","2":"145","3":"177","4":"1.22068966","5":"0.19941599","6":"4.976734","7":"5.176150","8":"0.19941599"},{"1":"97","2":"41","3":"366","4":"8.92682927","5":"2.18906127","6":"3.713572","7":"5.902633","8":"2.18906127"},{"1":"98","2":"273","3":"1098","4":"4.02197802","5":"1.39177383","6":"5.609472","7":"7.001246","8":"1.39177383"},{"1":"99","2":"26","3":"92","4":"3.53846154","5":"1.26369204","6":"3.258097","7":"4.521789","8":"1.26369204"},{"1":"100","2":"922","3":"122","4":"0.13232104","5":"-2.02252418","6":"6.826545","7":"4.804021","8":"-2.02252418"},{"1":"101","2":"123","3":"78","4":"0.63414634","5":"-0.45547553","6":"4.812184","7":"4.356709","8":"-0.45547553"},{"1":"102","2":"94","3":"71","4":"0.75531915","5":"-0.28061491","6":"4.543295","7":"4.262680","8":"-0.28061491"},{"1":"103","2":"125","3":"44","4":"0.35200000","5":"-1.04412410","6":"4.828314","7":"3.784190","8":"-1.04412410"},{"1":"104","2":"167","3":"192","4":"1.14970060","5":"0.13950156","6":"5.117994","7":"5.257495","8":"0.13950156"},{"1":"105","2":"254","3":"1084","4":"4.26771654","5":"1.45107891","6":"5.537334","7":"6.988413","8":"1.45107891"},{"1":"106","2":"61","3":"92","4":"1.50819672","5":"0.41091471","6":"4.110874","7":"4.521789","8":"0.41091471"},{"1":"107","2":"56","3":"57","4":"1.01785714","5":"0.01769958","6":"4.025352","7":"4.043051","8":"0.01769958"},{"1":"108","2":"211","3":"1481","4":"7.01895735","5":"1.94861468","6":"5.351858","7":"7.300473","8":"1.94861468"},{"1":"109","2":"124","3":"733","4":"5.91129032","5":"1.77686414","6":"4.820282","7":"6.597146","8":"1.77686414"},{"1":"110","2":"769","3":"963","4":"1.25227568","5":"0.22496244","6":"6.645091","7":"6.870053","8":"0.22496244"},{"1":"111","2":"271","3":"480","4":"1.77121771","5":"0.57166728","6":"5.602119","7":"6.173786","8":"0.57166728"},{"1":"112","2":"305","3":"400","4":"1.31147541","5":"0.27115277","6":"5.720312","7":"5.991465","8":"0.27115277"},{"1":"114","2":"127","3":"135","4":"1.06299213","5":"0.06108769","6":"4.844187","7":"4.905275","8":"0.06108769"},{"1":"115","2":"1419","3":"346","4":"0.24383369","5":"-1.41126890","6":"7.257708","7":"5.846439","8":"-1.41126890"},{"1":"116","2":"254","3":"1140","4":"4.48818898","5":"1.50144927","6":"5.537334","7":"7.038784","8":"1.50144927"},{"1":"117","2":"84","3":"223","4":"2.65476190","5":"0.97635497","6":"4.430817","7":"5.407172","8":"0.97635497"},{"1":"118","2":"117","3":"82","4":"0.70085470","5":"-0.35545469","6":"4.762174","7":"4.406719","8":"-0.35545469"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -495,50 +533,88 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="targets_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task31), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="targets_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task32), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="targets_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task31), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log10</span>(task31))) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task32), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22)) <span class="sc">+</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="targets_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1030,189 +1106,231 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb33" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Prediction Targets"</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick)</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
-<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
-<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
-<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
-<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(meta_data, experimental_data, gene_meta)</span>
-<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>wide_experimental_data <span class="ot">&lt;-</span> <span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>experimental_data, </span>
-<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">impute=</span><span class="st">"zero"</span>)</span>
-<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
-<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
-<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
-<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a><span class="fu"># Time Points</span></span>
-<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-53"><a href="#cb33-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-54"><a href="#cb33-54" aria-hidden="true" tabindex="-1"></a>specimen_list <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(meta_data)</span>
-<span id="cb33-55"><a href="#cb33-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-56"><a href="#cb33-56" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap</span>(specimen_list, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day=</span>.y)) <span class="sc">%&gt;%</span></span>
-<span id="cb33-57"><a href="#cb33-57" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb33-58"><a href="#cb33-58" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">factor</span>(day, <span class="at">levels=</span><span class="fu">paste0</span>(<span class="st">"day_"</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">14</span>)))) <span class="sc">%&gt;%</span></span>
-<span id="cb33-59"><a href="#cb33-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-60"><a href="#cb33-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>actual_day_relative_to_boost), <span class="at">binwidth=</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb33-61"><a href="#cb33-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">14</span>), <span class="at">color=</span><span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
-<span id="cb33-62"><a href="#cb33-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb33-63"><a href="#cb33-63" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb33-64"><a href="#cb33-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="fu">min</span>(<span class="fu">unlist</span>(acceptable_differences)),</span>
-<span id="cb33-65"><a href="#cb33-65" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">max</span>(<span class="fu">unlist</span>(acceptable_differences))))</span>
-<span id="cb33-66"><a href="#cb33-66" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-67"><a href="#cb33-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-68"><a href="#cb33-68" aria-hidden="true" tabindex="-1"></a><span class="fu"># Generate Targets for each Task</span></span>
-<span id="cb33-69"><a href="#cb33-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-70"><a href="#cb33-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 1) Antibody level tasks</span></span>
-<span id="cb33-71"><a href="#cb33-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-72"><a href="#cb33-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.</span>
-<span id="cb33-73"><a href="#cb33-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-74"><a href="#cb33-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.</span>
-<span id="cb33-75"><a href="#cb33-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-78"><a href="#cb33-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-79"><a href="#cb33-79" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_1</span>(<span class="at">meta_data=</span>meta_data, </span>
-<span id="cb33-80"><a href="#cb33-80" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
-<span id="cb33-81"><a href="#cb33-81" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
-<span id="cb33-82"><a href="#cb33-82" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
-<span id="cb33-83"><a href="#cb33-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-84"><a href="#cb33-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-87"><a href="#cb33-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-88"><a href="#cb33-88" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_1)</span>
-<span id="cb33-89"><a href="#cb33-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-90"><a href="#cb33-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-93"><a href="#cb33-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-94"><a href="#cb33-94" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="sc">%&gt;%</span></span>
-<span id="cb33-95"><a href="#cb33-95" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb33-96"><a href="#cb33-96" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-97"><a href="#cb33-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-98"><a href="#cb33-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task11), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb33-99"><a href="#cb33-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb33-100"><a href="#cb33-100" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb33-101"><a href="#cb33-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-102"><a href="#cb33-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-105"><a href="#cb33-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-106"><a href="#cb33-106" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="sc">%&gt;%</span></span>
-<span id="cb33-107"><a href="#cb33-107" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb33-108"><a href="#cb33-108" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-109"><a href="#cb33-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-110"><a href="#cb33-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task12), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb33-111"><a href="#cb33-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb33-112"><a href="#cb33-112" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb33-113"><a href="#cb33-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-114"><a href="#cb33-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-115"><a href="#cb33-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-116"><a href="#cb33-116" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 2) Cell frequency tasks</span></span>
-<span id="cb33-117"><a href="#cb33-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-118"><a href="#cb33-118" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.</span>
-<span id="cb33-119"><a href="#cb33-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-120"><a href="#cb33-120" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.</span>
-<span id="cb33-121"><a href="#cb33-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-124"><a href="#cb33-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-125"><a href="#cb33-125" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_2</span>(<span class="at">meta_data=</span>meta_data, </span>
-<span id="cb33-126"><a href="#cb33-126" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
-<span id="cb33-127"><a href="#cb33-127" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings,</span>
-<span id="cb33-128"><a href="#cb33-128" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
-<span id="cb33-129"><a href="#cb33-129" aria-hidden="true" tabindex="-1"></a>targets_task_2</span>
-<span id="cb33-130"><a href="#cb33-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-131"><a href="#cb33-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-134"><a href="#cb33-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-135"><a href="#cb33-135" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_2)</span>
-<span id="cb33-136"><a href="#cb33-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-137"><a href="#cb33-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-140"><a href="#cb33-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-141"><a href="#cb33-141" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
-<span id="cb33-142"><a href="#cb33-142" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb33-143"><a href="#cb33-143" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-144"><a href="#cb33-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-145"><a href="#cb33-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task21), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb33-146"><a href="#cb33-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb33-147"><a href="#cb33-147" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb33-148"><a href="#cb33-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-149"><a href="#cb33-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-152"><a href="#cb33-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-153"><a href="#cb33-153" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
-<span id="cb33-154"><a href="#cb33-154" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb33-155"><a href="#cb33-155" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-156"><a href="#cb33-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-157"><a href="#cb33-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb33-158"><a href="#cb33-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb33-159"><a href="#cb33-159" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb33-160"><a href="#cb33-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-161"><a href="#cb33-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-162"><a href="#cb33-162" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 3) Gene expression tasks</span></span>
-<span id="cb33-163"><a href="#cb33-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-164"><a href="#cb33-164" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.</span>
-<span id="cb33-165"><a href="#cb33-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-166"><a href="#cb33-166" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.</span>
-<span id="cb33-167"><a href="#cb33-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-170"><a href="#cb33-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-171"><a href="#cb33-171" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_3</span>(<span class="at">meta_data=</span>meta_data, </span>
-<span id="cb33-172"><a href="#cb33-172" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
-<span id="cb33-173"><a href="#cb33-173" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
-<span id="cb33-174"><a href="#cb33-174" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list,</span>
-<span id="cb33-175"><a href="#cb33-175" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">gene_meta=</span>gene_meta)</span>
-<span id="cb33-176"><a href="#cb33-176" aria-hidden="true" tabindex="-1"></a>targets_task_3</span>
-<span id="cb33-177"><a href="#cb33-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-178"><a href="#cb33-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-181"><a href="#cb33-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-182"><a href="#cb33-182" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_3)</span>
-<span id="cb33-183"><a href="#cb33-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-184"><a href="#cb33-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-187"><a href="#cb33-187" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-188"><a href="#cb33-188" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
-<span id="cb33-189"><a href="#cb33-189" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb33-190"><a href="#cb33-190" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-191"><a href="#cb33-191" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-192"><a href="#cb33-192" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task31), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb33-193"><a href="#cb33-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb33-194"><a href="#cb33-194" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb33-195"><a href="#cb33-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-196"><a href="#cb33-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-199"><a href="#cb33-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb33-200"><a href="#cb33-200" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
-<span id="cb33-201"><a href="#cb33-201" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
-<span id="cb33-202"><a href="#cb33-202" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-203"><a href="#cb33-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-204"><a href="#cb33-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task32), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb33-205"><a href="#cb33-205" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb33-206"><a href="#cb33-206" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
-<span id="cb33-207"><a href="#cb33-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb33-208"><a href="#cb33-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-209"><a href="#cb33-209" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
-<span id="cb33-210"><a href="#cb33-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-211"><a href="#cb33-211" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Task 1: Substantial differences in the marginal distributions of the target variables between the cohorts / years.</span>
-<span id="cb33-212"><a href="#cb33-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-213"><a href="#cb33-213" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Task 2: Substantial differences in the marginal distributions of the target variables between the cohorts / years.</span>
-<span id="cb33-214"><a href="#cb33-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-215"><a href="#cb33-215" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Task 3: Small differences in the marginal distributions of the target variables between the cohorts / years.</span>
+<div class="sourceCode" id="cb37" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Prediction Targets"</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Philipp Sven Lars Schäfer"</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "`r format(Sys.time(), '%d %B, %Y')`"</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># Packages</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggdark)</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magick)</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"read_data.R"</span>))</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"colors.R"</span>))</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"src"</span>, <span class="st">"generate_targets.R"</span>))</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data</span></span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">=</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a>meta_data <span class="ot">&lt;-</span> <span class="fu">read_harmonized_meta_data</span>(input_dir)</span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">read_raw_experimental_data</span>(input_dir)</span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>experimental_data <span class="ot">&lt;-</span> <span class="fu">filter_experimental_data</span>(meta_data, experimental_data, gene_meta)</span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>wide_experimental_data <span class="ot">&lt;-</span> <span class="fu">generate_wide_experimental_data</span>(<span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">impute=</span><span class="st">"zero"</span>)</span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>celltype_meta <span class="ot">&lt;-</span> <span class="fu">read_celltype_meta</span>(input_dir)</span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a>gene_meta <span class="ot">&lt;-</span> <span class="fu">read_gene_meta</span>(input_dir)</span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a>protein_meta <span class="ot">&lt;-</span> <span class="fu">read_protein_meta</span>(input_dir)</span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a><span class="fu"># Time Points</span></span>
+<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a>specimen_list <span class="ot">&lt;-</span> <span class="fu">get_specimen_per_day</span>(meta_data)</span>
+<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">imap</span>(specimen_list, <span class="sc">~</span> .x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day=</span>.y)) <span class="sc">%&gt;%</span></span>
+<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-58"><a href="#cb37-58" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">day =</span> <span class="fu">factor</span>(day, <span class="at">levels=</span><span class="fu">paste0</span>(<span class="st">"day_"</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">14</span>, <span class="dv">30</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb37-59"><a href="#cb37-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-60"><a href="#cb37-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>actual_day_relative_to_boost), <span class="at">binwidth=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-61"><a href="#cb37-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">14</span>, <span class="dv">30</span>), <span class="at">color=</span><span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb37-62"><a href="#cb37-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-63"><a href="#cb37-63" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>(<span class="at">verbose=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb37-64"><a href="#cb37-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="fu">min</span>(<span class="fu">unlist</span>(acceptable_differences)),</span>
+<span id="cb37-65"><a href="#cb37-65" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">max</span>(<span class="fu">unlist</span>(acceptable_differences))))</span>
+<span id="cb37-66"><a href="#cb37-66" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-67"><a href="#cb37-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-68"><a href="#cb37-68" aria-hidden="true" tabindex="-1"></a><span class="fu"># Generate Targets for each Task</span></span>
+<span id="cb37-69"><a href="#cb37-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-70"><a href="#cb37-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 1) Antibody level tasks</span></span>
+<span id="cb37-71"><a href="#cb37-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-72"><a href="#cb37-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.</span>
+<span id="cb37-73"><a href="#cb37-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-74"><a href="#cb37-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.</span>
+<span id="cb37-75"><a href="#cb37-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-78"><a href="#cb37-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-79"><a href="#cb37-79" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_1</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb37-80"><a href="#cb37-80" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb37-81"><a href="#cb37-81" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
+<span id="cb37-82"><a href="#cb37-82" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
+<span id="cb37-83"><a href="#cb37-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-84"><a href="#cb37-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-87"><a href="#cb37-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-88"><a href="#cb37-88" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_1)</span>
+<span id="cb37-89"><a href="#cb37-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-90"><a href="#cb37-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-93"><a href="#cb37-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-94"><a href="#cb37-94" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="sc">%&gt;%</span></span>
+<span id="cb37-95"><a href="#cb37-95" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-96"><a href="#cb37-96" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-97"><a href="#cb37-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-98"><a href="#cb37-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task11), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb37-99"><a href="#cb37-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-100"><a href="#cb37-100" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-101"><a href="#cb37-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-102"><a href="#cb37-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-105"><a href="#cb37-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-106"><a href="#cb37-106" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="sc">%&gt;%</span></span>
+<span id="cb37-107"><a href="#cb37-107" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-108"><a href="#cb37-108" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-109"><a href="#cb37-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-110"><a href="#cb37-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task12), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb37-111"><a href="#cb37-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-112"><a href="#cb37-112" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-113"><a href="#cb37-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-114"><a href="#cb37-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-117"><a href="#cb37-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-118"><a href="#cb37-118" aria-hidden="true" tabindex="-1"></a>targets_task_1 <span class="sc">%&gt;%</span></span>
+<span id="cb37-119"><a href="#cb37-119" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-120"><a href="#cb37-120" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-121"><a href="#cb37-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-122"><a href="#cb37-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>task12)) <span class="sc">+</span></span>
+<span id="cb37-123"><a href="#cb37-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-124"><a href="#cb37-124" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-125"><a href="#cb37-125" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-126"><a href="#cb37-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-127"><a href="#cb37-127" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 2) Cell frequency tasks</span></span>
+<span id="cb37-128"><a href="#cb37-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-129"><a href="#cb37-129" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.</span>
+<span id="cb37-130"><a href="#cb37-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-131"><a href="#cb37-131" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.</span>
+<span id="cb37-132"><a href="#cb37-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-135"><a href="#cb37-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-136"><a href="#cb37-136" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_2</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb37-137"><a href="#cb37-137" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb37-138"><a href="#cb37-138" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings,</span>
+<span id="cb37-139"><a href="#cb37-139" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list)</span>
+<span id="cb37-140"><a href="#cb37-140" aria-hidden="true" tabindex="-1"></a>targets_task_2</span>
+<span id="cb37-141"><a href="#cb37-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-142"><a href="#cb37-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-145"><a href="#cb37-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-146"><a href="#cb37-146" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_2)</span>
+<span id="cb37-147"><a href="#cb37-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-148"><a href="#cb37-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-151"><a href="#cb37-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-152"><a href="#cb37-152" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
+<span id="cb37-153"><a href="#cb37-153" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-154"><a href="#cb37-154" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-155"><a href="#cb37-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-156"><a href="#cb37-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task21), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb37-157"><a href="#cb37-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-158"><a href="#cb37-158" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-159"><a href="#cb37-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-160"><a href="#cb37-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-163"><a href="#cb37-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-164"><a href="#cb37-164" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
+<span id="cb37-165"><a href="#cb37-165" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-166"><a href="#cb37-166" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-167"><a href="#cb37-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-168"><a href="#cb37-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb37-169"><a href="#cb37-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-170"><a href="#cb37-170" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-171"><a href="#cb37-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-172"><a href="#cb37-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-175"><a href="#cb37-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-176"><a href="#cb37-176" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
+<span id="cb37-177"><a href="#cb37-177" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-178"><a href="#cb37-178" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-179"><a href="#cb37-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-180"><a href="#cb37-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22)) <span class="sc">+</span></span>
+<span id="cb37-181"><a href="#cb37-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-182"><a href="#cb37-182" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-183"><a href="#cb37-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-184"><a href="#cb37-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-185"><a href="#cb37-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-186"><a href="#cb37-186" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task 3) Gene expression tasks</span></span>
+<span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.</span>
+<span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.</span>
+<span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-195"><a href="#cb37-195" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="ot">&lt;-</span> <span class="fu">generate_targets_task_3</span>(<span class="at">meta_data=</span>meta_data, </span>
+<span id="cb37-196"><a href="#cb37-196" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data=</span>experimental_data, </span>
+<span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">experimental_data_settings=</span>experimental_data_settings, </span>
+<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">specimen_list=</span>specimen_list,</span>
+<span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">gene_meta=</span>gene_meta)</span>
+<span id="cb37-200"><a href="#cb37-200" aria-hidden="true" tabindex="-1"></a>targets_task_3</span>
+<span id="cb37-201"><a href="#cb37-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-202"><a href="#cb37-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-205"><a href="#cb37-205" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-206"><a href="#cb37-206" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_targets</span>(targets_task_3)</span>
+<span id="cb37-207"><a href="#cb37-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
+<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task31), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-218"><a href="#cb37-218" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
+<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-228"><a href="#cb37-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log10</span>(task31))) <span class="sc">+</span></span>
+<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a>targets_task_3 <span class="sc">%&gt;%</span></span>
+<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>task32), <span class="at">bins=</span><span class="dv">50</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a>targets_task_2 <span class="sc">%&gt;%</span></span>
+<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>((meta_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(subject_id, dataset) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()),</span>
+<span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a>                   <span class="at">by=</span><span class="st">"subject_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb37-253"><a href="#cb37-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>task22)) <span class="sc">+</span></span>
+<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dataset, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a>  ggdark<span class="sc">::</span><span class="fu">dark_mode</span>()</span>
+<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusions</span></span>
+<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Task 1: Substantial differences in the marginal distributions of the target variables between the cohorts / years.</span>
+<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Task 2: Substantial differences in the marginal distributions of the target variables between the cohorts / years.</span>
+<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Task 3: Small differences in the marginal distributions of the target variables between the cohorts / years.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

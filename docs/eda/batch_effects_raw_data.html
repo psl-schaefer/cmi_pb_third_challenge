@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Philipp Sven Lars Schäfer">
-<meta name="dcterms.date" content="2024-10-13">
+<meta name="dcterms.date" content="2024-10-14">
 
 <title>Batch Effects – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
@@ -215,6 +215,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#t_cell_activation-3" id="toc-t_cell_activation-3" class="nav-link" data-scroll-target="#t_cell_activation-3"><span class="header-section-number">4.4.6</span> t_cell_activation</a></li>
   <li><a href="#t_cell_polarization-3" id="toc-t_cell_polarization-3" class="nav-link" data-scroll-target="#t_cell_polarization-3"><span class="header-section-number">4.4.7</span> t_cell_polarization</a></li>
   </ul></li>
+  <li><a href="#day_30" id="toc-day_30" class="nav-link" data-scroll-target="#day_30"><span class="header-section-number">4.5</span> day_30</a>
+  <ul class="collapse">
+  <li><a href="#pbmc_cell_frequency-4" id="toc-pbmc_cell_frequency-4" class="nav-link" data-scroll-target="#pbmc_cell_frequency-4"><span class="header-section-number">4.5.1</span> pbmc_cell_frequency</a></li>
+  <li><a href="#pbmc_gene_expression-4" id="toc-pbmc_gene_expression-4" class="nav-link" data-scroll-target="#pbmc_gene_expression-4"><span class="header-section-number">4.5.2</span> pbmc_gene_expression</a></li>
+  <li><a href="#plasma_ab_titer-4" id="toc-plasma_ab_titer-4" class="nav-link" data-scroll-target="#plasma_ab_titer-4"><span class="header-section-number">4.5.3</span> plasma_ab_titer</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_legendplex-4" id="toc-plasma_cytokine_concentration_by_legendplex-4" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_legendplex-4"><span class="header-section-number">4.5.4</span> plasma_cytokine_concentration_by_legendplex</a></li>
+  <li><a href="#plasma_cytokine_concentration_by_olink-4" id="toc-plasma_cytokine_concentration_by_olink-4" class="nav-link" data-scroll-target="#plasma_cytokine_concentration_by_olink-4"><span class="header-section-number">4.5.5</span> plasma_cytokine_concentration_by_olink</a></li>
+  <li><a href="#t_cell_activation-4" id="toc-t_cell_activation-4" class="nav-link" data-scroll-target="#t_cell_activation-4"><span class="header-section-number">4.5.6</span> t_cell_activation</a></li>
+  <li><a href="#t_cell_polarization-4" id="toc-t_cell_polarization-4" class="nav-link" data-scroll-target="#t_cell_polarization-4"><span class="header-section-number">4.5.7</span> t_cell_polarization</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">5</span> Appendix</a></li>
   </ul>
@@ -242,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 13, 2024</p>
+      <p class="date">October 14, 2024</p>
     </div>
   </div>
   
@@ -411,8 +421,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    specimen_df_filtered <span class="ot">&lt;-</span> specimen_df <span class="sc">%&gt;%</span></span>
 <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> <span class="fu">unique</span>(assay_df_long<span class="sc">$</span>specimen_id))</span>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(specimen_df_filtered) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"No specimen for this combination of assay and day available"</span>))</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(specimen_df_filtered) <span class="sc">&lt;=</span> <span class="dv">3</span>) {</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Fewer than 3 specimen for this combination of assay and day available"</span>))</span>
 <span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
 <span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>      assay_mtx_wide <span class="ot">&lt;-</span> assay_df_long <span class="sc">%&gt;%</span></span>
 <span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"specimen_id"</span>, feature_col, value_col))) <span class="sc">%&gt;%</span></span>
@@ -558,11 +568,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="t_cell_activation-1" class="level3" data-number="4.2.6">
 <h3 data-number="4.2.6" class="anchored" data-anchor-id="t_cell_activation-1"><span class="header-section-number">4.2.6</span> t_cell_activation</h3>
-<p>No specimen for this combination of assay and day available</p>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
 </section>
 <section id="t_cell_polarization-1" class="level3" data-number="4.2.7">
 <h3 data-number="4.2.7" class="anchored" data-anchor-id="t_cell_polarization-1"><span class="header-section-number">4.2.7</span> t_cell_polarization</h3>
-<p>No specimen for this combination of assay and day available</p>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
 </section>
 </section>
 <section id="day_3" class="level2" data-number="4.3">
@@ -590,11 +600,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="t_cell_activation-2" class="level3" data-number="4.3.6">
 <h3 data-number="4.3.6" class="anchored" data-anchor-id="t_cell_activation-2"><span class="header-section-number">4.3.6</span> t_cell_activation</h3>
-<p>No specimen for this combination of assay and day available</p>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
 </section>
 <section id="t_cell_polarization-2" class="level3" data-number="4.3.7">
 <h3 data-number="4.3.7" class="anchored" data-anchor-id="t_cell_polarization-2"><span class="header-section-number">4.3.7</span> t_cell_polarization</h3>
-<p>No specimen for this combination of assay and day available</p>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
 </section>
 </section>
 <section id="day_14" class="level2" data-number="4.4">
@@ -622,11 +632,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="t_cell_activation-3" class="level3" data-number="4.4.6">
 <h3 data-number="4.4.6" class="anchored" data-anchor-id="t_cell_activation-3"><span class="header-section-number">4.4.6</span> t_cell_activation</h3>
-<p>No specimen for this combination of assay and day available</p>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
 </section>
 <section id="t_cell_polarization-3" class="level3" data-number="4.4.7">
 <h3 data-number="4.4.7" class="anchored" data-anchor-id="t_cell_polarization-3"><span class="header-section-number">4.4.7</span> t_cell_polarization</h3>
-<p>No specimen for this combination of assay and day available</p>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
+</section>
+</section>
+<section id="day_30" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="day_30"><span class="header-section-number">4.5</span> day_30</h2>
+<section id="pbmc_cell_frequency-4" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="pbmc_cell_frequency-4"><span class="header-section-number">4.5.1</span> pbmc_cell_frequency</h3>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
+</section>
+<section id="pbmc_gene_expression-4" class="level3" data-number="4.5.2">
+<h3 data-number="4.5.2" class="anchored" data-anchor-id="pbmc_gene_expression-4"><span class="header-section-number">4.5.2</span> pbmc_gene_expression</h3>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
+</section>
+<section id="plasma_ab_titer-4" class="level3" data-number="4.5.3">
+<h3 data-number="4.5.3" class="anchored" data-anchor-id="plasma_ab_titer-4"><span class="header-section-number">4.5.3</span> plasma_ab_titer</h3>
+<p><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-89.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-90.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-91.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-92.png" class="img-fluid" width="672"></p>
+</section>
+<section id="plasma_cytokine_concentration_by_legendplex-4" class="level3" data-number="4.5.4">
+<h3 data-number="4.5.4" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_legendplex-4"><span class="header-section-number">4.5.4</span> plasma_cytokine_concentration_by_legendplex</h3>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
+</section>
+<section id="plasma_cytokine_concentration_by_olink-4" class="level3" data-number="4.5.5">
+<h3 data-number="4.5.5" class="anchored" data-anchor-id="plasma_cytokine_concentration_by_olink-4"><span class="header-section-number">4.5.5</span> plasma_cytokine_concentration_by_olink</h3>
+<p>Fewer than 3 specimen for this combination of assay and day available</p>
+</section>
+<section id="t_cell_activation-4" class="level3" data-number="4.5.6">
+<h3 data-number="4.5.6" class="anchored" data-anchor-id="t_cell_activation-4"><span class="header-section-number">4.5.6</span> t_cell_activation</h3>
+<p><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-93.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-94.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-95.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-96.png" class="img-fluid" width="672"></p>
+</section>
+<section id="t_cell_polarization-4" class="level3" data-number="4.5.7">
+<h3 data-number="4.5.7" class="anchored" data-anchor-id="t_cell_polarization-4"><span class="header-section-number">4.5.7</span> t_cell_polarization</h3>
+<p>Non-zero fraction of NAs: 0.0435<img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-97.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-98.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-99.png" class="img-fluid" width="672"><img src="batch_effects_raw_data_files/figure-html/unnamed-chunk-4-100.png" class="img-fluid" width="672"></p>
 </section>
 </section>
 </section>
@@ -1301,8 +1342,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a>    specimen_df_filtered <span class="ot">&lt;-</span> specimen_df <span class="sc">%&gt;%</span></span>
 <span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(specimen_id <span class="sc">%in%</span> <span class="fu">unique</span>(assay_df_long<span class="sc">$</span>specimen_id))</span>
 <span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(specimen_df_filtered) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"No specimen for this combination of assay and day available"</span>))</span>
+<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(specimen_df_filtered) <span class="sc">&lt;=</span> <span class="dv">3</span>) {</span>
+<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Fewer than 3 specimen for this combination of assay and day available"</span>))</span>
 <span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
 <span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a>      assay_mtx_wide <span class="ot">&lt;-</span> assay_df_long <span class="sc">%&gt;%</span></span>
 <span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"specimen_id"</span>, feature_col, value_col))) <span class="sc">%&gt;%</span></span>

@@ -39,24 +39,61 @@ specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 RECOMPUTE <- FALSE
 if (RECOMPUTE) {
   source(file.path("..", "src", "normalize_integrate.R"))
-  experimental_data <- read_raw_experimental_data(input_dir)
-  experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                                experimental_data=experimental_data,
-                                                gene_meta=gene_meta)
-  experimental_data <- normalize_experimental_data(meta_data=meta_data, 
-                                                   experimental_data=experimental_data,
-                                                   gene_meta=gene_meta)
-  experimental_data <- integrate_experimental_data(meta_data=meta_data, 
-                                                   experimental_data=experimental_data)
-  write_rds(experimental_data, 
+  
+  raw_experimental_data <- read_raw_experimental_data(input_dir)
+  
+  filtered_experimental_data <- filter_experimental_data(
+    meta_data=meta_data, 
+    experimental_data=raw_experimental_data,
+    gene_meta=gene_meta)
+  
+  write_rds(filtered_experimental_data, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "filtered_experimental_data.RDS"))
+  
+  normalized_experimental_data <- normalize_experimental_data(
+    meta_data=meta_data, 
+    raw_experimental_data=filtered_experimental_data,
+    gene_meta=gene_meta)
+  
+  write_rds(normalized_experimental_data, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "normalized_experimental_data.RDS"))
+  
+  integrated_experimental_data <- integrate_experimental_data(
+    meta_data=meta_data, 
+    normalized_experimental_data=normalized_experimental_data)
+  
+  write_rds(integrated_experimental_data, 
             file = file.path(input_dir, "prc_datasets", 
                              "integrated_experimental_data.RDS"))
+
+  # use raw/filtered experimental data for computation of targets
+  target_list <- generate_all_targets(
+    meta_data=meta_data, 
+    experimental_data=filtered_experimental_data, 
+    experimental_data_settings=experimental_data_settings, 
+    gene_meta=gene_meta,
+    protein_meta=protein_meta
+    )
+  
+  write_rds(target_list, 
+          file = file.path(input_dir, "prc_datasets", 
+                           "target_list.RDS"))
+  
+  rm(raw_experimental_data, filtered_experimental_data, normalized_experimental_data)
+  experimental_data <- integrated_experimental_data
 } else {
   experimental_data <- read_rds(file = file.path(input_dir, "prc_datasets", 
-                                                 "integrated_experimental_data.RDS"))
+                                                            "integrated_experimental_data.RDS"))
+  target_list <- read_rds(file = file.path(input_dir, "prc_datasets", 
+                                           "target_list.RDS"))
 }
+```
+
+```{r}
 experimental_data <- 
-  experimental_data[-which(names(experimental_data) == "pbmc_gene_expression_only_corrected")]
+  experimental_data[-which(names(experimental_data) == "pbmc_gene_expression_counts")]
 
 experimental_predictors <- generate_wide_experimental_data(experimental_data=experimental_data,
                                                             impute="median", 
@@ -66,23 +103,6 @@ hvg <- gene_meta %>%
   dplyr::slice_max(mean_rank, n=1000)
 experimental_predictors$pbmc_gene_expression <- 
   experimental_predictors$pbmc_gene_expression[, hvg$versioned_ensembl_gene_id_clean]
-```
-
-To create the target tracks, I must use the non-normalized / non-integrated data as I don't have this information either for the challenge dataset
-
-```{r}
-# since I don't have this information for the challenge dataset either
-raw_experimental_data <- read_raw_experimental_data(input_dir)
-raw_experimental_data <- filter_experimental_data(meta_data=meta_data, 
-                                                  experimental_data=raw_experimental_data, 
-                                                  gene_meta=gene_meta)
-
-target_list <- generate_all_targets(
-  meta_data=meta_data, 
-  experimental_data=raw_experimental_data, 
-  experimental_data_settings=experimental_data_settings, 
-  gene_meta=gene_meta)
-str(target_list)
 ```
 
 # Conclusions
@@ -124,6 +144,11 @@ task_meta <- list(
     name = "task_32",
     header = "## Task 3.2",
     description = "Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0."
+  ),
+  task_41 = list(
+    name = "task_41",
+    header = "## Task 4.1",
+    description = "Rank the individuals based on their Th1/Th2 (IFN-g/IL-5) polarization ratio on Day 30 post-booster vaccination."
   )
 )
 ```

@@ -37,8 +37,6 @@ experimental_data <- read_raw_experimental_data(input_dir)
 experimental_data <- filter_experimental_data(meta_data, experimental_data, gene_meta)
 
 meta_data <- filter_meta_data(meta_data, experimental_data)
-wide_experimental_data <- generate_wide_experimental_data(experimental_data=experimental_data,
-                                                 impute="zero")
 
 celltype_meta <- read_celltype_meta(input_dir)
 gene_meta <- read_gene_meta(input_dir)
@@ -50,7 +48,8 @@ target_list <- generate_all_targets(
   meta_data=meta_data,
   experimental_data=experimental_data,
   experimental_data_settings=experimental_data_settings,
-  gene_meta=gene_meta)
+  gene_meta=gene_meta,
+  protein_meta=protein_meta)
 str(target_list)
 ```
 
@@ -99,6 +98,11 @@ task_meta <- list(
     name = "task_32",
     header = "## Task 3.2",
     description = "Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0."
+  ),
+  task_41 = list(
+    name = "task_41",
+    header = "## Task 4.1",
+    description = "Rank the individuals based on their Th1/Th2 (IFN-γ/IL-5) polarization ratio on Day 30 post-booster vaccination."
   )
 )
 ```

@@ -52,7 +52,8 @@ target_list <- generate_all_targets(
   meta_data=meta_data,
   experimental_data=experimental_data,
   experimental_data_settings=experimental_data_settings,
-  gene_meta=gene_meta)
+  gene_meta=gene_meta,
+  protein_meta=protein_meta)
 str(target_list)
 ```
 
