@@ -27,3 +27,5 @@ title: "Overview"
 - [Single Omic Models after Integration](models/single_omic_after_integration.qmd)
 
 - [Literature Models](models/literature_model.qmd)
+
+- [Validation](models/validation.qmd)

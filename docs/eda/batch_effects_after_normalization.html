@@ -469,7 +469,7 @@ Attaching package: 'genefilter'</code></pre>
 <span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>        .[<span class="fu">as.character</span>(specimen_df_filtered<span class="sc">$</span>specimen_id), ]</span>
 <span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>      </span>
 <span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>      impute_mode <span class="ot">&lt;-</span> <span class="st">"knn"</span></span>
-<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stopifnot</span>(impute_mode <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"zero"</span>, <span class="st">"median_feature"</span>, <span class="st">"knn"</span>))</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stopifnot</span>(impute_mode <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"zero"</span>, <span class="st">"median"</span>, <span class="st">"knn"</span>))</span>
 <span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>      </span>
 <span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide))) {</span>
 <span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Non-zero fraction of NAs: "</span>, </span>
@@ -479,7 +479,7 @@ Attaching package: 'genefilter'</code></pre>
 <span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide[<span class="fu">is.na</span>(assay_mtx_wide)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"knn"</span>) {</span>
 <span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide <span class="ot">&lt;-</span> <span class="fu">t</span>(impute<span class="sc">::</span><span class="fu">impute.knn</span>(<span class="at">data=</span><span class="fu">t</span>(assay_mtx_wide))<span class="sc">$</span>data)</span>
-<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"median_feature"</span>) {</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"median"</span>) {</span>
 <span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>          col_medians <span class="ot">&lt;-</span> matrixStats<span class="sc">::</span><span class="fu">colMedians</span>(assay_mtx_wide, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
 <span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>          <span class="cf">for</span> (colname <span class="cf">in</span> <span class="fu">colnames</span>(assay_mtx_wide)) {</span>
 <span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>            col_vec <span class="ot">&lt;-</span> assay_mtx_wide[, colname]</span>
@@ -1375,7 +1375,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a>        .[<span class="fu">as.character</span>(specimen_df_filtered<span class="sc">$</span>specimen_id), ]</span>
 <span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a>      </span>
 <span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a>      impute_mode <span class="ot">&lt;-</span> <span class="st">"knn"</span></span>
-<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stopifnot</span>(impute_mode <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"zero"</span>, <span class="st">"median_feature"</span>, <span class="st">"knn"</span>))</span>
+<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stopifnot</span>(impute_mode <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"zero"</span>, <span class="st">"median"</span>, <span class="st">"knn"</span>))</span>
 <span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a>      </span>
 <span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">is.na</span>(assay_mtx_wide))) {</span>
 <span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="fu">paste0</span>(<span class="st">"Non-zero fraction of NAs: "</span>, </span>
@@ -1385,7 +1385,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide[<span class="fu">is.na</span>(assay_mtx_wide)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"knn"</span>) {</span>
 <span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a>          assay_mtx_wide <span class="ot">&lt;-</span> <span class="fu">t</span>(impute<span class="sc">::</span><span class="fu">impute.knn</span>(<span class="at">data=</span><span class="fu">t</span>(assay_mtx_wide))<span class="sc">$</span>data)</span>
-<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"median_feature"</span>) {</span>
+<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> <span class="cf">if</span> (impute_mode <span class="sc">==</span> <span class="st">"median"</span>) {</span>
 <span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a>          col_medians <span class="ot">&lt;-</span> matrixStats<span class="sc">::</span><span class="fu">colMedians</span>(assay_mtx_wide, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
 <span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a>          <span class="cf">for</span> (colname <span class="cf">in</span> <span class="fu">colnames</span>(assay_mtx_wide)) {</span>
 <span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a>            col_vec <span class="ot">&lt;-</span> assay_mtx_wide[, colname]</span>

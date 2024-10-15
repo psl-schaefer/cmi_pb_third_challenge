@@ -71,7 +71,11 @@ specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
 ## PBMC Gene Expression
 
-- This is still troubling me. The 2022 dataset is very very different, even after running ComBat-seq. Maybe I am doing something wrong here!
+- Even after running ComBat-seq there is still a substantial batch effect. 
+
+- However, here https://rpubs.com/pshinde/Alldata_batcheffect_correction_3rd_challenge, there is not batch effect, I am not sure why that is.
+
+- Maybe it is because I am batch-correcting the data for each day relative to boost?
 
 ## Plasma Antibody Levels
 
