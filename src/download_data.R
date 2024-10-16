@@ -14,7 +14,7 @@ system(paste("wget",
              "--no-host-directories", # prevents wget from creating a directory named after the host (e.g., www.cmi-pb.org)
              "--cut-dirs=4", # skips creating the first x levels of the directory structure from the remote URL
              "--directory-prefix", 
-             "-R 'index.html*'", # excludes any files matching index.html*, preventing wget from downloading unwanted index files
+             "--reject index.html", # excludes any files matching index.html*, preventing wget from downloading unwanted index files
              data_dir, 
              server_url)
        )
