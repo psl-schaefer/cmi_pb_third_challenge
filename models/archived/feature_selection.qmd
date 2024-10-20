@@ -1,0 +1,286 @@
+---
+title: "Single-Omic Models After Normalization"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(flextable)
+  library(ggdark)
+  library(magick)
+})
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "colors.R"))
+source(file.path("..", "src", "generate_targets.R"))
+source(file.path("..", "src", "model.R"))
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta_plus(input_dir)
+protein_meta <- read_protein_meta(input_dir)
+
+meta_data <- read_harmonized_meta_data(input_dir)
+specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
+
+RECOMPUTE <- FALSE
+if (RECOMPUTE) {
+  source(file.path("..", "src", "normalize_integrate.R"))
+  
+  raw_experimental_data <- read_raw_experimental_data(input_dir)
+  
+  filtered_experimental_data <- filter_experimental_data(
+    meta_data=meta_data, 
+    experimental_data=raw_experimental_data,
+    gene_meta=gene_meta)
+  
+  write_rds(filtered_experimental_data, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "filtered_experimental_data.RDS"))
+  
+  normalized_experimental_data <- normalize_experimental_data(
+    meta_data=meta_data, 
+    raw_experimental_data=filtered_experimental_data,
+    gene_meta=gene_meta)
+  
+  write_rds(normalized_experimental_data, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "normalized_experimental_data.RDS"))
+  
+  integrated_experimental_data <- integrate_experimental_data(
+    meta_data=meta_data, 
+    normalized_experimental_data=normalized_experimental_data)
+  
+  write_rds(integrated_experimental_data, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "integrated_experimental_data.RDS"))
+
+  # use raw/filtered experimental data for computation of targets
+  target_list <- generate_all_targets(
+    meta_data=meta_data, 
+    experimental_data=filtered_experimental_data, 
+    experimental_data_settings=experimental_data_settings, 
+    gene_meta=gene_meta,
+    protein_meta=protein_meta
+    )
+  
+  write_rds(target_list, 
+          file = file.path(input_dir, "prc_datasets", 
+                           "target_list.RDS"))
+  
+  rm(raw_experimental_data, filtered_experimental_data)
+  experimental_data <- integrated_experimental_data
+} else {
+  normalized_experimental_data <- read_rds(file = file.path(input_dir, "prc_datasets", 
+                                                            "normalized_experimental_data.RDS"))
+  integrated_experimental_data <- read_rds(file = file.path(input_dir, "prc_datasets", 
+                                                            "integrated_experimental_data.RDS"))
+  target_list <- read_rds(file = file.path(input_dir, "prc_datasets", 
+                                           "target_list.RDS"))
+}
+```
+
+```{r}
+experimental_data_list <- list(
+  "normalized_experimental_data" = normalized_experimental_data,
+  "integrated_experimental_data" = integrated_experimental_data
+) %>%
+  # do not use raw or integrated counts
+  purrr::map(., ~ .x[-which(names(.x) == "pbmc_gene_expression_counts")])
+
+experimental_predictors_list <- 
+  purrr::map(experimental_data_list, ~ generate_wide_experimental_data(experimental_data=.x,
+                                                                       impute="median", 
+                                                                       verbose=TRUE))
+
+N_HVG <- 1000
+
+hvg <- gene_meta %>% 
+  dplyr::slice_max(mean_rank, n=N_HVG)
+
+for (experimental_predictors in experimental_predictors_list) {
+  experimental_predictors$pbmc_gene_expression <- 
+    experimental_predictors$pbmc_gene_expression[, hvg$versioned_ensembl_gene_id_clean]
+}
+
+names(normalized_experimental_data)
+names(integrated_experimental_data)
+```
+
+```{r}
+task_meta <- list(
+  task_11 = list(
+    name = "task_11",
+    header = "## Task 1.1",
+    description = "Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations."
+  ),
+  task_12 = list(
+    name = "task_12",
+    header = "## Task 1.2",
+    description = "Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0."
+  ),
+  task_21 = list(
+    name = "task_21",
+    header = "## Task 2.1",
+    description = "Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination."
+  ),
+  task_22 = list(
+    name = "task_22",
+    header = "## Task 2.2",
+    description = "Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0."
+  ),
+  task_31 = list(
+    name = "task_31",
+    header = "## Task 3.1",
+    description = "Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination."
+  ),
+  task_32 = list(
+    name = "task_32",
+    header = "## Task 3.2",
+    description = "Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0."
+  ),
+  task_41 = list(
+    name = "task_41",
+    header = "## Task 4.1",
+    description = "Rank the individuals based on their Th1/Th2 (IFN-g/IL-5) polarization ratio on Day 30 post-booster vaccination."
+  )
+)
+```
+
+# Loop
+
+- Over all tasks
+
+  - Over all modalities
+  
+    - Over all datasets
+
+```{r}
+set.seed(42)
+
+transformed_data_name <- "integrated_experimental_data"
+tibble_list <- list()
+
+for (task in task_meta) {
+  # task <- task_meta[[3]]
+  cat(paste0("\n\n-", task$name, "\n\n"))
+  for (modality in names(experimental_predictors_list[[transformed_data_name]])) {
+    # modality <- names(experimental_predictors)[1]
+    cat(paste0("\n\n-- ", modality, "\n\n"))
+    for (dset in unique(specimen_per_day$day_1$dataset)) {
+      # dset <- unique(specimen_per_day$day_0$dataset)[1]
+      cat(paste0("\n\n--- ", dset, "\n\n"))
+      modality_data <- experimental_predictors_list[[transformed_data_name]][[modality]] %>%
+        as.data.frame() %>% 
+        tibble::rownames_to_column("specimen_id") %>%
+        dplyr::mutate(specimen_id = as.numeric(specimen_id)) %>%
+        dplyr::left_join((specimen_per_day$day_0 %>% 
+                            dplyr::select(subject_id, specimen_id, dataset)),
+                         by="specimen_id") %>%
+        dplyr::filter(!is.na(subject_id)) %>%
+        dplyr::filter(dataset == !!dset) %>%
+        dplyr::select(-c(specimen_id, dataset))
+      
+      model_df <- target_list[[task$name]] %>%
+        dplyr::left_join(modality_data, by="subject_id") %>%
+         tidyr::drop_na()
+      
+      # problematic if we have too few instances
+      if (nrow(model_df) < 15) {
+        cat("Skipping ...")
+        next
+      } else {
+        cat("Boruta running ...")
+        boruta_out <- Boruta::Boruta(target ~ .,
+                                     # not considering baseline since we include anyway
+                                     model_df %>% dplyr::select(-c(subject_id, baseline)),
+                                     maxRuns=10000,
+                                     num.trees=1000 # use more trees to be sure?
+                                     )
+        out <- tibble::tibble(
+          task = task$name,
+          modality = modality,
+          dataset = dset,
+          feature = names(boruta_out$finalDecision),
+          boruta_decision = boruta_out$finalDecision,
+          n_data = nrow(model_df)
+        )
+        tibble_list <- rlist::list.append(tibble_list, out)
+      }
+    }
+  }
+}
+
+df <- tibble_list %>% dplyr::bind_rows()
+```
+
+```{r}
+n_data_df <- df %>%
+  dplyr::select(task, modality, n_data, dataset) %>%
+  dplyr::distinct() %>%
+  tidyr::pivot_wider(names_from=dataset, values_from=n_data, 
+                     names_prefix="n_samples_in_")
+
+df_boruta <- df %>%
+  dplyr::select(-n_data) %>%
+  dplyr::mutate(
+    boruta_decision = dplyr::case_when(
+      boruta_decision == "Confirmed" ~ 1,
+      boruta_decision == "Rejected" ~ 0,
+      boruta_decision == "Tentative" ~ NA
+    )
+  ) %>%
+  tidyr::pivot_wider(names_from=dataset, values_from=boruta_decision, 
+                     names_prefix="in_") %>%
+  mutate(n_confirmed = rowSums(select(., matches("^in_[0-9]+_dataset")), na.rm=TRUE)) %>%
+  mutate(mean_confirmed = rowMeans(select(., matches("^in_[0-9]+_dataset")), na.rm=TRUE)) %>%
+  dplyr::filter(n_confirmed > 0) %>%
+  dplyr::arrange(task, modality, desc(mean_confirmed)) %>%
+  dplyr::mutate(orig_feature = dplyr::case_when(
+    modality == "pbmc_gene_expression" ~ 
+      dplyr::pull(gene_meta, gene_symbol, versioned_ensembl_gene_id_clean)[feature],
+    modality %in% c("plasma_cytokine_concentration_by_legendplex", "plasma_cytokine_concentration_by_olink") ~
+      dplyr::pull(protein_meta, cytokine, uniprot_id)[feature],
+    modality == "t_cell_polarization" ~
+      paste0(purrr::map_chr(str_split(feature, "_"), ~ .x[1]), "_",
+             dplyr::pull(protein_meta, cytokine, uniprot_id)[purrr::map_chr(str_split(feature, "_"), ~ .x[2])]),
+    TRUE ~ feature
+  )) %>%
+  dplyr::left_join(n_data_df, by=c("task", "modality")) %>%
+  dplyr::mutate(task = factor(task,
+                              levels = paste0(rep(paste0("task_", 1:4), each=2), 
+                                              rep(1:2, 4))))
+  
+
+write_rds(df_boruta, 
+        file = file.path(input_dir, "prc_datasets", 
+                         "df_boruta.RDS"))
+
+df_boruta
+```
+
+```{r fig.width=8, fig.height=4}
+df_boruta %>%
+  
+  ggplot() +
+  geom_bar(aes(y=task, fill=modality), width=0.5, color="black") + 
+  ggdark::dark_mode(verbose=FALSE) +
+  labs(x="Number of Features")
+```
+
+
+
+

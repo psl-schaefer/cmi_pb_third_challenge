@@ -28,4 +28,4 @@ title: "Overview"
 
 - [Literature Models](models/literature_model.qmd)
 
-- [Validation Loop](models/validation_loop.qmd)
+- [Model Selection](models/model_selection.qmd)
