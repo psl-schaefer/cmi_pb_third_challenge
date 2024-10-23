@@ -283,3 +283,159 @@ plot_targets <- function(target_df) {
     labs(x="Day", y="Target for Task")
   return(p)
 }
+
+generate_baseline_task_1 <- function(meta_data, 
+                                     experimental_data, 
+                                     experimental_data_settings,
+                                     specimen_list) {
+  
+    meta_data %>% 
+    dplyr::filter(specimen_id %in% specimen_list[["day_0"]][["specimen_id"]]) %>%
+    dplyr::mutate(day = "day_0") %>%
+    dplyr::left_join(experimental_data$plasma_ab_titer, by="specimen_id") %>%
+    dplyr::filter(.data[[experimental_data_settings$plasma_ab_titer$feature_col]] == "IgG_PT") %>%
+    dplyr::mutate(baseline = .data[[experimental_data_settings$plasma_ab_titer$value_col]]) %>%
+    dplyr::select(subject_id, baseline) %>%
+    return()
+}
+
+# 2.1 Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.
+# 2.2 Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.
+# NOTE: Instead of fold change I will use logFC here
+generate_baseline_task_2 <- function(meta_data, 
+                                     experimental_data, 
+                                     experimental_data_settings,
+                                     specimen_list) {
+  
+    meta_data %>% 
+    dplyr::filter(specimen_id %in% specimen_list[["day_0"]][["specimen_id"]]) %>%
+    dplyr::mutate(day = "day_0") %>%
+    dplyr::left_join(experimental_data$pbmc_cell_frequency, by="specimen_id") %>%
+    dplyr::filter(.data[[experimental_data_settings$pbmc_cell_frequency$feature_col]] == "Monocytes") %>%
+    dplyr::mutate(baseline = .data[[experimental_data_settings$pbmc_cell_frequency$value_col]]) %>%
+    dplyr::select(subject_id, baseline) %>%
+    return()
+}
+
+# 3.1 Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.
+# 3.2 Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.
+# NOTE: Instead of directly predicting expression, I will predict log expression
+# NOTE: Instead of fold change I will use logFC here
+generate_baseline_task_3 <- function(meta_data, 
+                                     experimental_data, 
+                                     experimental_data_settings,
+                                     specimen_list,
+                                     gene_meta) {
+  
+  ccl3_ensemble <- experimental_data$pbmc_gene_expression %>%
+    dplyr::select("versioned_ensembl_gene_id") %>%
+    dplyr::distinct() %>%
+    dplyr::left_join(gene_meta, by=c("versioned_ensembl_gene_id"="versioned_ensembl_gene_id_clean")) %>%
+    dplyr::filter(gene_symbol=="CCL3") %>%
+    dplyr::pull("versioned_ensembl_gene_id")
+  stopifnot(length(ccl3_ensemble)==1)
+  
+  
+  meta_data %>% 
+    dplyr::filter(specimen_id %in% specimen_list[["day_0"]][["specimen_id"]]) %>%
+    dplyr::mutate(day = "day_0") %>%
+    dplyr::left_join(experimental_data$pbmc_gene_expression, by="specimen_id") %>%
+    dplyr::filter(.data[[experimental_data_settings$pbmc_gene_expression$feature_col]] == ccl3_ensemble) %>%
+    dplyr::mutate(baseline = log(.data[[experimental_data_settings$pbmc_gene_expression$value_col]])) %>%
+    dplyr::select(subject_id, baseline) %>%
+    return()
+}
+
+# 4.1 Rank the individuals based on their Th1/Th2 (IFN-γ/IL-5) polarization ratio on Day 30 post-booster vaccination.
+generate_baseline_task_4 <- function(meta_data, 
+                                     experimental_data, 
+                                     experimental_data_settings,
+                                     specimen_list,
+                                     protein_meta) {
+
+  # https://discuss.cmi-pb.org/t/announcement-bonus-prediction-task-for-the-3rd-public-cmi-pb-challenge/683
+  # ratio of IFNG / IL5
+  # NOTE: I assume here that "PT" stimulation is correct
+  # NOTE: Instead of the ratio I use the log ratio
+  targets <- experimental_data$t_cell_polarization %>%
+    dplyr::filter(!is.na(protein_id)) %>%
+    dplyr::left_join(protein_meta, by=c("protein_id"="uniprot_id")) %>%
+    dplyr::filter(stimulation=="PT", cytokine %in% c("IFNG", "IL5")) %>%
+    dplyr::select(specimen_id, cytokine, analyte_counts) %>%
+    tidyr::pivot_wider(names_from=cytokine, values_from=analyte_counts) %>%
+    dplyr::mutate(ratio = IFNG / IL5) %>%
+    dplyr::mutate(log_ratio = log(ratio))
+  
+  meta_data %>% 
+    dplyr::filter(specimen_id %in% specimen_list[["day_0"]][["specimen_id"]]) %>%
+    dplyr::select(specimen_id, subject_id) %>%
+    dplyr::left_join(targets, by="specimen_id") %>%
+    dplyr::mutate(baseline=log_ratio) %>%
+    dplyr::select(subject_id, baseline) %>%
+    tidyr::drop_na() %>%
+    return()
+}
+
+generate_all_baselines <- function(meta_data, 
+                                   experimental_data, 
+                                   experimental_data_settings,
+                                   gene_meta,
+                                   protein_meta) {
+  
+  specimen_list <- get_specimen_per_day(meta_data=meta_data)
+  
+  task_11 <- generate_baseline_task_1(meta_data=meta_data, 
+                                     experimental_data=experimental_data, 
+                                     experimental_data_settings=experimental_data_settings,
+                                     specimen_list=specimen_list) %>%
+    dplyr::select(subject_id, baseline)
+  
+  task_12 <- generate_baseline_task_1(meta_data=meta_data, 
+                                     experimental_data=experimental_data, 
+                                     experimental_data_settings=experimental_data_settings,
+                                     specimen_list=specimen_list) %>%
+    dplyr::select(subject_id, baseline)
+  
+  task_21 <- generate_baseline_task_2(meta_data=meta_data, 
+                                     experimental_data=experimental_data, 
+                                     experimental_data_settings=experimental_data_settings,
+                                     specimen_list=specimen_list) %>%
+    dplyr::select(subject_id, baseline)
+  
+  task_22 <- generate_baseline_task_2(meta_data=meta_data, 
+                                     experimental_data=experimental_data, 
+                                     experimental_data_settings=experimental_data_settings,
+                                     specimen_list=specimen_list) %>%
+    dplyr::select(subject_id, baseline)
+  
+  task_31 <- generate_baseline_task_3(meta_data=meta_data, 
+                                     experimental_data=experimental_data, 
+                                     experimental_data_settings=experimental_data_settings, 
+                                     specimen_list=specimen_list,
+                                     gene_meta=gene_meta) %>%
+    dplyr::select(subject_id, baseline)
+  
+  task_32 <- generate_baseline_task_3(meta_data=meta_data, 
+                                     experimental_data=experimental_data, 
+                                     experimental_data_settings=experimental_data_settings,
+                                     specimen_list=specimen_list,
+                                     gene_meta=gene_meta) %>%
+    dplyr::select(subject_id, baseline)
+  
+  task_41 <- generate_baseline_task_4(meta_data=meta_data, 
+                                     experimental_data=experimental_data, 
+                                     experimental_data_settings=experimental_data_settings,
+                                     specimen_list=specimen_list,
+                                     protein_meta=protein_meta) %>%
+    dplyr::select(subject_id, baseline)
+  
+  return(list(
+    task_11 = task_11,
+    task_12 = task_12,
+    task_21 = task_21,
+    task_22 = task_22,
+    task_31 = task_31,
+    task_32 = task_32,
+    task_41 = task_41
+  ))
+}

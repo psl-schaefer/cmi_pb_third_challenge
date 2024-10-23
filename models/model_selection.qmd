@@ -28,8 +28,8 @@ source(file.path("..", "src", "model.R"))
 
 ```{r}
 input_dir = file.path("..", "data")
-output_dir = file.path("..", "results")
-dir.create(output_dir, showWarnings = FALSE)
+output_dir = file.path("..", "results", "model_selection_default")
+dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 ```
 
 ```{r}
@@ -54,6 +54,33 @@ if (RECOMPUTE) {
   write_rds(filtered_experimental_data, 
             file = file.path(input_dir, "prc_datasets", 
                              "filtered_experimental_data.RDS"))
+  
+  specimen_to_assay <- purrr::map(list("raw"=raw_experimental_data, "filtered"=filtered_experimental_data), function(exp_data) {
+    # exp_data <- filtered_experimental_data; exp_name = "filtered"
+    purrr::imap(exp_data, function(exp_df, exp_name) {
+      exp_df %>%
+        dplyr::select(specimen_id) %>%
+        dplyr::distinct() %>%
+        dplyr::mutate(assay = exp_name, specimen_id = as.numeric(specimen_id))
+    }) %>%
+      dplyr::bind_rows() %>%
+      dplyr::mutate(present = TRUE) %>%
+      tidyr::pivot_wider(names_from=assay, values_from=present) %>%
+      mutate_all(~ ifelse(is.na(.), FALSE, .))
+  })
+  
+  meta_data_plus_assays <- purrr::map(specimen_to_assay, function(df) {
+    meta_data %>%
+      dplyr::left_join(df, by="specimen_id") %>%
+      mutate_all(~ ifelse(is.na(.), FALSE, .))
+  })
+  
+  write_rds(specimen_to_assay, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "specimen_to_assay.RDS"))
+  write_rds(meta_data_plus_assays, 
+            file = file.path(input_dir, "prc_datasets", 
+                             "meta_data_plus_assays.RDS"))
   
   normalized_experimental_data <- normalize_experimental_data(
     meta_data=meta_data, 
@@ -81,9 +108,30 @@ if (RECOMPUTE) {
     protein_meta=protein_meta
     )
   
-  write_rds(target_list, 
-          file = file.path(input_dir, "prc_datasets", 
-                           "target_list.RDS"))
+  # use raw/filtered experimental data for computation of targets
+  baseline_list <- generate_all_baselines(
+    meta_data=meta_data, 
+    experimental_data=filtered_experimental_data, 
+    experimental_data_settings=experimental_data_settings, 
+    gene_meta=gene_meta,
+    protein_meta=protein_meta
+    )
+  
+  stopifnot(identical(names(target_list), names(baseline_list)))
+  purrr::map_lgl(names(target_list), function(task_name) {
+    (target_list[[task_name]] %>%
+      dplyr::inner_join(baseline_list[[task_name]], by="subject_id") %>%
+      dplyr::summarise(cor = cor(baseline.x, baseline.y)) %>%
+      dplyr::pull(cor)) == 1
+  }) %>%
+    all() %>%
+    stopifnot()
+  
+  write_rds(target_list, file = file.path(input_dir, "prc_datasets", 
+                                          "target_list.RDS"))
+  
+  write_rds(baseline_list, file = file.path(input_dir, "prc_datasets", 
+                                            "baseline_list.RDS"))
   
   rm(raw_experimental_data, filtered_experimental_data)
   experimental_data <- integrated_experimental_data
@@ -92,8 +140,14 @@ if (RECOMPUTE) {
                                                             "integrated_experimental_data.RDS"))
   experimental_data <- experimental_data[-which(names(experimental_data) ==
                                                 "pbmc_gene_expression_counts")]
-  target_list <- read_rds(file = file.path(input_dir, "prc_datasets", 
-                                           "target_list.RDS"))
+  
+  target_list <- read_rds(file = file.path(input_dir, "prc_datasets",  "target_list.RDS"))
+  
+  baseline_list <- read_rds(file = file.path(input_dir, "prc_datasets", "baseline_list.RDS"))
+  
+  specimen_to_assay <- read_rds(file = file.path(input_dir, "prc_datasets", "specimen_to_assay.RDS"))
+  
+  meta_data_plus_assays <- read_rds(file = file.path(input_dir, "prc_datasets", "meta_data_plus_assays.RDS"))
 }
 ```
 
@@ -139,9 +193,21 @@ task_meta <- list(
 )
 ```
 
+# Rationale
+
+- How to choose the right model?
+
+  - Top ranking performance
+  
+  - Low variance between the test sets
+  
+  - If several models with top performance and low variance, choose the more regularized model
+  
+  - If several models with top performance and low variance, choose model that is not using assay that is missing often in test data (-> Olink!)
+
 # Conclusions
 
-- 
+TODO
 
 # Prepare Features
 
@@ -158,7 +224,9 @@ meta_data_cov <- get_metadata_covariates(meta_data) %>%
 
 experimental_predictors_day_0 <- 
   generate_wide_experimental_data(experimental_data=experimental_data,
-                                  impute="median", 
+                                  impute="knn", 
+                                  max_NA_frac_sample = 0.5,
+                                  max_NA_frac_feature = 0.25,
                                   verbose=TRUE) %>%
   purrr::imap(function(df, modality) {
     colnames(df) <- paste0(modality, "_", colnames(df))
@@ -173,6 +241,7 @@ experimental_predictors_day_0 <-
       dplyr::select(subject_id, everything())
     return(df)
   })
+
 experimental_predictors_day_0$pbmc_gene_expression <-
   experimental_predictors_day_0$pbmc_gene_expression[, c("subject_id", hvg$prefix_versioned_ensembl_gene_id_clean)]
 
@@ -191,49 +260,172 @@ experimental_predictors_day_0_pca <- experimental_predictors_day_0 %>%
     return(df_pca)
 })
 
-get_powerset <- function(x) {
-  # powerset excluding the empty set!
-  sets <- lapply(1:(length(x)), \(i) utils::combn(x, i, simplify = FALSE))
-  unlist(sets, recursive = FALSE)
-}
-
-modality_powerset <- get_powerset(names(experimental_predictors_day_0))
+modality_powerset <- purrr::map(1:length(experimental_predictors_day_0), function(i) {
+  utils::combn(names(experimental_predictors_day_0), i, simplify = FALSE)
+}) %>%
+   unlist(recursive = FALSE)
 
 #purrr::map(experimental_predictors_day_0_pca, ~ dim(.x))
+
+meta_data_plus_assays_day_0 <- meta_data_plus_assays$filtered %>%
+  dplyr::filter(specimen_id %in% specimen_per_day$day_0$specimen_id)
+stopifnot(length(meta_data_plus_assays_day_0$subject_id) == 
+            length(unique(meta_data_plus_assays_day_0$subject_id)))
+
+# which assays are most/least often missing?
+meta_data_plus_assays_day_0 %>%
+  dplyr::select(dplyr::all_of(names(experimental_predictors_day_0))) %>%
+  dplyr::mutate(row_sum = apply(select(., matches(".+")), 1, sum)) %>%
+  dplyr::filter(row_sum > 0) %>%
+  tidyr::pivot_longer(cols=!row_sum) %>%
+  dplyr::group_by(name) %>%
+  dplyr::summarise(mean = mean(value)) %>%
+  dplyr::arrange(desc(mean))
+```
+
+
+
+```{r}
+MAX_N_ASSAYS_MISSING <- 2
+K_FOR_KNN_IMPUTE <- 7
 
 feature_list <- list(
   "metadata" = meta_data_cov,
   "metadata+baseline" = meta_data_cov # will take care of that logic in loop
 )
 
+# small_utility_function to renamce the pca colnames?
+
 # adding power set of single-omic pca predictors
 for (modality_set in modality_powerset) {
   # modality_set <- modality_powerset[[100]]
-  modality_set_df <- meta_data_cov
-  
   modality_set_name <- paste0(paste0(modality_set, collapse = "_pca+"), "_pca+metadata+baseline")
-  feature_list[[modality_set_name]] <- 
+  
+  # inner join here, other subject have no assays for day 0...
+  modality_set_check_assays  <- meta_data_cov %>%
+    dplyr::inner_join(dplyr::select(meta_data_plus_assays_day_0, dplyr::all_of(c("subject_id", modality_set))), 
+                        by="subject_id")
+  modality_set_check_assays[, modality_set][is.na(modality_set_check_assays[, modality_set])] <- FALSE
+  modality_set_check_assays[, "n_assays_present"] <- rowSums(modality_set_check_assays[, modality_set])
+  modality_set_check_assays[, "n_assays_max"] <- length(modality_set)
+  modality_set_check_assays[, "n_assays_missing"] <- length(modality_set) - modality_set_check_assays[, "n_assays_present"]
+  modality_set_check_assays <- modality_set_check_assays %>%
+    dplyr::mutate(n_assays_frac = n_assays_present / n_assays_max)
+  
+  subjects_to_exclude <- modality_set_check_assays %>%
+    dplyr::filter(n_assays_missing >= !!MAX_N_ASSAYS_MISSING) %>%
+    dplyr::pull(subject_id)
+  
+  modality_set_meta_df <- meta_data_cov %>%
+    dplyr::filter(!(subject_id %in% subjects_to_exclude))
+  
+  modality_set_df <- 
     experimental_predictors_day_0_pca[modality_set] %>%
-    purrr::reduce(inner_join, by="subject_id") %>% # should we use inner? or outer with impute?
-    dplyr::left_join(meta_data_cov, by="subject_id")
+    purrr::reduce(full_join, by="subject_id") %>%
+    dplyr::inner_join(modality_set_meta_df, by="subject_id")
+  
+  modality_set_mtx <- modality_set_df %>%
+    tibble::column_to_rownames("subject_id") %>%
+    as.matrix() %>%
+    t() %>%
+    impute::impute.knn(data=., k=K_FOR_KNN_IMPUTE, maxp=10000, colmax=1) %>%
+    .$data %>%
+    t()
+  
+  feature_list[[modality_set_name]] <- as.data.frame(modality_set_mtx) %>%
+    tibble::rownames_to_column("subject_id") %>%
+    dplyr::mutate(subject_id = as.numeric(subject_id))
 }
 
 # adding power set of single-omic predictors
 for (modality_set in modality_powerset) {
   # modality_set <- modality_powerset[[100]]
-  modality_set_df <- meta_data_cov
-  
   modality_set_name <- paste0(paste0(modality_set, collapse = "+"), "+metadata+baseline")
-  feature_list[[modality_set_name]] <- 
+  
+# inner join here, other subject have no assays for day 0...
+  modality_set_check_assays  <- meta_data_cov %>%
+    dplyr::inner_join(dplyr::select(meta_data_plus_assays_day_0, dplyr::all_of(c("subject_id", modality_set))), 
+                        by="subject_id")
+  modality_set_check_assays[, modality_set][is.na(modality_set_check_assays[, modality_set])] <- FALSE
+  modality_set_check_assays[, "n_assays_present"] <- rowSums(modality_set_check_assays[, modality_set])
+  modality_set_check_assays[, "n_assays_max"] <- length(modality_set)
+  modality_set_check_assays[, "n_assays_missing"] <- length(modality_set) - modality_set_check_assays[, "n_assays_present"]
+  modality_set_check_assays <- modality_set_check_assays %>%
+    dplyr::mutate(n_assays_frac = n_assays_present / n_assays_max)
+  
+  
+  subjects_to_exclude <- modality_set_check_assays %>%
+    dplyr::filter(n_assays_missing >= !!MAX_N_ASSAYS_MISSING) %>%
+    dplyr::pull(subject_id)
+  
+  modality_set_meta_df <- meta_data_cov %>%
+    dplyr::filter(!(subject_id %in% subjects_to_exclude))
+  
+  modality_set_df <- 
     experimental_predictors_day_0[modality_set] %>%
-    purrr::reduce(inner_join, by="subject_id") %>% # should we use inner? or outer with impute?
-    dplyr::left_join(meta_data_cov, by="subject_id")
+    purrr::reduce(full_join, by="subject_id") %>%
+    dplyr::inner_join(modality_set_meta_df, by="subject_id")
+  
+  modality_set_mtx <- modality_set_df %>%
+    tibble::column_to_rownames("subject_id") %>%
+    as.matrix() %>%
+    t() %>%
+    impute::impute.knn(data=., k=K_FOR_KNN_IMPUTE, maxp=10000, colmax=1) %>%
+    .$data %>%
+    t()
+  
+  feature_list[[modality_set_name]] <- as.data.frame(modality_set_mtx) %>%
+    tibble::rownames_to_column("subject_id") %>%
+    dplyr::mutate(subject_id = as.numeric(subject_id))
 }
+
+stopifnot(all(purrr::map_dbl(feature_list, ~ mean(is.na(.x))) == 0))
 
 #purrr::map(feature_list, ~ dim(.x))
 ```
 
-# Loop
+```{r}
+# -> why do they have to use fortran code ....
+knn_impute_internal <- function(x, k, imiss, irmiss, p, n) {
+  # see https://code.bioconductor.org/browse/impute/blob/RELEASE_3_19/src/knnimpute.f
+  junk <- .Fortran("knnimp", 
+                   x, 
+                   ximp = x, 
+                   p, 
+                   n, 
+                   imiss = imiss, 
+                   irmiss, 
+                   as.integer(k), 
+                   double(p), 
+                   double(n + k), 
+                   integer(p + k), 
+                   integer(n), 
+                   PACKAGE = "impute")
+  ximp <- junk$ximp
+  ximp[junk$imiss == 2] <- NA
+  return(ximp)
+}
+
+x <- t(modality_set_mtx)
+k <- 10
+knn_impute <- function(x, k = 10) {
+  pn <- dim(x)
+  dn <- dimnames(x)
+  p <- as.integer(pn[1])
+  n <- as.integer(pn[2])
+  imiss <- is.na(x)
+  x[imiss] <- 0
+  irmiss <- drop(imiss %*% rep(1, n))
+  storage.mode(imiss) <- "integer"
+  storage.mode(irmiss) <- "integer"
+  storage.mode(x) <- "double"
+  ximp <- knn_impute_internal(x, k, imiss, irmiss, p, n)
+  return(ximp)
+}
+```
+
+
+# Model Evaluation / Assessment
 
 ```{r}
 tictoc::tic()
@@ -270,11 +462,7 @@ for (task in task_meta) {
       feature_set = "baseline"
     ))
   }
-  
-  #for (model_name in c("lm", "rf", "lasso", "elnet", "lm+boruta", "rf+boruta")) {
-  #for (model_name in c("lasso")) {
-  #for (model_name in c("lm")) {
-  for (model_name in c("lm", "rf", "lasso", "elnet", "rf+boruta")) {
+  for (model_name in c("lasso", "elnet", "rf", "rf+boruta")) {
     # model_name <- "lasso"
     for (feature_name in names(feature_list)) {
       # feature_name <- names(feature_list)[2]
@@ -344,62 +532,6 @@ for (task in task_meta) {
             predictions <- predict(model, test_df_subset)$predictions
           }
         } 
-        else if (model_name == "lm") {
-          # standardize features if using linear model
-          train_df_lm <- train_df
-          test_df_lm <- test_df
-          for (column in colnames(train_df_lm)[colnames(train_df_lm)!="target"]) {
-            column_mean <- mean(train_df_lm[[column]])
-            column_sd <- sd(train_df_lm[[column]])
-            train_df_lm[[column]] <- (train_df_lm[[column]] - column_mean) / column_sd
-            test_df_lm[[column]] <- (test_df_lm[[column]] - column_mean) / column_sd
-          }
-          design_matrix <- model.matrix(target ~ ., data = train_df_lm)
-          rank <- qr(design_matrix)$rank
-          num_predictors <- ncol(design_matrix)
-          # If rank is less than number of predictors, return constant vector
-          if (rank < num_predictors) {
-            predictions <- rep(mean(train_df_lm$target), nrow(test_df_lm))
-          } else {
-            # Otherwise, fit the model and make predictions
-            model <- stats::lm(formula = target ~ ., data = train_df_lm, singular.ok = FALSE)
-            predictions <- predict(model, test_df_lm)
-          }
-        } 
-        else if (model_name == "lm+boruta") {
-          # standardize features if using linear model
-          train_df_lm <- train_df
-          test_df_lm <- test_df
-          for (column in colnames(train_df_lm)[colnames(train_df_lm)!="target"]) {
-            column_mean <- mean(train_df_lm[[column]])
-            column_sd <- sd(train_df_lm[[column]])
-            train_df_lm[[column]] <- (train_df_lm[[column]] - column_mean) / column_sd
-            test_df_lm[[column]] <- (test_df_lm[[column]] - column_mean) / column_sd
-          }
-          if (ncol(train_df) > 2) {
-            boruta_out <- Boruta::Boruta(formula = target ~ .,
-                                         data = train_df,
-                                         maxRuns=1000,
-                                         num.trees=500 
-                                         )
-            boruta_feats <- names(boruta_out$finalDecision)[boruta_out$finalDecision=="Confirmed"]
-          } else {
-            boruta_feats <- colnames(train_df)[colnames(train_df)!="target"]
-          }
-          train_df_subset <- train_df_lm %>% dplyr::select(dplyr::all_of(c(boruta_feats, "target")))
-          test_df_subset <- test_df_lm %>% dplyr::select(dplyr::all_of(c(boruta_feats, "target")))
-          design_matrix <- model.matrix(target ~ ., data = train_df_subset)
-          rank <- qr(design_matrix)$rank
-          num_predictors <- ncol(design_matrix)
-          # If rank is less than number of predictors, return constant vector
-          if (rank < num_predictors) {
-            predictions <- rep(mean(train_df_subset$target), nrow(test_df_subset))
-          } else {
-            # Otherwise, fit the model and make predictions
-            model <- stats::lm(formula = target ~ ., data = train_df_subset, singular.ok = FALSE)
-            predictions <- predict(model, test_df_subset)
-          }
-        } 
         else if (model_name == "lasso") {
           # standardize the features, even though glmnet is doing this automatically!
           feature_means <- matrixStats::colMeans2(train_mtx)
@@ -449,13 +581,6 @@ for (task in task_meta) {
                                      standardize=TRUE, # by default each feature is standardized internally
                                      family="gaussian"
                                      )
-          # investigate
-          #beta_mtx <- as.data.frame(as.matrix(model$glmnet.fit$beta))
-          #colnames(beta_mtx) <- paste0("lambda_", round(model$lambda, 3))
-          #plot(model)
-          #lambda_value <- model$lambda.1se, # model$lambda.min
-          # never use zero features (with lamba=model$lambda[1]), since constant predictions
-          # will have NA spearman...
           lambda_value <- ifelse(model$lambda.min==model$lambda[1], 
                                  model$lambda[2], model$lambda.min)
           predictions <- predict(model,
@@ -501,11 +626,20 @@ result_summary <- result_df %>%
 result_summary
 ```
 
+Why is that? This happens when the boruta algorithm returns 0 important features, which means in the test set the predictions are set to some constant. And since a constant vector has 0 standard deviation, we cannot compute the correlation (where we divide by the standard deviation).
+
+```{r}
+result_summary %>%
+  dplyr::filter(is.na(test_srho)) %>%
+  dplyr::count(task, model)
+```
+
 ```{r}
 model_selection_df <- result_summary %>%
   dplyr::select(task, feature_set, model, testset, test_srho) %>%
   tidyr::pivot_wider(values_from=test_srho, names_from=testset) %>%
   dplyr::mutate(srho_mean = apply(select(., matches("[0-9]+_dataset")), 1, mean, na.rm=TRUE)) %>%
+  dplyr::filter(!is.na(srho_mean)) %>% # so we only keep entries where predictions in all test sets where constant
   dplyr::mutate(srho_min = apply(select(., matches("[0-9]+_dataset")), 1, min, na.rm=TRUE)) %>%
   dplyr::mutate(srho_sd = apply(select(., matches("[0-9]+_dataset")), 1, sd, na.rm=TRUE)) %>%
   dplyr::mutate(srho_mean = round(srho_mean, 3)) %>%
@@ -516,14 +650,382 @@ model_selection_df <- result_summary %>%
     str_detect(feature_set, "_pca") ~ "pca",
     TRUE ~ "none"
   )) %>%
-  dplyr::mutate(n_features = (stringr::str_count(feature_set, "\\+") + 1)) %>%
+  dplyr::mutate(n_modalities = (stringr::str_count(feature_set, "\\+") + 1)) %>%
   dplyr::select(task, model, srho_mean, srho_sd, srho_min, !feature_set, feature_set)
 ```
 
 ```{r}
 readr::write_delim(model_selection_df, file=file.path(output_dir, "model_selection_df.tsv"), delim="\t")
+#model_selection_df <- readr::read_delim(file.path(output_dir, "model_selection_df.tsv"), delim="\t")
+
+library(openxlsx)
+# see https://ycphs.github.io/openxlsx/reference/openxlsx_options.html
+#base::options()
+wb <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb, "results_unfiltered")
+openxlsx::setColWidths(wb, sheet="results_unfiltered", cols = 1:10, widths = 15)
+openxlsx::setColWidths(wb, sheet="results_unfiltered", cols = 11:12, widths = 100)
+openxlsx::writeDataTable(wb, 
+                         sheet = "results_unfiltered", 
+                         x = model_selection_df, 
+                         startRow = 1, 
+                         startCol = 1,
+                         tableStyle = "TableStyleDark1")
+
+for (task in unique(model_selection_df$task)) {
+  # task <- "task_21"
+  task_result_df <- model_selection_df %>%
+    dplyr::filter(task == !!task) %>%
+    dplyr::filter(!is.na(srho_sd)) %>%
+    dplyr::arrange(desc(srho_mean)) 
+  openxlsx::addWorksheet(wb, task)
+  openxlsx::setColWidths(wb, sheet=task, cols = 1:10, widths = 15)
+  openxlsx::setColWidths(wb, sheet=task, cols = 11:12, widths = 100)
+  openxlsx::writeDataTable(wb, 
+                         sheet = task,
+                         x = task_result_df, 
+                         startRow = 1, 
+                         startCol = 1,
+                         tableStyle = "TableStyleDark1")
+}
+openxlsx::saveWorkbook(wb, file=file.path(output_dir, "model_selection_df.xlsx"), overwrite = TRUE)
+```
+
+# Prediction for 2023
+
+1. Load the submission template
+
+```{r}
+submission_df <- readr::read_tsv(file.path(input_dir, "3rdChallengeSubmissionTemplate_10032024.tsv"),
+                                 show_col_types = FALSE)
+submission_df
+```
+
+Check which assays are missing most often
+
+```{r}
+test_assays_available <- submission_df %>%
+  dplyr::select(SubjectID) %>%
+  tidylog::left_join(meta_data_plus_assays_day_0, by=c("SubjectID"="subject_id"))
+```
+
+```{r}
+colMeans(test_assays_available[, names(experimental_predictors_day_0)]) %>% sort()
+```
+
+```{r}
+rowSums(test_assays_available[, names(experimental_predictors_day_0)]) %>% sort()
 ```
 
 
+2. Define for each task a list with the following entries
 
+```{r}
+colnames(submission_df)
+```
+
+
+```{r}
+prediction_specs <- list(
+  "task_11" = list(
+    "model" = "lasso",
+    "feature_set" = "plasma_cytokine_concentration_by_legendplex_pca+metadata+baseline",
+    "table_col" = "1.1) IgG-PT-D14-titer-Rank"
+  ),
+  "task_12" = list(
+    "model" = "lasso",
+    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+t_cell_activation+t_cell_polarization+metadata+baseline",
+    "table_col" = "1.2) IgG-PT-D14-FC-Rank"
+  ),
+  "task_21" = list(
+    "model" = "rf",
+    "feature_set" = "pbmc_cell_frequency_pca+plasma_cytokine_concentration_by_legendplex_pca+t_cell_activation_pca+metadata+baseline",
+    "table_col" = "2.1) Monocytes-D1-Rank"
+  ),
+  "task_22" = list(
+    "model" = "elnet",
+    "feature_set" = "pbmc_cell_frequency+plasma_cytokine_concentration_by_legendplex+metadata+baseline",
+    "table_col" = "2.2) Monocytes-D1-FC-Rank"
+  ),
+  "task_31" = list(
+    "model" = "lasso",
+    "feature_set" = "plasma_cytokine_concentration_by_legendplex+metadata+baseline",
+    "table_col" = "3.1) CCL3-D3-Rank"
+  ),
+  "task_32" = list(
+    "model" = "rf",
+    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+plasma_ab_titer+plasma_cytokine_concentration_by_legendplex+t_cell_activation+t_cell_polarization+metadata+baseline",
+    "table_col" = "3.2) CCL3-D3-FC-Rank"
+  ),
+  "task_41" = list(
+    "model" = "elnet",
+    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+t_cell_activation+metadata+baseline",
+    "table_col" = "4.1) IFNG/IL5-Polarization-D30-Rank"
+  )
+)
+
+# checks
+## 0) all task column names are in submission table
+purrr::map_lgl(prediction_specs, ~ .x[["table_col"]] %in% colnames(submission_df)) %>%
+  all() %>%
+  stopifnot()
+
+## a) all tasks are specified
+stopifnot(dplyr::setequal(names(task_meta), names(prediction_specs)))
+
+## b) all features are present
+purrr::map_lgl(prediction_specs, ~ length(str_split(.x[["feature_set"]], "\\+")[[1]]) > 2) %>%
+  all() %>%
+  stopifnot()
+
+purrr::map_lgl(prediction_specs, ~ .x[["feature_set"]] %in% names(feature_list)) %>%
+  all() %>%
+  stopifnot()
+
+## c) which features are never selected?
+selected_features <- purrr::map(prediction_specs, ~ str_split(.x[["feature_set"]], "\\+")[[1]]) %>%
+  unlist() %>%
+  unique()
+
+all_features <- purrr::map(names(feature_list), ~ str_split(.x, "\\+")[[1]]) %>%
+  unlist() %>%
+  unique()
+
+all_features[!all_features %in% selected_features]
+rm(selected_features, all_features)
+
+## d) which features are most commonly used
+purrr::map(prediction_specs, ~ str_split(.x[["feature_set"]], "\\+")[[1]]) %>%
+  unlist() %>%
+  stringr::str_remove_all(., "_pca$") %>%
+  table() %>%
+  sort(decreasing=TRUE)
+
+## e) all models are implemented
+purrr::map_lgl(prediction_specs, ~ .x[["model"]] %in% c("rf", "rf+boruta", "elnet", "lasso")) %>%
+  all() %>%
+  stopifnot()
+
+## f) pull scores from result df
+purrr::imap(prediction_specs, function(task_specs, task) {
+  entry <- model_selection_df %>%
+    dplyr::filter(task == !!task) %>%
+    dplyr::filter(model == !!task_specs[["model"]]) %>%
+    dplyr::filter(feature_set == !!task_specs[["feature_set"]])
+  stopifnot(nrow(entry)==1)
+  return(entry)
+}) %>%
+  dplyr::bind_rows()
+```
+
+3. Make the predictions
+
+- Train model on full dataset
+
+- Make predictions for the 2023 data
+
+```{r}
+predictions_list <- list()
+
+task_name <- "task_41"
+
+for (task_name in names(prediction_specs)) {
+  task_specs <- prediction_specs[[task_name]]
+  
+  print(task_name)
+  print(task_specs$model)
+  print(task_specs$feature_set)
+  
+  task_df <- target_list[[task_name]]
+    
+  target_df <- task_df %>%
+    dplyr::select(subject_id, target)
+  
+  baseline_df <- baseline_list[[task_name]]
+  
+  feature_df <- feature_list[[task_specs$feature_set]]
+  
+  if (str_detect(task_specs$feature_set, "baseline")) {
+    feature_df <- feature_df %>%
+      dplyr::left_join(baseline_df, by="subject_id")
+  }
+  
+  train_df <- target_df %>%
+    tidylog::inner_join(feature_df, by="subject_id") %>%
+    dplyr::left_join(dplyr::distinct(dplyr::select(meta_data, c(subject_id, dataset))),
+                     by="subject_id") %>%
+    dplyr::select(-c(dataset)) %>%
+    tibble::column_to_rownames(var="subject_id")
+  stopifnot(!any(is.na(train_df)))
+  stopifnot(nrow(train_df)==nrow(dplyr::distinct(train_df)))
+  # check that features were duplicated during joining of tables (i.e. features end with .x and .y) -> but doesn't make sense with the PCA joining...
+  #stopifnot(all(purrr::map_dbl(stringr::str_split(colnames(train_df), "\\."), ~ length(.x)) == 1))
+  #colnames(train_df)[purrr::map_dbl(stringr::str_split(colnames(train_df), "\\."), ~ length(.x)) > 1]
+  
+  test_df <- submission_df %>%
+    dplyr::mutate(subject_id = SubjectID) %>% 
+    dplyr::select(subject_id) %>%
+    dplyr::left_join(feature_df, by="subject_id") %>%
+    tibble::column_to_rownames(var="subject_id")
+  
+  # check if the baseline is missing for certain instances
+  if (str_detect(task_specs$feature_set, "baseline")) {
+    if (sum(is.na(test_df$baseline)) > 0) {
+      message(paste0("Baseline values are missing for ", 
+                   sum(is.na(test_df$baseline)),
+                   " samples! Imputing with Median"))
+      test_df$baseline[is.na(test_df$baseline)] <- median(test_df$baseline, na.rm=TRUE)
+    }
+  }
+  
+  # now there should be no more NAs!
+  stopifnot(mean(is.na(test_df)) == 0)
+  
+  # some more checks
+  stopifnot(identical(colnames(train_df)[colnames(train_df)!="target"], colnames(test_df)))
+  #colnames(test_df)[!colnames(test_df) %in% colnames(train_df)]
+  #colnames(train_df)[!colnames(train_df) %in% colnames(test_df)]
+  
+  # if we need matrix, vector objects for certain ML algos
+  train_mtx <- as.matrix(dplyr::select(train_df, -target))
+  train_target <- dplyr::pull(train_df, target)
+  test_mtx <- as.matrix(test_df)
+  
+  if (task_specs$model == "rf") {
+    model <- ranger::ranger(formula = target ~ ., 
+                            data = train_df, 
+                            num.trees = 500)
+    predictions <- predict(model, test_df)$predictions
+    names(predictions) <- rownames(test_df)
+  } else if (task_specs$model == "rf+boruta") {
+    boruta_out <- Boruta::Boruta(formula = target ~ .,
+                                 data = train_df,
+                                 maxRuns=1000,
+                                 num.trees=500 
+                                 )
+    boruta_feats <- names(boruta_out$finalDecision)[boruta_out$finalDecision=="Confirmed"]
+    stopifnot(length(boruta_feats) != 0)
+  
+    train_df_subset <- train_df %>% dplyr::select(dplyr::all_of(c(boruta_feats, "target")))
+    test_df_subset <- test_df %>% dplyr::select(dplyr::all_of(c(boruta_feats, "target")))
+    model <- ranger::ranger(formula = target ~ ., 
+                            data = train_df_subset, 
+                            num.trees = 500)
+    predictions <- predict(model, test_df_subset)$predictions
+  } else if (task_specs$model == "lasso") {
+    # standardize the features, even though glmnet is doing this automatically!
+    feature_means <- matrixStats::colMeans2(train_mtx)
+    feature_sds <- matrixStats::colSds(train_mtx)
+    train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
+    train_target <- (train_target - mean(train_target)) / sd(train_target)
+    #test_mtx <- t((t(test_mtx) - feature_means) / feature_sds)
+    
+    # inner hyperparameter optim loop using LOOCV to find best lambda
+    model <- glmnet::cv.glmnet(x=train_mtx,
+                               y=train_target,
+                               nfolds=nrow(train_mtx),
+                               grouped=FALSE,
+                               alpha=1, # LASSO
+                               type.measure="mae", # not sure whether this is better
+                               standardize=TRUE, # by default each feature is standardized internally
+                               family="gaussian"
+                               )
+    # investigate
+    #beta_mtx <- as.data.frame(as.matrix(model$glmnet.fit$beta))
+    #colnames(beta_mtx) <- paste0("lambda_", round(model$lambda, 3))
+    #plot(model)
+    #lambda_value <- model$lambda.1se, # model$lambda.min
+    # never use zero features (with lamba=model$lambda[1]), since constant predictions
+    # will have NA spearman...
+    lambda_value <- ifelse(model$lambda.min==model$lambda[1], 
+                           model$lambda[2], model$lambda.min)
+    predictions <- predict(model,
+                           newx=test_mtx, 
+                           s=lambda_value)[,1]
+  } else if (task_specs$model == "elnet") {
+    # standardize the features, even though glmnet is doing this automatically!
+    feature_means <- matrixStats::colMeans2(train_mtx)
+    feature_sds <- matrixStats::colSds(train_mtx)
+    train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
+    train_target <- (train_target - mean(train_target)) / sd(train_target)
+    #test_mtx <- t((t(test_mtx) - feature_means) / feature_sds)
+    
+    # inner hyperparameter optim loop using LOOCV to find best lambda
+    model <- glmnet::cv.glmnet(x=train_mtx,
+                               y=train_target,
+                               nfolds=nrow(train_mtx),
+                               grouped=FALSE,
+                               alpha=0.5, # elastic net
+                               type.measure="mae", # not sure whether this is better
+                               standardize=TRUE, # by default each feature is standardized internally
+                               family="gaussian"
+                               )
+    lambda_value <- ifelse(model$lambda.min==model$lambda[1], 
+                           model$lambda[2], model$lambda.min)
+    predictions <- predict(model,
+                           newx=test_mtx, 
+                           s=lambda_value)[,1]
+  }
+  
+  stopifnot(all(names(predictions) == rownames(test_df)))
+  
+  predictions_list[[task_name]] <- 
+    tibble::tibble(subject_id = as.numeric(names(predictions)), 
+                   predictions = predictions,
+                   task_name = task_name,
+                   model = task_specs$model,
+                   feature_set = task_specs$feature_set)
+}
+```
+
+```{r}
+names(predictions_list)
+```
+
+```{r}
+submission_df_with_predictions <- submission_df
+
+for (task_name in names(predictions_list)) {
+  task_preds_df <- predictions_list[[task_name]] %>%
+    dplyr::select(subject_id, predictions)
+  
+  submission_df_with_predictions <- submission_df_with_predictions %>%
+    tidylog::left_join(task_preds_df, by=c("SubjectID" = "subject_id")) %>%
+    dplyr::mutate(!!prediction_specs[[task_name]][["table_col"]] := predictions) %>%
+    dplyr::select(-predictions)
+}
+submission_df_with_predictions
+```
+
+Lastly we need to create ranks from those predictions, see:
+
+- https://discuss.cmi-pb.org/t/ranking-results-clarification/321
+
+- We expect contestants to generate computational models, and upon making predictions, these values are ranked from highest to lowest (i.e. highest = 1, lowest = N) before making a final submission.
+
+```{r}
+submission_df_with_rank <- submission_df_with_predictions
+
+task_titles <- purrr::map_chr(prediction_specs, ~ .x[["table_col"]])
+stopifnot(all(task_titles %in% colnames(submission_df_with_predictions)))
+
+for (task_title_oi in task_titles) {
+  submission_df_with_rank[[task_title_oi]] <- 
+    rank(submission_df_with_predictions[[task_title_oi]], ties.method="average")
+}
+readr::write_tsv(
+  x = submission_df_with_rank, 
+  file = file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_submission_psls.tsv"))
+)
+submission_df_with_rank
+```
+
+# Appendix
+
+Also write the image just in case
+
+```{r}
+save.image(file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_model_selection_session.RData")))
+#load(file=file.path(output_dir, "model_selection_session.RData"))
+```
 
