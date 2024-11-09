@@ -5,6 +5,8 @@ project:
   - "*.qmd"
   - "!tmp/"
   - "!external_files/"
+  - "!archived/"
+  - "!testing.qmd"
   
 bibliography: ref.bib 
 

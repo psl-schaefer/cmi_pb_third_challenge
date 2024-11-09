@@ -41,17 +41,17 @@ protein_meta <- read_protein_meta(input_dir)
 
 meta_data <- read_harmonized_meta_data(input_dir)
 
-RECOMPUTE <- FALSE
+RECOMPUTE <- TRUE
 if (RECOMPUTE) {
   experimental_data <- read_raw_experimental_data(input_dir)
   experimental_data <- filter_experimental_data(meta_data=meta_data, 
                                                 experimental_data=experimental_data, 
                                                 gene_meta=gene_meta)
   experimental_data <- normalize_experimental_data(meta_data=meta_data, 
-                                                   experimental_data=experimental_data,
+                                                   raw_experimental_data=experimental_data,
                                                    gene_meta=gene_meta)
   experimental_data <- integrate_experimental_data(meta_data=meta_data, 
-                                                   experimental_data=experimental_data)
+                                                   normalized_experimental_data=experimental_data)
   write_rds(experimental_data, 
             file = file.path(input_dir, "prc_datasets", 
                              "integrated_experimental_data.RDS"))

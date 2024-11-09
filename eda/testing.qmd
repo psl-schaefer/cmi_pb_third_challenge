@@ -1,0 +1,174 @@
+
+Difference between harmonized and raw data for PBMC cell frequency data
+
+```{r}
+# source("../src/read_data.R")
+# 
+# input_dir <- "../data"
+# 
+# meta_df <- read_harmonized_meta_data(input_dir)
+# 
+# raw_data <- read_raw_experimental_data(input_dir)
+# harm_data <- read_harmonized_experimental_data(input_dir)
+# 
+# celltype_meta <- read_celltype_meta(input_dir)
+# 
+# raw_data$pbmc_cell_frequency %>%
+#   dplyr::left_join(meta_df, by="specimen_id") %>%
+#   tidyr::drop_na() %>%
+#   dplyr::select(dataset, cell_type_name) %>%
+#   dplyr::distinct() %>%
+#   dplyr::left_join(celltype_meta, by=c("cell_type_name", "dataset")) %>%
+#   View()
+# 
+# raw_data$pbmc_cell_frequency %>%
+#   dplyr::left_join(meta_df, by="specimen_id") %>%
+#   tidyr::drop_na() %>%
+#   dplyr::filter(cell_type_name == "CD45+")
+# 
+# raw_data$pbmc_cell_frequency %>%
+#   dplyr::left_join(meta_df, by="specimen_id") %>%
+#   tidyr::drop_na() %>%
+#   dplyr::filter(dataset == "2023_dataset") %>%
+#   dplyr::arrange(desc(percent_live_cell)) %>%
+#   dplyr::left_join(celltype_meta, by=c("cell_type_name", "dataset")) %>%
+#   View()
+# 
+# df_1 <- raw_data$pbmc_cell_frequency %>%
+#   dplyr::select(cell_type_name) %>%
+#   dplyr::distinct() %>%
+#   dplyr::mutate(
+#     in_harm_data = cell_type_name %in% harm_data$pbmc_cell_frequency$cell_type_name
+#     ) %>%
+#   dplyr::arrange(in_harm_data)
+# 
+# View(df_1)
+# 
+# View(celltype_meta)
+```
+
+Check if target track computation works correctly
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(flextable)
+  library(ggdark)
+  library(magick)
+  library(glmnet)
+  library(ranger)
+})
+
+source(file.path("..", "src", "read_data.R"))
+source(file.path("..", "src", "colors.R"))
+source(file.path("..", "src", "generate_targets.R"))
+source(file.path("..", "src", "model.R"))
+
+input_dir = file.path("..", "data")
+
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta_plus(input_dir)
+protein_meta <- read_protein_meta(input_dir)
+
+meta_data <- read_harmonized_meta_data(input_dir)
+specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
+
+raw_experimental_data <- read_raw_experimental_data(input_dir)
+
+filtered_experimental_data <- filter_experimental_data(
+  meta_data=meta_data, 
+  experimental_data=raw_experimental_data,
+  gene_meta=gene_meta)
+
+target_list <- generate_all_targets(
+  meta_data=meta_data, 
+  experimental_data=filtered_experimental_data, 
+  experimental_data_settings=experimental_data_settings, 
+  gene_meta=gene_meta,
+  protein_meta=protein_meta
+  )
+
+rm(raw_experimental_datam, filtered_experimental_data); gc()
+
+df_targets <- list(target_list$task_11 %>% dplyr::mutate(task11=target, target=NULL, baseline=NULL), 
+                   target_list$task_21 %>% dplyr::mutate(task21=target, target=NULL, baseline=NULL), 
+                   target_list$task_31 %>% dplyr::mutate(task31=target, target=NULL, baseline=NULL)) %>%
+  purrr::reduce(dplyr::left_join, by="subject_id") %>%
+  dplyr::mutate(label = "mine")
+```
+
+```{r}
+task41 <- read_tsv("../data/bonus_task_data/Th1(IFN-γ)_Th2(IL-5)_polarization_ratio.tsv", show_col_types = FALSE) %>%
+  dplyr::left_join(meta_data, by="specimen_id") %>%
+  dplyr::filter((actual_day_relative_to_boost > 25) & (actual_day_relative_to_boost < 35)) %>%
+  dplyr::mutate(target = `PT_P01579(IFNγ)/PT_P05113(IL5)`) %>%
+  dplyr::select(subject_id, target)
+
+target_list$task_41 %>%
+  dplyr::left_join(task41, by="subject_id") %>%
+  tidyr::drop_na() %>%
+  dplyr::summarise(srho = cor(target.x, target.y, method="spearman"))
+```
+
+
+```{r}
+# TEAM 48
+load("/Users/pschafer/Projects/cmi_pb_second_challenge/CMI-PB_team_48/data/predictors.RData")
+#purrr::map_chr(str_split(colnames(predictors.baseline), "\\."), ~ .x[1]) %>% table()
+
+df_team_48 <- tibble::tibble(subject_id=as.numeric(rownames(predictors.baseline)),
+                             task31 = predictors.baseline$CCL3,
+                             task21 = predictors.baseline$Freq.Monocytes,
+                             task11 = predictors.baseline$IgG_PT) %>%
+  dplyr::mutate(label = "team_48")
+
+df_summary <- dplyr::bind_rows(
+  df_targets, df_team_48
+) %>%
+  tidyr::pivot_longer(cols=starts_with("task"), names_to="task") %>%
+  tidyr::pivot_wider(values_from=value, names_from=label) %>%
+  tidyr::drop_na() %>%
+  dplyr::group_by(task) %>%
+  dplyr::summarise(n = n(), 
+                   prho = cor(mine, team_48, method="pearson"),
+                   srho = cor(mine, team_48, method="spearman"))
+
+df_summary
+```
+
+
+```{r}
+dat = readRDS("/Users/pschafer/Projects/cmi_pb_second_challenge/data/2024-02-02/2nd_challenge/processed_datasets/training_dataset/master_processed_training_data.RDS")
+
+meta_old <- dat$subject_specimen
+
+t1 <- tibble(specimen_id = as.numeric(names(dat$pbmc_cell_frequency$normalized_data["Monocytes", ])),
+       value = dat$pbmc_cell_frequency$normalized_data["Monocytes", ]
+       ) %>%
+  dplyr::left_join(meta_old, by="specimen_id") %>%
+  dplyr::filter(actual_day_relative_to_boost==1)
+
+t2 <- tibble (specimen_id = dat$pbmc_cell_frequency$raw_data$specimen_id,
+              value = dat$pbmc_cell_frequency$raw_data$Monocytes) %>%
+  dplyr::left_join(meta_old, by="specimen_id") %>%
+  dplyr::filter(actual_day_relative_to_boost==1)
+
+test_df <- target_list$task_21 %>%
+  dplyr::left_join(t1, by="subject_id") %>%
+  dplyr::select(target, value) %>%
+  tidyr::drop_na() %>%
+  dplyr::arrange(target)
+
+cor(test_df$target, test_df$value, method="spearman")
+
+test_df <- target_list$task_21 %>%
+  dplyr::left_join(t2, by="subject_id") %>%
+  dplyr::select(target, value) %>%
+  tidyr::drop_na() %>%
+  dplyr::arrange(target)
+
+cor(test_df$target, test_df$value, method="spearman")
+```
+
+
+

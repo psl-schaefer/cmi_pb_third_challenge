@@ -36,7 +36,7 @@ protein_meta <- read_protein_meta(input_dir)
 meta_data <- read_harmonized_meta_data(input_dir)
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
-RECOMPUTE <- FALSE
+RECOMPUTE <- TRUE
 if (RECOMPUTE) {
   source(file.path("..", "src", "normalize_integrate.R"))
   
@@ -59,14 +59,6 @@ if (RECOMPUTE) {
   write_rds(normalized_experimental_data, 
             file = file.path(input_dir, "prc_datasets", 
                              "normalized_experimental_data.RDS"))
-  
-  integrated_experimental_data <- integrate_experimental_data(
-    meta_data=meta_data, 
-    normalized_experimental_data=normalized_experimental_data)
-  
-  write_rds(integrated_experimental_data, 
-            file = file.path(input_dir, "prc_datasets", 
-                             "integrated_experimental_data.RDS"))
 
   # use raw/filtered experimental data for computation of targets
   target_list <- generate_all_targets(
@@ -81,8 +73,8 @@ if (RECOMPUTE) {
           file = file.path(input_dir, "prc_datasets", 
                            "target_list.RDS"))
   
-  rm(raw_experimental_data, filtered_experimental_data, integrated_experimental_data)
-  experimental_data <- integrated_experimental_data
+  rm(raw_experimental_data, filtered_experimental_data)
+  experimental_data <- normalized_experimental_data
 } else {
   experimental_data <- read_rds(file = file.path(input_dir, "prc_datasets", 
                                                             "normalized_experimental_data.RDS"))
