@@ -213,8 +213,8 @@ TODO
 # Prepare Features
 
 ```{r}
+# get the 2000 most variable genes based on the mean dispersion (variance/mean) across cohorts
 N_HVG <- 2000
-
 hvg <- gene_meta %>% 
   dplyr::mutate("prefix_versioned_ensembl_gene_id_clean" =
                   paste0("pbmc_gene_expression_", versioned_ensembl_gene_id_clean)) %>%
@@ -230,15 +230,14 @@ experimental_predictors_day_0 <-
                                   max_NA_frac_feature = 0.25,
                                   verbose=TRUE) %>%
   purrr::imap(function(df, modality) {
-    colnames(df) <- paste0(modality, "_", colnames(df))
+    colnames(df) <- paste0(modality, "_", colnames(df)) # since feature names can be repeated across assays
     df <- as.data.frame(df) %>%
       tibble::rownames_to_column("specimen_id") %>%
       dplyr::mutate(specimen_id = as.numeric(specimen_id)) %>%
-      dplyr::left_join((specimen_per_day$day_0 %>% 
-                        dplyr::select(subject_id, specimen_id, dataset)),
-                       by="specimen_id") %>%
+      dplyr::inner_join((specimen_per_day$day_0 %>% 
+                           dplyr::select(subject_id, specimen_id, dataset)),
+                        by="specimen_id") %>%
       dplyr::select(-c(specimen_id, dataset)) %>%
-      dplyr::filter(!is.na(subject_id)) %>%
       dplyr::select(subject_id, everything())
     return(df)
   })
@@ -272,7 +271,13 @@ meta_data_plus_assays_day_0 <- meta_data_plus_assays$filtered %>%
   dplyr::filter(specimen_id %in% specimen_per_day$day_0$specimen_id)
 stopifnot(length(meta_data_plus_assays_day_0$subject_id) == 
             length(unique(meta_data_plus_assays_day_0$subject_id)))
+```
 
+Check which assays are missing the least often?
+
+- Olink is missing quite often, because I removed all measurements for the 2020 cohort
+
+```{r}
 # which assays are most/least often missing?
 meta_data_plus_assays_day_0 %>%
   dplyr::select(dplyr::all_of(names(experimental_predictors_day_0))) %>%
@@ -284,8 +289,6 @@ meta_data_plus_assays_day_0 %>%
   dplyr::arrange(desc(mean))
 ```
 
-
-
 ```{r}
 MAX_N_ASSAYS_MISSING <- 2
 K_FOR_KNN_IMPUTE <- 7
@@ -295,9 +298,10 @@ feature_list <- list(
   "metadata+baseline" = meta_data_cov # will take care of that logic in loop
 )
 
-# small_utility_function to renamce the pca colnames?
-
-# adding power set of single-omic pca predictors
+# check for each feature setting (aka modality setting)
+# whether to many assays are missing for any subject 
+# (by default we remove subject if more than 2 of the required feature sets are missing)
+# usually we exclude here subject from the 2020 dataset
 for (modality_set in modality_powerset) {
   # modality_set <- modality_powerset[[100]]
   modality_set_name <- paste0(paste0(modality_set, collapse = "_pca+"), "_pca+metadata+baseline")
@@ -308,10 +312,9 @@ for (modality_set in modality_powerset) {
                         by="subject_id")
   modality_set_check_assays[, modality_set][is.na(modality_set_check_assays[, modality_set])] <- FALSE
   modality_set_check_assays[, "n_assays_present"] <- rowSums(modality_set_check_assays[, modality_set])
-  modality_set_check_assays[, "n_assays_max"] <- length(modality_set)
   modality_set_check_assays[, "n_assays_missing"] <- length(modality_set) - modality_set_check_assays[, "n_assays_present"]
-  modality_set_check_assays <- modality_set_check_assays %>%
-    dplyr::mutate(n_assays_frac = n_assays_present / n_assays_max)
+  #modality_set_check_assays[, "n_assays_max"] <- length(modality_set)
+  #modality_set_check_assays <- modality_set_check_assays %>% dplyr::mutate(n_assays_frac = n_assays_present / n_assays_max)
   
   subjects_to_exclude <- modality_set_check_assays %>%
     dplyr::filter(n_assays_missing >= !!MAX_N_ASSAYS_MISSING) %>%
@@ -349,10 +352,9 @@ for (modality_set in modality_powerset) {
                         by="subject_id")
   modality_set_check_assays[, modality_set][is.na(modality_set_check_assays[, modality_set])] <- FALSE
   modality_set_check_assays[, "n_assays_present"] <- rowSums(modality_set_check_assays[, modality_set])
-  modality_set_check_assays[, "n_assays_max"] <- length(modality_set)
   modality_set_check_assays[, "n_assays_missing"] <- length(modality_set) - modality_set_check_assays[, "n_assays_present"]
-  modality_set_check_assays <- modality_set_check_assays %>%
-    dplyr::mutate(n_assays_frac = n_assays_present / n_assays_max)
+  #modality_set_check_assays[, "n_assays_max"] <- length(modality_set)
+  #modality_set_check_assays <- modality_set_check_assays %>% dplyr::mutate(n_assays_frac = n_assays_present / n_assays_max)
   
   
   subjects_to_exclude <- modality_set_check_assays %>%
@@ -384,47 +386,6 @@ stopifnot(all(purrr::map_dbl(feature_list, ~ mean(is.na(.x))) == 0))
 
 #purrr::map(feature_list, ~ dim(.x))
 ```
-
-```{r}
-# -> why do they have to use fortran code ....
-knn_impute_internal <- function(x, k, imiss, irmiss, p, n) {
-  # see https://code.bioconductor.org/browse/impute/blob/RELEASE_3_19/src/knnimpute.f
-  junk <- .Fortran("knnimp", 
-                   x, 
-                   ximp = x, 
-                   p, 
-                   n, 
-                   imiss = imiss, 
-                   irmiss, 
-                   as.integer(k), 
-                   double(p), 
-                   double(n + k), 
-                   integer(p + k), 
-                   integer(n), 
-                   PACKAGE = "impute")
-  ximp <- junk$ximp
-  ximp[junk$imiss == 2] <- NA
-  return(ximp)
-}
-
-x <- t(modality_set_mtx)
-k <- 10
-knn_impute <- function(x, k = 10) {
-  pn <- dim(x)
-  dn <- dimnames(x)
-  p <- as.integer(pn[1])
-  n <- as.integer(pn[2])
-  imiss <- is.na(x)
-  x[imiss] <- 0
-  irmiss <- drop(imiss %*% rep(1, n))
-  storage.mode(imiss) <- "integer"
-  storage.mode(irmiss) <- "integer"
-  storage.mode(x) <- "double"
-  ximp <- knn_impute_internal(x, k, imiss, irmiss, p, n)
-  return(ximp)
-}
-```
-
 
 # Model Evaluation / Assessment
 

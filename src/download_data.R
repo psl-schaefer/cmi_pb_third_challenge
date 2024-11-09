@@ -14,10 +14,10 @@ system(paste("wget",
              "--no-host-directories", # prevents wget from creating a directory named after the host (e.g., www.cmi-pb.org)
              "--cut-dirs=4", # skips creating the first x levels of the directory structure from the remote URL
              "--directory-prefix", 
-             "--reject index.html", # excludes any files matching index.html*, preventing wget from downloading unwanted index files
-             data_dir, 
+             "--reject 'index.html*'", # excludes any files matching index.html*, preventing wget from downloading unwanted index files
+             paste0("--directory-prefix=", data_dir), # specify where to save
              server_url)
-       )
+)
 
 # Download the metadata for genes and cell types
 meta_data_dir <- file.path(data_dir, "meta_data")
@@ -28,6 +28,11 @@ if (!file.exists(meta_data_dir)) {
 external_data_dir <- file.path(data_dir, "external_data")
 if (!file.exists(external_data_dir)) {
   dir.create(external_data_dir, recursive = TRUE)
+}
+
+prc_data_dir <- file.path(data_dir, "prc_datasets")
+if (!file.exists(prc_data_dir)) {
+  dir.create(prc_data_dir, recursive = TRUE)
 }
 
 base_url <- "https://www.cmi-pb.org/api/v5" # "https://www.cmi-pb.org/api"

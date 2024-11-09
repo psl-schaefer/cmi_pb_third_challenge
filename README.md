@@ -99,7 +99,13 @@
 
 - t_cell_polarization: No Integration
 
-### Construction of Target Tracks
+### Further Processing
+
+- pbmc_gene_expression: Selection of the `2000` most highly variable genes (simply using dispersion)
+
+- Missing values were imputed per assay using `impute::impute.knn` with `k=7`
+
+## Construction of Target Tracks
 
 - Code: `generate_all_targets` in `generate_targets.R`
 
@@ -140,6 +146,10 @@
 
 - Clone/Fork the repo
 
+- Cd into the cloned repo (using your favorite shell)
+
+- Run `renv::restore()`
+
 - Run `download_data.R`
 
 - a) Generating the whole webpage (i.e. all analyses):
@@ -148,7 +158,7 @@
   - Run `quarto render` inside the project directory (in your favorite shell)
   
 - b) Generating only the predictions
-  - Execute `model_selection.qmd`
+  - Execute `model_selection.qmd` (on my machine this runs about 4 hours)
 
 
 
