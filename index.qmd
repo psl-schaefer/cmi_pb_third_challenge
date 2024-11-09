@@ -32,7 +32,11 @@ title: "Overview"
 
 - [Literature Models](models/literature_model.qmd)
 
-- [Model Selection](models/model_selection.qmd)
+- [Model Selection Default](models/model_selection_default.qmd)
+
+- [Model Selection (Targets based on Normalized Data)](models/model_selection_normalized.qmd)
+
+- [Model Selection (Targets based on Integrated Data)](models/model_selection_integrated.qmd)
 
 # Others
 

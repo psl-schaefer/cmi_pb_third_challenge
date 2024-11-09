@@ -359,7 +359,7 @@ generate_wide_experimental_data <- function(experimental_data,
                                             max_NA_frac_feature = 0.25,
                                             verbose=TRUE) {
   wide_experimental_data <- purrr::imap(experimental_data, function(df, modality) {
-    # df <- experimental_data[[6]]; modality <- names(experimental_data)[6]; verbose=TRUE
+    # df <- experimental_data[[3]]; modality <- names(experimental_data)[3]; verbose=TRUE
     # impute="knn"; max_NA_frac_sample = 0.5; max_NA_frac_feature = 0.25
     feature_col <- experimental_data_settings[[modality]]$feature_col
     value_col <- experimental_data_settings[[modality]]$value_col

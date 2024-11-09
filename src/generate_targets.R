@@ -121,6 +121,9 @@ generate_targets_task_3 <- function(meta_data,
                                     specimen_list,
                                     gene_meta) {
   
+  experimental_data$pbmc_gene_expression <- experimental_data$pbmc_gene_expression %>%
+    dplyr::mutate(specimen_id = as.numeric(specimen_id)) # make sure the join below works
+  
   ccl3_ensemble <- experimental_data$pbmc_gene_expression %>%
     dplyr::select("versioned_ensembl_gene_id") %>%
     dplyr::distinct() %>%
@@ -326,6 +329,9 @@ generate_baseline_task_3 <- function(meta_data,
                                      experimental_data_settings,
                                      specimen_list,
                                      gene_meta) {
+  
+  experimental_data$pbmc_gene_expression <- experimental_data$pbmc_gene_expression %>%
+    dplyr::mutate(specimen_id = as.numeric(specimen_id)) # make sure the join below works
   
   ccl3_ensemble <- experimental_data$pbmc_gene_expression %>%
     dplyr::select("versioned_ensembl_gene_id") %>%

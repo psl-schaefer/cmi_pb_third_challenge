@@ -144,13 +144,16 @@
 
 ## How to Run the Code
 
-- Clone/Fork the repo
+- Clone/Fork the repo, e.g. `git clone https://github.com/psl-schaefer/cmi_pb_third_challenge`
 
 - Cd into the cloned repo (using your favorite shell)
 
-- Run `renv::restore()`
+- Run `Rscript -e "renv::restore()"`
 
-- Run `download_data.R`
+- Check with `Rscript -e "renv::status()"`
+  - Should return: `No issues found -- the project is in a consistent state.`
+
+- Run `Rscript src/download_data.R`
 
 - a) Generating the whole webpage (i.e. all analyses):
   - Install quarto
@@ -158,7 +161,9 @@
   - Run `quarto render` inside the project directory (in your favorite shell)
   
 - b) Generating only the predictions
-  - Execute `model_selection.qmd` (on my machine this runs about 4 hours)
+  - Run `quarto render model_selection.qmd` (on my machine this runs about 4 hours)
+  
+- Submission file should be in `results/model_selection_default/` (saved using the current data as prefix)
 
 
 
