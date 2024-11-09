@@ -61,6 +61,7 @@ read_celltype_meta <- function(input_dir) {
 }
 
 read_harmonized_meta_data <- function(input_dir) {
+  # input_dir <- "/Users/pschafer/Projects/cmi_pb_third_challenge/data"
   meta_data <- bind_rows(
     readr::read_tsv(file.path(input_dir, 
                               "harmonized_and_processed_data",
