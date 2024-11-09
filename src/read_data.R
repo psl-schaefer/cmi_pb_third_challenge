@@ -312,6 +312,43 @@ filter_experimental_data <- function(meta_data, experimental_data, gene_meta, ve
   experimental_data$pbmc_gene_expression <- experimental_data$pbmc_gene_expression %>%
     dplyr::filter(versioned_ensembl_gene_id %in% ensemble_to_gene$versioned_ensembl_gene_id_clean)
   
+  # 7. Remove specimen where more than 50% of measurements are below LOD or LOQ
+  olink_bad_specimen <- experimental_data$plasma_cytokine_concentration_by_olink %>%
+    dplyr::left_join(meta_data, by="specimen_id") %>%
+    dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
+    dplyr::group_by(specimen_id) %>%
+    dplyr::summarise(below_lod = mean(below_lod, na.rm=TRUE)) %>%
+    dplyr::filter(below_lod > 0.5) %>%
+    dplyr::pull(specimen_id)
+  
+  if (verbose) {
+    message("plasma_cytokine_concentration_by_olink | Removed specimen ", 
+            paste0(olink_bad_specimen, collapse=", "), 
+            " because fraction of measurements below LOQ > 50%")
+  }
+  
+  experimental_data$plasma_cytokine_concentration_by_olink <- 
+    experimental_data$plasma_cytokine_concentration_by_olink %>%
+    dplyr::filter(!(specimen_id %in% olink_bad_specimen))
+  
+  abtiter_bad_specimen <- experimental_data$plasma_ab_titer %>%
+    dplyr::left_join(meta_data, by="specimen_id") %>%
+    dplyr::mutate(below_lod = MFI < lower_limit_of_detection) %>%
+    dplyr::group_by(specimen_id) %>%
+    dplyr::summarise(below_lod = mean(below_lod, na.rm=TRUE)) %>%
+    dplyr::filter(below_lod > 0.5) %>%
+    dplyr::pull(specimen_id)
+  
+  if (verbose) {
+    message("plasma_ab_titer | Removed specimen ", 
+            paste0(abtiter_bad_specimen, collapse=", "), 
+            " because fraction of measurements below LOD > 50%")
+  }
+  
+  experimental_data$plasma_ab_titer <- 
+    experimental_data$plasma_ab_titer %>%
+    dplyr::filter(!(specimen_id %in% abtiter_bad_specimen))
+  
   return(experimental_data)
 }
 

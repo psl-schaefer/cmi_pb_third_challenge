@@ -15,11 +15,10 @@ suppressPackageStartupMessages({
   library(factoextra)
   library(FactoMineR)
   library(magick) # formatting
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "colors.R"))
 })
 knitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting
-
-source(file.path("..", "src", "read_data.R"))
-source(file.path("..", "src", "colors.R"))
 ```
 
 # Data

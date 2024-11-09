@@ -251,16 +251,15 @@ integrate_experimental_data <- function(meta_data, normalized_experimental_data)
                         names_to=feature_col,
                         values_to=value_col)
   
-  # 5) plasma_cytokine_concentration_by_olink: No Normalization needed? 
-  # TODO: Take into consideration that the CMI-PB consortium suggests median baseline normalization
+  # 5) plasma_cytokine_concentration_by_olink: No Integration needed? 
   integrated_data$plasma_cytokine_concentration_by_olink <- 
     normalized_experimental_data$plasma_cytokine_concentration_by_olink
   
-  # 6) t_cell_activation: No Normalization needed? (suggested by CMI-PB consortium)
+  # 6) t_cell_activation: No Integration needed? (suggested by CMI-PB consortium)
   integrated_data$t_cell_activation <- 
     normalized_experimental_data$t_cell_activation
   
-  # 7) t_cell_polarization: No Normalization needed? (suggested by CMI-PB consortium)
+  # 7) t_cell_polarization: No Integration needed? (suggested by CMI-PB consortium)
   integrated_data$t_cell_polarization <- 
     normalized_experimental_data$t_cell_polarization
   

@@ -1,0 +1,86 @@
+---
+title: "Notes on the Third CMI-PB Challenge"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+### Data
+
+##### Demographic data
+- Age (continuous)
+	- Min: 18.8
+	- Median: 25.5
+	- Max: 51.1
+- Biological sex at birth (categorical)
+	- `Male`: 34%
+	- `Female`: 66%
+- Vaccine priming status (categorical)
+	- `wP`: whole-cell pertussis (wP) vaccine: 50%
+	- `aP`: acellular-pertussis (aP) vaccine: 50%
+
+##### Assays characterizing the immune status
+- Antigen-specific antibody measurements in plasma by Luminex (multiple antigens, total IgG, and subclasses of IgG)
+	- how does that work?
+- Cytokine and chemokine concentration in plasma (45+ proteins) by Olink and LegendPlex
+- Gene expression in [[Peripheral Blood Mononuclear Cells (PBMCs)|PBMCs]] by bulk [[RNA sequencing (RNA-seq)]]
+- Cell type frequencies in [[Peripheral Blood Mononuclear Cells (PBMCs)|PBMCs]] (30+ cell populations) by [[Flow Cytometry]]
+- T cell activation using [[Activation-Induced Marker (AIM) Assay]]
+	- see: "T-cell activation-induced marker assays in health and disease"
+	- Isolate T cells in plates
+	- Stimulate T cells by 
+		- DMSO: control
+		- PHA: Phytohaemagglutinin, e.g. PHA-P is a potent mitogen inducing activation and proliferation of lymphocytes.
+		- PT: Pertussis toxin
+		- TT: Tetanus toxin (I assume)
+	- Measure T cell activation using some kind of activation induced surface markers which we can measure my flow cytometry
+- T cell polarization using [[FluoroSpot Assay]]
+	- Workflow:
+		- Isolate T cells in plates
+		- Stimulated T cells by 
+			- DMSO: control
+			- PHA: Phytohaemagglutinin, e.g. PHA-P is a potent mitogen inducing activation and proliferation of lymphocytes.
+			- PT: Pertussis toxin
+		- Measure secretion of cytokines which indicates T cell polarization: 
+			- IFNG (P01579): Th1 polarization
+			- IL17A (Q16552): Th17 polarization
+			- IL5 (P05113): Th2 polarization
+
+### Prediction Tasks
+- From baseline measurements (i.e. all measurements from before the booster administration) one has to predict:
+
+##### Antibody level tasks
+- 1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.
+- 1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.
+
+##### Cell frequency tasks
+- 2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.
+- 2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.
+
+##### Gene expression tasks
+- 3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.
+- 3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.
+
+##### T-cell response task (Bonus task)
+- 4.1) Rank the individuals by predicted Th1/Th2 (IFN-γ/IL-5) polarization ratio on day 30 post-booster vaccination.
+
+### Model Evaluation & Prize Details
+- After receiving all of your predicted ranked list for each task, we will curate the rank file. If we find NA values in the ranked list, we will impute them with the median rank for that list.
+- Model evaluation will happen in two steps:
+	- First, we will choose the Spearman rank correlation coefficient as an evaluation metric to compare the predicted ranked list (_p_) for each task (_t)_, and n subjects (n=54 for the set of challenge dataset subjects), _Rp,t = (rp,1, rp,2, …, rp,n)_ against a ground truth (_g_) ranked list _Rg,t = (rg,1, rg,2, …, rg,n)_.
+	- Second, models will be evaluated and ranked based on a point system. The point system is as follows:
+		- **8 points**: Task Winner (Highest Absolute Spearman Correlation)
+		- **6 points:** High Correlation (Within 98% Confidence Interval of Task Winner)
+		- **1 points:** Significant Correlation
+- Thus, the maximum points you can earn per task is **8 points** and the maximum points you will be able to win overall is **48 points**.
+- All submitters with at least one significant score will be acknowledged as co-authors in the manuscript written following this challenge.
+- Additionally, prizes will be awarded to the top three teams with the best-performing models. The total money prize is $5500.
+	- 1st place: $3000
+	- 2nd place: $1500
+	- 3rd place: $500
+	- Bonus task winner: $500 (which is completely independent of the main challenge and will be evaluated separately)
+- If there is a tie for first place, the prizes for first and second place will be combined and split equally among the winning teams. There will be no separate second-place prize awarded, and the team originally in second-place will receive the third place prize. The team originally in third place will not receive a prize.
+- In the event of multiple teams tying for first place, the prizes for first, second, and third place will be combined and split equally among all the winning first-place teams. No separate second or third-place prizes will be awarded.
+- If there is a tie for second place, the prizes for second and third place will be combined and split equally between the tied teams. The original third-place team will not receive a prize. This applies if there are multiple teams tied for second place.
+- In the case of a tie for third place, only the prize for third place will be shared equally between the tied teams.

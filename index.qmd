@@ -2,6 +2,12 @@
 title: "Overview"
 ---
 
+# Notes
+
+- On the [Modeling Strategy](info/modeling_info.qmd)
+
+- On the [3. CMI-PB Challenge](info/challenge_info.qmd)
+
 # Exploratory Data Analysis
 
 - [Raw Data Overview](eda/raw_data_overview.qmd)
@@ -16,8 +22,6 @@ title: "Overview"
 
 - [Prediction Targets](eda/targets.qmd)
 
-- [MOFA Test](eda/mofa_test.qmd)
-
 # Models
 
 - [Metadata Models](models/metadata_model.qmd)
@@ -29,3 +33,7 @@ title: "Overview"
 - [Literature Models](models/literature_model.qmd)
 
 - [Model Selection](models/model_selection.qmd)
+
+# Others
+
+- [MOFA Test](eda/mofa_test.qmd)

@@ -14,13 +14,11 @@ suppressPackageStartupMessages({
   library(flextable)
   library(ggdark)
   library(magick)
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "generate_targets.R"))
+  source(file.path("..", "src", "model.R"))
 })
-
 knitr::opts_knit$set(output.dir = "./")
-
-source(file.path("..", "src", "read_data.R"))
-source(file.path("..", "src", "generate_targets.R"))
-source(file.path("..", "src", "model.R"))
 ```
 
 # Data

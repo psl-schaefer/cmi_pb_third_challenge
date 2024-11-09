@@ -18,10 +18,9 @@ suppressPackageStartupMessages({
   library(reticulate)
   reticulate::use_condaenv("scanpy")
   library(MOFA2)
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "colors.R"))
 })
-
-source(file.path("..", "src", "read_data.R"))
-source(file.path("..", "src", "colors.R"))
 ```
 
 # Data

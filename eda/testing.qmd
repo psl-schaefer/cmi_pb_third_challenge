@@ -1,4 +1,41 @@
 
+```{r}
+source("../src/read_data.R")
+
+input_dir <- "../data"
+
+gene_meta <- read_gene_meta(input_dir)
+
+meta_df <- read_harmonized_meta_data(input_dir)
+
+raw_data <- read_raw_experimental_data(input_dir)
+
+filtered_data <- filter_experimental_data(meta_df, raw_data, gene_meta)
+
+raw_data$plasma_ab_titer
+
+raw_data$plasma_ab_titer %>%
+  dplyr::inner_join(meta_df, by="specimen_id") %>%
+  dplyr::mutate(below_lod = MFI < lower_limit_of_detection) %>%
+  dplyr::group_by(dataset) %>%
+  dplyr::summarise(below_lod = mean(below_lod, na.rm=TRUE))
+
+filtered_data$plasma_cytokine_concentration_by_olink %>%
+  dplyr::inner_join(meta_df, by="specimen_id") %>%
+  dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
+  dplyr::group_by(dataset) %>%
+  dplyr::summarise(below_lod = mean(below_lod, na.rm=TRUE))
+
+filtered_data$plasma_cytokine_concentration_by_olink %>%
+  dplyr::inner_join(meta_df, by="specimen_id") %>%
+  dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
+  dplyr::group_by(specimen_id) %>%
+  dplyr::summarise(below_lod = mean(below_lod, na.rm=TRUE)) %>%
+  dplyr::arrange(desc(below_lod))
+
+table(meta_data$infancy_vac) / sum(table(meta_data$infancy_vac))
+```
+
 Difference between harmonized and raw data for PBMC cell frequency data
 
 ```{r}
@@ -57,12 +94,11 @@ suppressPackageStartupMessages({
   library(magick)
   library(glmnet)
   library(ranger)
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "colors.R"))
+  source(file.path("..", "src", "generate_targets.R"))
+  source(file.path("..", "src", "model.R"))
 })
-
-source(file.path("..", "src", "read_data.R"))
-source(file.path("..", "src", "colors.R"))
-source(file.path("..", "src", "generate_targets.R"))
-source(file.path("..", "src", "model.R"))
 
 input_dir = file.path("..", "data")
 

@@ -16,12 +16,11 @@ suppressPackageStartupMessages({
   library(magick)
   library(glmnet)
   library(ranger)
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "colors.R"))
+  source(file.path("..", "src", "generate_targets.R"))
+  source(file.path("..", "src", "model.R"))
 })
-
-source(file.path("..", "src", "read_data.R"))
-source(file.path("..", "src", "colors.R"))
-source(file.path("..", "src", "generate_targets.R"))
-source(file.path("..", "src", "model.R"))
 ```
 
 # Data
@@ -464,7 +463,8 @@ for (task in task_meta) {
       feature_set = "baseline"
     ))
   }
-  for (model_name in c("lasso", "elnet", "rf", "rf+boruta")) {
+  # for (model_name in c("lasso", "elnet", "rf", "rf+boruta")) {
+  for (model_name in c("lasso", "elnet", "rf")) {
     # model_name <- "lasso"
     for (feature_name in names(feature_list)) {
       # feature_name <- names(feature_list)[2]
@@ -719,13 +719,11 @@ colMeans(test_assays_available[, names(experimental_predictors_day_0)]) %>% sort
 rowSums(test_assays_available[, names(experimental_predictors_day_0)]) %>% sort()
 ```
 
-
 2. Define for each task a list with the following entries
 
 ```{r}
 colnames(submission_df)
 ```
-
 
 ```{r}
 prediction_specs <- list(

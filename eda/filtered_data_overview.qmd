@@ -17,10 +17,9 @@ suppressPackageStartupMessages({
   library(magick)
   library(ComplexHeatmap)
   library(circlize)
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "colors.R"))
 })
-
-source(file.path("..", "src", "read_data.R"))
-source(file.path("..", "src", "colors.R"))
 ```
 
 # Data

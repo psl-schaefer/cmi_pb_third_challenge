@@ -242,7 +242,7 @@
     "href": "eda/filtered_data_overview.html#wide-format",
     "title": "Data Overview",
     "section": "7.2 Wide format",
-    "text": "7.2 Wide format\n\n\nCode\npurrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, \n                                                impute=NULL),\n                  function(mtx, modality) {\n                    rmeans &lt;- rowMeans(is.na(mtx))\n                    tibble(modality=modality, \n                           subject_id = names(rmeans), \n                           na_frac=rmeans)\n           }) %&gt;%\n  dplyr::group_by(modality) %&gt;%\n  dplyr::summarise(mean_na_frac = mean(na_frac))\n\n\nplasma_cytokine_concentration_by_olink | NA Fraction: 0.0110795454545455 | Removed samples: 760, 750, 903, 824, 894, 833\n\n\nt_cell_activation | NA Fraction: 0.0576923076923077 | Removed samples: 681"
+    "text": "7.2 Wide format\n\n\nCode\npurrr::imap_dfr(generate_wide_experimental_data(experimental_data=exp_data, \n                                                impute=NULL),\n                  function(mtx, modality) {\n                    rmeans &lt;- rowMeans(is.na(mtx))\n                    tibble(modality=modality, \n                           subject_id = names(rmeans), \n                           na_frac=rmeans)\n           }) %&gt;%\n  dplyr::group_by(modality) %&gt;%\n  dplyr::summarise(mean_na_frac = mean(na_frac))\n\n\nt_cell_activation | NA Fraction: 0.0576923076923077 | Removed samples: 681"
   },
   {
     "objectID": "eda/filtered_data_overview.html#what-is-the-fraction-of-na-values-in-the-pbmc-cell-type-frequencies",
@@ -320,5 +320,138 @@
     "title": "Data Overview",
     "section": "9.6 Difference in 2023 Dataset",
     "text": "9.6 Difference in 2023 Dataset\n\nIt seems like the 2023 data are very very different, which makes me hesitant to use it for any kind of predictions on the challenge data. E.g. just looking at level 0 which should make sense I get the following\n\n\n\nCode\n# first check for NAs for the levels\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(is.na(level))\n\n\n\n  \n\n\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::filter(level == 0) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nEspecially, when completely ignoring the hierarchy in the gating information, I would expect to have more than 100% in percelt_live_cell_sum, but this is not true for the specimens from the 2023 dataset\n\n\n\nCode\nexp_data$pbmc_cell_frequency %&gt;%\n  dplyr::left_join((meta_data %&gt;%\n                      dplyr::select(specimen_id, dataset) %&gt;%\n                      dplyr::distinct()),\n                   by=\"specimen_id\") %&gt;%\n  dplyr::left_join((celltype_meta %&gt;%\n                      dplyr::select(cell_type_name, dataset, level) %&gt;%\n                      dplyr::distinct()),\n                    by=c(\"dataset\", \"cell_type_name\")) %&gt;%\n  dplyr::group_by(specimen_id) %&gt;%\n  dplyr::summarize(percent_live_cell_sum = sum(percent_live_cell, na.rm=TRUE)) %&gt;%\n  dplyr::left_join(meta_data, by=\"specimen_id\") %&gt;%\n  ggplot() +\n  geom_violin(aes(x=dataset, y=percent_live_cell_sum)) +\n  ggdark::dark_mode(verbose=FALSE)\n\n\n\n\n\n\n\n\n\n\nOr what I use a list of predefined cell types of interest?"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html",
+    "href": "eda/batch_effects_after_normalization.html",
+    "title": "Batch Effects After Normalization",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(ggdark)\n  library(vsn)\n  library(lme4)\n  library(DESeq2)\n  library(factoextra)\n  library(FactoMineR)\n  library(magick) # formatting\n  source(file.path(\"..\", \"src\", \"read_data.R\"))\n  source(file.path(\"..\", \"src\", \"generate_targets.R\"))\n  source(file.path(\"..\", \"src\", \"model.R\"))\n  source(file.path(\"..\", \"src\", \"batch_effects.R\"))\n  source(file.path(\"..\", \"src\", \"normalize_integrate.R\"))\n})\nknitr::knit_hooks$set(crop = knitr::hook_pdfcrop) # formatting"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#pbmc-fractions",
+    "href": "eda/batch_effects_after_normalization.html#pbmc-fractions",
+    "title": "Batch Effects After Normalization",
+    "section": "3.1 PBMC Fractions",
+    "text": "3.1 PBMC Fractions\n\nNo further processing needed I guess."
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#pbmc-gene-expression",
+    "href": "eda/batch_effects_after_normalization.html#pbmc-gene-expression",
+    "title": "Batch Effects After Normalization",
+    "section": "3.2 PBMC Gene Expression",
+    "text": "3.2 PBMC Gene Expression\n\nVery strong cohort-specific effects for baseline specimen and post-booster specimen"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#plasma-antibody-levels",
+    "href": "eda/batch_effects_after_normalization.html#plasma-antibody-levels",
+    "title": "Batch Effects After Normalization",
+    "section": "3.3 Plasma Antibody Levels",
+    "text": "3.3 Plasma Antibody Levels\n\nSlight batch effect. Not sure whether it needs some kind of batch correction or not."
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#plasma-cytokine-concentration-by-legendplex",
+    "href": "eda/batch_effects_after_normalization.html#plasma-cytokine-concentration-by-legendplex",
+    "title": "Batch Effects After Normalization",
+    "section": "3.4 Plasma Cytokine Concentration by Legendplex",
+    "text": "3.4 Plasma Cytokine Concentration by Legendplex\n\nSlight batch effect. Not sure whether it needs some kind of batch correction or not. The data distribution looks odd anyway!"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#plasma-cytokine-concentration-by-olink",
+    "href": "eda/batch_effects_after_normalization.html#plasma-cytokine-concentration-by-olink",
+    "title": "Batch Effects After Normalization",
+    "section": "3.5 Plasma Cytokine Concentration by Olink",
+    "text": "3.5 Plasma Cytokine Concentration by Olink\n\nNo further processing needed I guess."
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#t-cell-activation",
+    "href": "eda/batch_effects_after_normalization.html#t-cell-activation",
+    "title": "Batch Effects After Normalization",
+    "section": "3.6 T Cell Activation",
+    "text": "3.6 T Cell Activation\n\nNo further processing needed I guess."
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#t-cell-polarization",
+    "href": "eda/batch_effects_after_normalization.html#t-cell-polarization",
+    "title": "Batch Effects After Normalization",
+    "section": "3.7 T Cell Polarization",
+    "text": "3.7 T Cell Polarization\n\nSpecimen are only available for baseline, most of the variance is explained by interaction terms age_at_boost:dataset and infancy_vac:dataset. TODO: Think about what to make of this."
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#day_0",
+    "href": "eda/batch_effects_after_normalization.html#day_0",
+    "title": "Batch Effects After Normalization",
+    "section": "4.1 day_0",
+    "text": "4.1 day_0\n\n4.1.1 pbmc_cell_frequency\n\n\n\n4.1.2 pbmc_gene_expression\n\n\n\n4.1.3 plasma_ab_titer\n\n\n\n4.1.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.1.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 0.0039\n\n\n4.1.6 t_cell_activation\nNon-zero fraction of NAs: 0.059\n\n\n4.1.7 t_cell_polarization\nNon-zero fraction of NAs: 0.0106"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#day_1",
+    "href": "eda/batch_effects_after_normalization.html#day_1",
+    "title": "Batch Effects After Normalization",
+    "section": "4.2 day_1",
+    "text": "4.2 day_1\n\n4.2.1 pbmc_cell_frequency\n\n\n\n4.2.2 pbmc_gene_expression\n\n\n\n4.2.3 plasma_ab_titer\n\n\n\n4.2.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.2.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 0.0038\n\n\n4.2.6 t_cell_activation\nFewer than 3 specimen for this combination of assay and day available\n\n\n4.2.7 t_cell_polarization\nFewer than 3 specimen for this combination of assay and day available"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#day_3",
+    "href": "eda/batch_effects_after_normalization.html#day_3",
+    "title": "Batch Effects After Normalization",
+    "section": "4.3 day_3",
+    "text": "4.3 day_3\n\n4.3.1 pbmc_cell_frequency\n\n\n\n4.3.2 pbmc_gene_expression\n\n\n\n4.3.3 plasma_ab_titer\n\n\n\n4.3.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.3.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 8e-04\n\n\n4.3.6 t_cell_activation\nFewer than 3 specimen for this combination of assay and day available\n\n\n4.3.7 t_cell_polarization\nFewer than 3 specimen for this combination of assay and day available"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#day_14",
+    "href": "eda/batch_effects_after_normalization.html#day_14",
+    "title": "Batch Effects After Normalization",
+    "section": "4.4 day_14",
+    "text": "4.4 day_14\n\n4.4.1 pbmc_cell_frequency\n\n\n\n4.4.2 pbmc_gene_expression\n\n\n\n4.4.3 plasma_ab_titer\n\n\n\n4.4.4 plasma_cytokine_concentration_by_legendplex\n\n\n\n4.4.5 plasma_cytokine_concentration_by_olink\nNon-zero fraction of NAs: 0.0025\n\n\n4.4.6 t_cell_activation\nFewer than 3 specimen for this combination of assay and day available\n\n\n4.4.7 t_cell_polarization\nFewer than 3 specimen for this combination of assay and day available"
+  },
+  {
+    "objectID": "eda/batch_effects_after_normalization.html#day_30",
+    "href": "eda/batch_effects_after_normalization.html#day_30",
+    "title": "Batch Effects After Normalization",
+    "section": "4.5 day_30",
+    "text": "4.5 day_30\n\n4.5.1 pbmc_cell_frequency\nFewer than 3 specimen for this combination of assay and day available\n\n\n4.5.2 pbmc_gene_expression\nFewer than 3 specimen for this combination of assay and day available\n\n\n4.5.3 plasma_ab_titer\n\n\n\n4.5.4 plasma_cytokine_concentration_by_legendplex\nFewer than 3 specimen for this combination of assay and day available\n\n\n4.5.5 plasma_cytokine_concentration_by_olink\nFewer than 3 specimen for this combination of assay and day available\n\n\n4.5.6 t_cell_activation\n\n\n\n4.5.7 t_cell_polarization\nNon-zero fraction of NAs: 0.0435"
+  },
+  {
+    "objectID": "info/challenge_info.html",
+    "href": "info/challenge_info.html",
+    "title": "Notes on the Third CMI-PB Challenge",
+    "section": "",
+    "text": "0.1 Data\n\n0.1.0.1 Demographic data\n\nAge (continuous)\n\nMin: 18.8\nMedian: 25.5\nMax: 51.1\n\nBiological sex at birth (categorical)\n\nMale: 34%\nFemale: 66%\n\nVaccine priming status (categorical)\n\nwP: whole-cell pertussis (wP) vaccine: 50%\naP: acellular-pertussis (aP) vaccine: 50%\n\n\n\n\n0.1.0.2 Assays characterizing the immune status\n\nAntigen-specific antibody measurements in plasma by Luminex (multiple antigens, total IgG, and subclasses of IgG)\n\nhow does that work?\n\nCytokine and chemokine concentration in plasma (45+ proteins) by Olink and LegendPlex\nGene expression in [[Peripheral Blood Mononuclear Cells (PBMCs)|PBMCs]] by bulk [[RNA sequencing (RNA-seq)]]\nCell type frequencies in [[Peripheral Blood Mononuclear Cells (PBMCs)|PBMCs]] (30+ cell populations) by [[Flow Cytometry]]\nT cell activation using [[Activation-Induced Marker (AIM) Assay]]\n\nsee: “T-cell activation-induced marker assays in health and disease”\nIsolate T cells in plates\nStimulate T cells by\n\nDMSO: control\nPHA: Phytohaemagglutinin, e.g. PHA-P is a potent mitogen inducing activation and proliferation of lymphocytes.\nPT: Pertussis toxin\nTT: Tetanus toxin (I assume)\n\nMeasure T cell activation using some kind of activation induced surface markers which we can measure my flow cytometry\n\nT cell polarization using [[FluoroSpot Assay]]\n\nWorkflow:\n\nIsolate T cells in plates\nStimulated T cells by\n\nDMSO: control\nPHA: Phytohaemagglutinin, e.g. PHA-P is a potent mitogen inducing activation and proliferation of lymphocytes.\nPT: Pertussis toxin\n\nMeasure secretion of cytokines which indicates T cell polarization:\n\nIFNG (P01579): Th1 polarization\nIL17A (Q16552): Th17 polarization\nIL5 (P05113): Th2 polarization\n\n\n\n\n\n\n\n0.2 Prediction Tasks\n\nFrom baseline measurements (i.e. all measurements from before the booster administration) one has to predict:\n\n\n0.2.0.1 Antibody level tasks\n\n1.1) Rank the individuals by IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations.\n1.2) Rank the individuals by fold change of IgG antibody levels against pertussis toxin (PT) that we detect in plasma 14 days post booster vaccinations compared to titer values at day 0.\n\n\n\n0.2.0.2 Cell frequency tasks\n\n2.1) Rank the individuals by predicted frequency of Monocytes on day 1 post boost after vaccination.\n2.2) Rank the individuals by fold change of predicted frequency of Monocytes on day 1 post booster vaccination compared to cell frequency values at day 0.\n\n\n\n0.2.0.3 Gene expression tasks\n\n3.1) Rank the individuals by predicted gene expression of CCL3 on day 3 post-booster vaccination.\n3.2) Rank the individuals by fold change of predicted gene expression of CCL3 on day 3 post booster vaccination compared to gene expression values at day 0.\n\n\n\n0.2.0.4 T-cell response task (Bonus task)\n\n4.1) Rank the individuals by predicted Th1/Th2 (IFN-γ/IL-5) polarization ratio on day 30 post-booster vaccination.\n\n\n\n\n0.3 Model Evaluation & Prize Details\n\nAfter receiving all of your predicted ranked list for each task, we will curate the rank file. If we find NA values in the ranked list, we will impute them with the median rank for that list.\nModel evaluation will happen in two steps:\n\nFirst, we will choose the Spearman rank correlation coefficient as an evaluation metric to compare the predicted ranked list (p) for each task (t), and n subjects (n=54 for the set of challenge dataset subjects), Rp,t = (rp,1, rp,2, …, rp,n) against a ground truth (g) ranked list Rg,t = (rg,1, rg,2, …, rg,n).\nSecond, models will be evaluated and ranked based on a point system. The point system is as follows:\n\n8 points: Task Winner (Highest Absolute Spearman Correlation)\n6 points: High Correlation (Within 98% Confidence Interval of Task Winner)\n1 points: Significant Correlation\n\n\nThus, the maximum points you can earn per task is 8 points and the maximum points you will be able to win overall is 48 points.\nAll submitters with at least one significant score will be acknowledged as co-authors in the manuscript written following this challenge.\nAdditionally, prizes will be awarded to the top three teams with the best-performing models. The total money prize is $5500.\n\n1st place: $3000\n2nd place: $1500\n3rd place: $500\nBonus task winner: $500 (which is completely independent of the main challenge and will be evaluated separately)\n\nIf there is a tie for first place, the prizes for first and second place will be combined and split equally among the winning teams. There will be no separate second-place prize awarded, and the team originally in second-place will receive the third place prize. The team originally in third place will not receive a prize.\nIn the event of multiple teams tying for first place, the prizes for first, second, and third place will be combined and split equally among all the winning first-place teams. No separate second or third-place prizes will be awarded.\nIf there is a tie for second place, the prizes for second and third place will be combined and split equally between the tied teams. The original third-place team will not receive a prize. This applies if there are multiple teams tied for second place.\nIn the case of a tie for third place, only the prize for third place will be shared equally between the tied teams."
+  },
+  {
+    "objectID": "info/modeling_info.html",
+    "href": "info/modeling_info.html",
+    "title": "Notes on the Modeling Strategy",
+    "section": "",
+    "text": "There are several aspects that make this challenge challenging:\n\nLarge-P-Small-N Problem\nSeven different prediction tasks\nSix different data modalities\nStrong cohort (group) effects\n\nGiven the complexity of the challenge, there are many degrees of freedom of how to approach. To not get lost I tried to focus on the following aspects:\n\n\nSolid QC and data preprocessing of the experimental data.\n\n\nSolic Model evaluation framework, because it is extremly easy to overfit on the training data in the Large-P-Small-N setting."
+  },
+  {
+    "objectID": "info/modeling_info.html#thoughts-on-the-challenge",
+    "href": "info/modeling_info.html#thoughts-on-the-challenge",
+    "title": "Notes on the Modeling Strategy",
+    "section": "",
+    "text": "There are several aspects that make this challenge challenging:\n\nLarge-P-Small-N Problem\nSeven different prediction tasks\nSix different data modalities\nStrong cohort (group) effects\n\nGiven the complexity of the challenge, there are many degrees of freedom of how to approach. To not get lost I tried to focus on the following aspects:\n\n\nSolid QC and data preprocessing of the experimental data.\n\n\nSolic Model evaluation framework, because it is extremly easy to overfit on the training data in the Large-P-Small-N setting."
+  },
+  {
+    "objectID": "info/modeling_info.html#data-processing",
+    "href": "info/modeling_info.html#data-processing",
+    "title": "Notes on the Modeling Strategy",
+    "section": "2 Data Processing",
+    "text": "2 Data Processing\n\n2.1 Clean Feature Names\n\nI replaced all “[+-.: /]” with other strings such that I could use the formula syntax in R\n\n\n\n2.2 Data Filtering\n\nCode: filter_experimental_data in read_data.R\nOnly keep Specimen for which metadata are available\nManually subset features for certain assays:\n\nPBMC frequencies: Selected a subset of cell types based on the gating info (but did not benchmark this selection): Monocytes, Classical_Monocytes, Intermediate_Monocytes, Non-Classical_Monocytes, CD8Tcells, CD4Tcells, Bcells, NK, pDC, Basophils\nOlink: Only use proteins/cytokines that have an NA fraction below 50%.\n\nOlink QC Qarning:\n\nRemoved all measurements with QC warning in the Olink assay (which was about 300 measurements)\n\nDifferent Units in Assay\n\nPlasma Antibody Titers:\n\nSee forum post here\nIn the 2020 dataset we have IU/ML whereas for 2021-2023 we have MFI (fluorescence intensity). IU/ML is obtained using a serum standard, thus there is not trivial conversion from MFI to IU/ML.\nI decided not to consider the 2020 Ab titer data\n\nOlink:\n\nIn the 2020 dataset we have Normalized Protein eXpression, whereas for 2021-2023 we have PG/ML\nI removed all measurements with different units.\nHere, I remove by far the most measurements.\n\n\nLower Limit of Detection in Plasma Antibody Titers:\n\nSee forum post here\nRemoved specimen with more than 50% of measurements below LOD\n\nLower Limit of Quantification in Olink assay\n\nSee forum post here\nRemoved specimen with more than 50% of measurements below LOD\n\nOutlier Removal\n\nFor the legendplex assay I removed these specimen: 661, 657, 658, 689, 903, 638, 659, 661 (based on PCA plots)\n\nPBMC gene expression\n\nFor simplicity, I decided to only keep genes that have a unique mapping from ensemble id to gene symbol\n\n\n\n\n2.3 Data Normalization\n\nCode: normalize_experimental_data in normalize_integrate.R\npbmc_cell_frequency: Median Baseline Normalization (i.e. divide each feature by the median of that feature in the measurments from specimen from day 0)\npbmc_gene_expression: VST\nplasma_ab_titer: Median Baseline Normalization\nplasma_cytokine_concentration_by_legendplex: Median Baseline Normalization\nplasma_cytokine_concentration_by_olink: No Normalization\nt_cell_activation: No Normalization\nt_cell_polarization: No Normalization\n\n\n\n2.4 Data Integration\n\nCode: integrate_experimental_data in normalize_integrate.R\npbmc_cell_frequency: No Integration\npbmc_gene_expression: ComBat-seq\nplasma_ab_titer: No Integration\nplasma_cytokine_concentration_by_legendplex: ComBat\nplasma_cytokine_concentration_by_olink: No Integration\nt_cell_activation: No Integration\nt_cell_polarization: No Integration\n\n\n\n2.5 Construction of Target Tracks\n\nCode: generate_all_targets in generate_targets.R\nWhich subjects / specimens did I consider:\nI defined the following acceptable differences between the actual and planned day of visit wrt booster administration:\n\nday_0 = list(“min_diff” = -7, “max_diff” = 0)\nday_1 = list(“min_diff” = 1, “max_diff” = 2)\nday_3 = list(“min_diff” = 3, “max_diff” = 6)\nday_14 = list(“min_diff” = 12, “max_diff” = 16)\nday_30 = list(“min_diff” = 28, “max_diff” = 40)\n\nIn tasks 1.2, 2.2, 3.2, instead of predicting fold changes, I predicted log fold changes, as the distributions of the logFC looked less skewed.\nIn task 3.1, instead of predicting the raw expression of CCL3, I predicted the log expression"
+  },
+  {
+    "objectID": "info/modeling_info.html#model-selection",
+    "href": "info/modeling_info.html#model-selection",
+    "title": "Notes on the Modeling Strategy",
+    "section": "3 Model Selection",
+    "text": "3 Model Selection\n\nCode: model_selection.qmd\nGiven that we deal here with a Large-P-Small-N problem, having a good model selection framework is probably even more important than the actual model.\nTo evaluate and select models for each task, I used nested cross validation (CV):\n\nFolds in the outer loop: Each cohort is a fold (i.e. Group k-fold) -&gt; Outer loop is used to estimate cross-cohort model performance\nFold in the inner loop: Each subject is a fold (i.e. LOOCV) -&gt; Inner loop is used to select the best set of hyperparameters for any model. Using this set on hyperparameters I then estimate model performance on the hold-out fold from the outer loop\n\nI used this model evaluation framework to test many combinations of models and features:\n\nModels: LASSO, Elastic Net, Random Forest\nFeatures: Power set of all assays\n\nTo choose the final model per task, I not only considered the perfomrance, but all of the following points:\n\nTop ranking performance\nLow variance between the test sets\nIf several models with top performance and low variance, choose the more regularized model\nIf several models with top performance and low variance, choose model that is not using any assay that is missing often in test data (specifically Olink!)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Overview",
+    "section": "",
+    "text": "1 Notes\n\nOn the Modeling Strategy\nOn the 3. CMI-PB Challenge\n\n\n\n2 Exploratory Data Analysis\n\nRaw Data Overview\nFiltered Data Overview\nBatch Effects Raw Data\nBatch Effects After Normalization\nBatch Effects After Batch Correction / Integration\nPrediction Targets\n\n\n\n3 Models\n\nMetadata Models\nSingle Omic Models after Normalization\nSingle Omic Models after Integration\nLiterature Models\nModel Selection\n\n\n\n4 Others\n\nMOFA Test"
   }
 ]
