@@ -1,3 +1,7 @@
+# TODO
+
+- Add a table of contents at the top here
+
 # CMI-PB Third Challenge
 
 - Challenge Overview: [https://www.cmi-pb.org/](https://www.cmi-pb.org/)
@@ -138,12 +142,13 @@
 
 - Run `download_data.R`
 
-- a) Generation of the whole webpage (i.e. all analyses):
+- a) Generating the whole webpage (i.e. all analyses):
   - Install quarto
+  - Note, if you want to include the MOFA model (which I ended up not using), change the specification for the conda environment that is used by `reticulate`. E.g. whereever you see this line `reticulate::use_condaenv("scanpy")`, use a conda environment that is installed in your system.
   - Run `quarto render` inside the project directory (in your favorite shell)
   
-- b) Generatin of only the predictions
-  - Exectute `model_selection.qmd`
+- b) Generating only the predictions
+  - Execute `model_selection.qmd`
 
 
 

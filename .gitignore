@@ -1,5 +1,4 @@
 data
-tmp
 .Rproj.user
 *.Rproj
 .Rhistory
@@ -12,5 +11,4 @@ tmp
 *.RData
 *.RDS
 *.rds
-external_files/CMI-PB-literature_models_first_challenge-c3c23cb/
-
+external_files/*

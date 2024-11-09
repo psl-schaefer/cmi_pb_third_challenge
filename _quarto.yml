@@ -17,7 +17,7 @@ website:
       - text: "Home"
         href: index.qmd
       - icon: github
-        href: https://github.com/psl-schaefer
+        href: https://github.com/psl-schaefer/cmi_pb_third_challenge
       - icon: twitter
         href: https://x.com/psl_schaefer
       - icon: linkedin
