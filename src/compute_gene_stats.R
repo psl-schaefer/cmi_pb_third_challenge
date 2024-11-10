@@ -26,11 +26,11 @@ gex_df_overall <- gex_df %>%
   dplyr::mutate(disp = var_tpm / mean_tpm) %>%
   dplyr::arrange(versioned_ensembl_gene_id, dataset)
 
-gex_df_overall %>%
-  dplyr::filter(dataset=="2023_dataset") %>%
-  ggplot(aes(x=log10(mean_tpm), y=log10(var_tpm))) +
-  geom_point() +
-  geom_smooth(method="lm")
+# gex_df_overall %>%
+#   dplyr::filter(dataset=="2023_dataset") %>%
+#   ggplot(aes(x=log10(mean_tpm), y=log10(var_tpm))) +
+#   geom_point() +
+#   geom_smooth(method="lm")
 
 gex_df_baseline <- gex_df %>%
   dplyr::filter(specimen_id %in% specimen_per_day$day_0$specimen_id) %>%

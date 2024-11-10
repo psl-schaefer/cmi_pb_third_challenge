@@ -1,0 +1,204 @@
+---
+title: "MOFA Test"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(ggdark)
+  library(factoextra)
+  library(FactoMineR)
+  library(magick)
+  library(reticulate)
+  reticulate::use_condaenv("scanpy")
+  library(MOFA2)
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "colors.R"))
+})
+```
+
+# Data
+
+```{r}
+input_dir = file.path("..", "data")
+```
+
+```{r}
+meta_data <- read_harmonized_meta_data(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+
+#exp_data <- read_harmonized_experimental_data(input_dir)
+exp_data <- read_raw_experimental_data(input_dir)
+exp_data <- filter_experimental_data(meta_data, exp_data, gene_meta)
+wide_exp_data <- generate_wide_experimental_data(experimental_data=exp_data, impute=NULL)
+
+celltype_meta <- read_celltype_meta(input_dir)
+gene_meta <- read_gene_meta(input_dir)
+protein_meta <- read_protein_meta(input_dir)
+```
+
+# Checks
+
+```{r}
+# only works due to filtering step above
+stopifnot(all(
+  purrr::map_lgl(exp_data, ~ all(.x$specimen_id %in% meta_data$specimen_id)))
+)
+
+# no subject is recorded in more than one dataset
+(meta_data %>%
+  dplyr::count(subject_id, dataset) %>%
+  dplyr::count(subject_id) %>%
+  dplyr::pull(n) == 1) %>%
+  all() %>%
+  stopifnot()
+
+# we have the baseline specimen (planned_day_relative_to_boost = 0) for every subject
+(meta_data %>%
+  dplyr::select(subject_id, planned_day_relative_to_boost, dataset) %>%
+  dplyr::distinct() %>%
+  dplyr::mutate(is_baseline = (planned_day_relative_to_boost==0)) %>%
+  dplyr::group_by(subject_id) %>%
+  dplyr::summarize(baseline_present = any(is_baseline),
+                   dataset = first(dataset)) %>%
+  dplyr::group_by(dataset) %>%
+  dplyr::summarize(baseline_present_frac = mean(baseline_present)) %>%
+  pull(baseline_present_frac) == 1) %>%
+  all() %>%
+  stopifnot()
+
+stopifnot(all(
+  purrr::map_lgl(exp_data, function(df) {
+    if ("unit" %in% colnames(df)) {
+      return(length(unique(df[["unit"]])) == 1)
+    } else {
+      return(TRUE)
+    }
+  })
+))
+```
+
+# MOFA
+
+- https://biofam.github.io/MOFA2/index.html
+
+- https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/getting_started_R.html
+
+- https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/downstream_analysis.html
+
+```{r fig.width=14, fig.height=10}
+# filter genes and normalize the gene expression data
+min_counts <- 200
+min_samples <- 20
+genes_to_keep <- colnames(wide_exp_data$pbmc_gene_expression)[
+  (colSums(wide_exp_data$pbmc_gene_expression) >= min_counts) &
+    (colSums(wide_exp_data$pbmc_gene_expression > 0) >= min_samples)
+]
+target_sum <- 1e6
+pbmc_gene_expression_norm <- 
+  wide_exp_data$pbmc_gene_expression / rowSums(wide_exp_data$pbmc_gene_expression) * target_sum
+stopifnot(all(dplyr::near(rowSums(pbmc_gene_expression_norm), target_sum, tol=0.1)))
+pbmc_gene_expression_norm <- pbmc_gene_expression_norm[ , genes_to_keep]
+pbmc_gene_expression_log <- log1p(pbmc_gene_expression_norm)
+wide_exp_data$pbmc_gene_expression <- pbmc_gene_expression_log
+
+baseline_specimen <- meta_data %>%
+  dplyr::filter(planned_day_relative_to_boost==0) %>%
+  dplyr::pull(specimen_id)
+
+assay_specimen <- purrr::map(wide_exp_data, ~ rownames(.x)) %>% 
+  unlist() %>% 
+  unique()
+
+intersect_specimen <- dplyr::intersect(baseline_specimen, assay_specimen)
+
+group_vec <- (meta_data %>% column_to_rownames(var="specimen_id"))[intersect_specimen, ]$dataset
+group_vec <- str_replace(group_vec, "_dataset", "_d")
+
+mofa_data <- purrr::imap(wide_exp_data, function(mtx, modality) {
+  # mtx <- wide_exp_data$pbmc_cell_frequency
+  specimen_in_modality <- intersect_specimen[intersect_specimen %in% rownames(mtx)]
+  out_mtx <- matrix(data=NA, nrow=ncol(mtx), ncol=length(intersect_specimen))
+  rownames(out_mtx) <- colnames(mtx)
+  colnames(out_mtx) <- intersect_specimen
+  out_mtx[, specimen_in_modality] <- t(mtx[specimen_in_modality, ])
+  print(paste0(modality, " | Fraction of NAs: ", mean(is.na(out_mtx))))
+  return(out_mtx)
+})
+
+MOFAobject <- MOFA2::create_mofa_from_matrix(mofa_data, groups=group_vec)
+plot_data_overview(MOFAobject) + ggdark::dark_mode()
+```
+
+- Define data options
+  * `scale_groups`: if groups have different ranges/variances, it is good practice to scale each group to unit variance. Default is FALSE
+  * `scale_views`: if views have different ranges/variances, it is good practice to scale each view to unit variance. Default is FALSE
+
+```{r}
+data_opts <- get_default_data_options(MOFAobject)
+head(data_opts)
+```
+
+- Define model options
+  * `num_factors`: number of factors
+  * `likelihoods`: likelihood per view (options are “gaussian”, “poisson”, “bernoulli”). By default they are learnt automatically. We advise users to use “gaussian” whenever possible!
+  * `spikeslab_factors`: use spike-slab sparsity prior in the factors? default is FALSE.
+  * `spikeslab_weights`: use spike-slab sparsity prior in the weights? default is TRUE.
+  * `ard_factors`: use ARD prior in the factors? Default is TRUE if using multiple groups.
+  * `ard_weights`: use ARD prior in the weights? Default is TRUE if using multiple views.
+
+```{r}
+model_opts <- get_default_model_options(MOFAobject)
+head(model_opts)
+```
+
+- Define train options
+  * `maxiter`: number of iterations. Default is 1000.
+  * `convergence_mode`: “fast”, “medium”, “slow”. For exploration, the fast mode is good enough.
+  * `startELBO`: initial iteration to compute the ELBO (the objective function used to assess convergence).
+  * `freqELBO`: frequency of computations of the ELBO.
+  * `gpu_mode`: use GPU mode? (needs cupy installed and a functional GPU).
+  * `stochastic`: use stochastic inference? (default is FALSE).
+  * `verbose`: verbose mode?
+  * `seed`: random seed
+
+```{r}
+train_opts <- get_default_training_options(MOFAobject)
+head(train_opts)
+```
+
+```{r}
+MOFAobject <- prepare_mofa(
+  object = MOFAobject,
+  data_options = data_opts,
+  model_options = model_opts,
+  training_options = train_opts
+)
+```
+
+```{r}
+outfile = file.path(getwd(), "model.hdf5")
+MOFAobject.trained <- run_mofa(MOFAobject, outfile)
+```
+
+```{r}
+model <- load_model(outfile)
+```
+
+```{r fig.width=14, fig.height=8}
+plot_variance_explained(model, x="view", y="factor") +
+  ggdark::dark_mode(verbose=FALSE) +
+  theme(axis.text.x = element_text(angle=90, hjust=1))
+```
+
+```{r fig.width=16, fig.height=6}
+plot_variance_explained(model, x="group", y="factor", plot_total = T)[[2]] +
+  ggdark::dark_mode(verbose=FALSE)
+```
+

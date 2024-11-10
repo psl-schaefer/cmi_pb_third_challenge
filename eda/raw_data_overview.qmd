@@ -607,7 +607,7 @@ exp_data$plasma_cytokine_concentration_by_legendplex %>%
 ```{r}
 # check how often is it below the limit of detection?
 exp_data$plasma_cytokine_concentration_by_olink %>%
-  dplyr::inner_join(meta_df, by="specimen_id") %>%
+  dplyr::inner_join(meta_data, by="specimen_id") %>%
   dplyr::mutate(below_lod = concentration < lower_limit_of_quantitation) %>%
   dplyr::group_by(dataset) %>%
   dplyr::summarise(below_lod = mean(below_lod, na.rm=TRUE))
@@ -655,7 +655,7 @@ exp_data$plasma_cytokine_concentration_by_olink %>%
 
 ```{r}
 exp_data$plasma_ab_titer %>%
-  dplyr::inner_join(meta_df, by="specimen_id") %>%
+  dplyr::inner_join(meta_data, by="specimen_id") %>%
   dplyr::mutate(below_lod = MFI < lower_limit_of_detection) %>%
   dplyr::group_by(dataset) %>%
   dplyr::summarise(below_lod = mean(below_lod, na.rm=TRUE))

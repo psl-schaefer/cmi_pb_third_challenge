@@ -40,7 +40,7 @@ protein_meta <- read_protein_meta(input_dir)
 meta_data <- read_harmonized_meta_data(input_dir)
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
-RECOMPUTE <- FALSE
+RECOMPUTE <- TRUE
 if (RECOMPUTE) {
   raw_experimental_data <- read_raw_experimental_data(input_dir)
   

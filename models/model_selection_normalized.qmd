@@ -28,7 +28,7 @@ suppressPackageStartupMessages({
 
 ```{r}
 input_dir = file.path("..", "data")
-output_dir = file.path("..", "results", "model_selection_integrated")
+output_dir = file.path("..", "results", "model_selection_normalized")
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 ```
 

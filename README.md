@@ -155,6 +155,8 @@
 
 - Run `Rscript src/download_data.R`
 
+- Run `Rscript src/compute_gene_stats.R`
+
 - a) Generating the whole webpage (i.e. all analyses):
   - Install quarto
   - Note, if you want to include the MOFA model (which I ended up not using), change the specification for the conda environment that is used by `reticulate`. E.g. whereever you see this line `reticulate::use_condaenv("scanpy")`, use a conda environment that is installed in your system.
