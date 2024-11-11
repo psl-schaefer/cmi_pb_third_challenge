@@ -40,7 +40,7 @@ protein_meta <- read_protein_meta(input_dir)
 meta_data <- read_harmonized_meta_data(input_dir)
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
-RECOMPUTE <- TRUE
+RECOMPUTE <- FALSE
 if (RECOMPUTE) {
   raw_experimental_data <- read_raw_experimental_data(input_dir)
   
@@ -411,6 +411,8 @@ stopifnot(all(purrr::map_dbl(feature_list, ~ mean(is.na(.x))) == 0))
 # Model Evaluation / Assessment
 
 ```{r}
+set.seed(42)
+
 tictoc::tic()
 
 result_list <-  list()
@@ -714,17 +716,17 @@ colnames(submission_df)
 ```{r}
 prediction_specs <- list(
   "task_11" = list(
-    "model" = "lasso",
-    "feature_set" = "plasma_cytokine_concentration_by_legendplex_pca+metadata+baseline",
+    "model" = "baseline",
+    "feature_set" = "baseline",
     "table_col" = "1.1) IgG-PT-D14-titer-Rank"
   ),
   "task_12" = list(
     "model" = "elnet",
-    "feature_set" = "pbmc_cell_frequency+plasma_ab_titer+plasma_cytokine_concentration_by_legendplex+metadata+baseline",
+    "feature_set" = "pbmc_cell_frequency+plasma_ab_titer+metadata+baseline",
     "table_col" = "1.2) IgG-PT-D14-FC-Rank"
   ),
   "task_21" = list(
-    "model" = "elnet",
+    "model" = "rf",
     "feature_set" = "pbmc_cell_frequency_pca+plasma_cytokine_concentration_by_legendplex_pca+t_cell_activation_pca+metadata+baseline",
     "table_col" = "2.1) Monocytes-D1-Rank"
   ),
@@ -744,7 +746,7 @@ prediction_specs <- list(
     "table_col" = "3.2) CCL3-D3-FC-Rank"
   ),
   "task_41" = list(
-    "model" = "elnet",
+    "model" = "lasso",
     "feature_set" = "plasma_ab_titer_pca+plasma_cytokine_concentration_by_legendplex_pca+t_cell_activation_pca+metadata+baseline",
     "table_col" = "4.1) IFNG/IL5-Polarization-D30-Rank"
   )
@@ -760,11 +762,11 @@ purrr::map_lgl(prediction_specs, ~ .x[["table_col"]] %in% colnames(submission_df
 stopifnot(dplyr::setequal(names(task_meta), names(prediction_specs)))
 
 ## b) all features are present
-purrr::map_lgl(prediction_specs, ~ length(str_split(.x[["feature_set"]], "\\+")[[1]]) > 2) %>%
+purrr::map_lgl(prediction_specs, ~ length(str_split(.x[["feature_set"]], "\\+")[[1]]) >= 1) %>%
   all() %>%
   stopifnot()
 
-purrr::map_lgl(prediction_specs, ~ .x[["feature_set"]] %in% names(feature_list)) %>%
+purrr::map_lgl(prediction_specs, ~ .x[["feature_set"]] %in% c(names(feature_list), "baseline")) %>%
   all() %>%
   stopifnot()
 
@@ -788,7 +790,7 @@ purrr::map(prediction_specs, ~ str_split(.x[["feature_set"]], "\\+")[[1]]) %>%
   sort(decreasing=TRUE)
 
 ## e) all models are implemented
-purrr::map_lgl(prediction_specs, ~ .x[["model"]] %in% c("rf", "rf+boruta", "elnet", "lasso")) %>%
+purrr::map_lgl(prediction_specs, ~ .x[["model"]] %in% c("rf", "rf+boruta", "elnet", "lasso", "baseline")) %>%
   all() %>%
   stopifnot()
 
@@ -813,8 +815,9 @@ purrr::imap(prediction_specs, function(task_specs, task) {
 ```{r}
 predictions_list <- list()
 
+
 for (task_name in names(prediction_specs)) {
-  #task_name <- "task_11"
+  # task_name <- "task_11"
   task_specs <- prediction_specs[[task_name]]
   
   print(task_name)
@@ -828,7 +831,11 @@ for (task_name in names(prediction_specs)) {
   
   baseline_df <- baseline_list[[task_name]]
   
-  feature_df <- feature_list[[task_specs$feature_set]]
+  if (task_specs$feature_set=="baseline" & task_specs$model=="baseline") {
+    feature_df <- baseline_df %>% dplyr::select(subject_id)
+  } else {
+    feature_df <- feature_list[[task_specs$feature_set]]
+  }
   
   if (str_detect(task_specs$feature_set, "baseline")) {
     feature_df <- feature_df %>%
@@ -876,7 +883,10 @@ for (task_name in names(prediction_specs)) {
   train_target <- dplyr::pull(train_df, target)
   test_mtx <- as.matrix(test_df)
   
-  if (task_specs$model == "rf") {
+  if (task_specs$feature_set=="baseline" & task_specs$model=="baseline") {
+    predictions <- test_df$baseline
+    names(predictions) <- rownames(test_df)
+  } else if (task_specs$model == "rf") {
     model <- ranger::ranger(formula = target ~ ., 
                             data = train_df, 
                             num.trees = 500)
@@ -1011,6 +1021,6 @@ Also write the image just in case
 
 ```{r}
 save.image(file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_model_selection_session.RData")))
-#load(file=file.path(output_dir, "2024-10-23_model_selection_session.RData"))
+#load(file=file.path(output_dir, "2024-11-11_model_selection_session.RData"))
 ```
 

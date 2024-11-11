@@ -40,7 +40,7 @@ protein_meta <- read_protein_meta(input_dir)
 
 meta_data <- read_harmonized_meta_data(input_dir)
 
-RECOMPUTE <- TRUE
+RECOMPUTE <- FALSE
 if (RECOMPUTE) {
   experimental_data <- read_raw_experimental_data(input_dir)
   experimental_data <- filter_experimental_data(meta_data=meta_data, 
