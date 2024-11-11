@@ -38,6 +38,8 @@ title: "Overview"
 
 - [Model Selection (Targets based on Integrated Data)](models/model_selection_integrated.qmd)
 
+- [Model Selection Comparison](models/comparison.qmd)
+
 # Others
 
 - [MOFA Test](eda/mofa_test.qmd)

@@ -134,6 +134,7 @@
 
 - I used this model evaluation framework to test many combinations of models and features:
   - Models: LASSO, Elastic Net, Random Forest
+    - XGboost (or any other kind of boosting algorithm) is usually state-of-the-art in tabular ML problems, but here I was not sure about using it given the small amount of training data points we have (large-p-small-n), ...
   - Features: Power set of all assays
 
 - To choose the final model per task, I not only considered the perfomrance, but all of the following points:
@@ -152,6 +153,8 @@
 
 - Check with `Rscript -e "renv::status()"`
   - Should return: `No issues found -- the project is in a consistent state.`
+  
+- Alternatively, if `renv` does not work, one could also delete the lock file and renv directory, and manually install the packages.
 
 - Run `Rscript src/download_data.R`
 

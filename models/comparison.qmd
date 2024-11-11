@@ -1,0 +1,73 @@
+---
+title: "Prediction Comparison"
+author: "Philipp Sven Lars Schäfer"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor: source
+engine: knitr
+---
+
+# Packages
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(flextable)
+  library(ggdark)
+  library(magick)
+  source(file.path("..", "src", "read_data.R"))
+  source(file.path("..", "src", "colors.R"))
+  source(file.path("..", "src", "generate_targets.R"))
+  source(file.path("..", "src", "model.R"))
+})
+```
+
+```{r}
+result_dir <- file.path("..", "results")
+list.dirs(result_dir, recursive = FALSE, full.names = FALSE)
+
+predictions <- purrr::set_names(list.dirs(result_dir, recursive = FALSE, full.names = FALSE)) %>%
+  purrr::map(., function(dir_oi) {
+  submission_files <- grep("_submission_psls.tsv", list.files(file.path(result_dir, dir_oi)), value = TRUE)
+  dates <- as.Date(str_extract(submission_files, "\\d{4}-\\d{2}-\\d{2}"))
+  most_recent_file <- submission_files[which.max(dates)]
+  readr::read_tsv(file.path(result_dir, dir_oi, most_recent_file), show_col_types = FALSE)
+})
+
+all_tasks <- colnames(predictions[[1]])[
+  !colnames(predictions[[1]]) %in% c("SubjectID", "Age", "BiologicalSexAtBirth", "VaccinePrimingStatus")]
+stopifnot(length(all_tasks)==7)
+
+all_settings <- names(predictions)
+```
+
+```{r fig.width=8, fig.height=10}
+purrr::map(all_settings, function(setting_a) {
+  purrr::map(all_settings, function(setting_b) {
+    #setting_a = "model_selection_default"; setting_b = "model_selection_normalized"
+    df_a <- predictions[[setting_a]] %>%
+      tidyr::pivot_longer(cols=dplyr::matches(all_tasks), names_to="task", values_to="setting_a")
+    df_b <- predictions[[setting_b]] %>%
+      tidyr::pivot_longer(cols=dplyr::matches(all_tasks), names_to="task", values_to="setting_b")
+    df_a %>% dplyr::select(SubjectID, task, setting_a) %>%
+      dplyr::left_join(
+        df_b %>% dplyr::select(SubjectID, task, setting_b),
+        by=c("SubjectID", "task")
+      ) %>%
+      dplyr::group_by(task) %>%
+      dplyr::summarise(srho = cor(setting_a, setting_b)) %>%
+      dplyr::mutate(setting_a = !!setting_a, 
+                    setting_b = !!setting_b)
+  })
+}) %>%
+  dplyr::bind_rows() %>%
+  dplyr::mutate(setting_a = str_remove(setting_a, "model_selection_")) %>%
+  dplyr::mutate(setting_b = str_remove(setting_b, "model_selection_")) %>%
+  dplyr::mutate(setting_a = factor(setting_a, levels=c("default", "normalized", "integrated"))) %>%
+  dplyr::mutate(setting_b = factor(setting_b, levels=c("default", "normalized", "integrated"))) %>%
+  ggplot(aes(x=setting_a, y=setting_b)) +
+  geom_tile(aes(fill=srho)) +
+  geom_text(aes(label = sprintf("%.2f", srho)), color = "white") +
+  facet_wrap(~task, ncol=2) +
+  ggdark::dark_mode(verbose=FALSE)
+```
+

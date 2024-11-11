@@ -496,10 +496,10 @@ for (task in task_meta) {
         } 
         else if (model_name == "lasso") {
           # standardize the features, even though glmnet is doing this automatically!
-          feature_means <- matrixStats::colMeans2(train_mtx)
-          feature_sds <- matrixStats::colSds(train_mtx)
-          train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
-          train_target <- (train_target - mean(train_target)) / sd(train_target)
+          # feature_means <- matrixStats::colMeans2(train_mtx)
+          # feature_sds <- matrixStats::colSds(train_mtx)
+          # train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
+          # train_target <- (train_target - mean(train_target)) / sd(train_target)
           #test_mtx <- t((t(test_mtx) - feature_means) / feature_sds)
           
           # inner hyperparameter optim loop using LOOCV to find best lambda
@@ -527,10 +527,10 @@ for (task in task_meta) {
         }
         else if (model_name == "elnet") {
           # standardize the features, even though glmnet is doing this automatically!
-          feature_means <- matrixStats::colMeans2(train_mtx)
-          feature_sds <- matrixStats::colSds(train_mtx)
-          train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
-          train_target <- (train_target - mean(train_target)) / sd(train_target)
+          # feature_means <- matrixStats::colMeans2(train_mtx)
+          # feature_sds <- matrixStats::colSds(train_mtx)
+          # train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
+          # train_target <- (train_target - mean(train_target)) / sd(train_target)
           #test_mtx <- t((t(test_mtx) - feature_means) / feature_sds)
           
           # inner hyperparameter optim loop using LOOCV to find best lambda
@@ -617,7 +617,7 @@ model_selection_df <- result_summary %>%
 ```
 
 ```{r}
-readr::write_delim(model_selection_df, file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "model_selection_df.tsv")), delim="\t")
+readr::write_delim(model_selection_df, file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_model_selection_df.tsv")), delim="\t")
 
 #model_selection_df <- readr::read_delim(file.path(output_dir, "model_selection_df.tsv"), delim="\t")
 
@@ -653,7 +653,7 @@ for (task in unique(model_selection_df$task)) {
 }
 openxlsx::saveWorkbook(
   wb, 
-  file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "model_selection_df.xlsx")), 
+  file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_model_selection_df.xlsx")), 
   overwrite = TRUE)
 ```
 
@@ -692,13 +692,13 @@ colnames(submission_df)
 ```{r}
 prediction_specs <- list(
   "task_11" = list(
-    "model" = "lasso",
-    "feature_set" = "plasma_cytokine_concentration_by_legendplex_pca+metadata+baseline",
+    "model" = "rf",
+    "feature_set" = "pbmc_gene_expression+plasma_ab_titer+t_cell_activation+metadata+baseline",
     "table_col" = "1.1) IgG-PT-D14-titer-Rank"
   ),
   "task_12" = list(
     "model" = "lasso",
-    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+t_cell_activation+t_cell_polarization+metadata+baseline",
+    "feature_set" = "pbmc_gene_expression+t_cell_polarization+metadata+baseline",
     "table_col" = "1.2) IgG-PT-D14-FC-Rank"
   ),
   "task_21" = list(
@@ -708,22 +708,22 @@ prediction_specs <- list(
   ),
   "task_22" = list(
     "model" = "elnet",
-    "feature_set" = "pbmc_cell_frequency+plasma_cytokine_concentration_by_legendplex+metadata+baseline",
+    "feature_set" = "plasma_cytokine_concentration_by_legendplex+t_cell_activation+t_cell_polarization+metadata+baseline",
     "table_col" = "2.2) Monocytes-D1-FC-Rank"
   ),
   "task_31" = list(
-    "model" = "lasso",
-    "feature_set" = "plasma_cytokine_concentration_by_legendplex+metadata+baseline",
+    "model" = "rf",
+    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+plasma_cytokine_concentration_by_legendplex+t_cell_activation+t_cell_polarization+metadata+baseline",
     "table_col" = "3.1) CCL3-D3-Rank"
   ),
   "task_32" = list(
-    "model" = "rf",
-    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+plasma_ab_titer+plasma_cytokine_concentration_by_legendplex+t_cell_activation+t_cell_polarization+metadata+baseline",
+    "model" = "elnet",
+    "feature_set" = "pbmc_gene_expression_pca+t_cell_activation_pca+t_cell_polarization_pca+metadata+baseline",
     "table_col" = "3.2) CCL3-D3-FC-Rank"
   ),
   "task_41" = list(
     "model" = "elnet",
-    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+t_cell_activation+metadata+baseline",
+    "feature_set" = "pbmc_gene_expression+plasma_cytokine_concentration_by_legendplex+t_cell_activation+metadata+baseline",
     "table_col" = "4.1) IFNG/IL5-Polarization-D30-Rank"
   )
 )
@@ -791,9 +791,9 @@ purrr::imap(prediction_specs, function(task_specs, task) {
 ```{r}
 predictions_list <- list()
 
-task_name <- "task_41"
 
 for (task_name in names(prediction_specs)) {
+  # task_name <- "task_41"
   task_specs <- prediction_specs[[task_name]]
   
   print(task_name)
@@ -878,10 +878,10 @@ for (task_name in names(prediction_specs)) {
     predictions <- predict(model, test_df_subset)$predictions
   } else if (task_specs$model == "lasso") {
     # standardize the features, even though glmnet is doing this automatically!
-    feature_means <- matrixStats::colMeans2(train_mtx)
-    feature_sds <- matrixStats::colSds(train_mtx)
-    train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
-    train_target <- (train_target - mean(train_target)) / sd(train_target)
+    # feature_means <- matrixStats::colMeans2(train_mtx)
+    # feature_sds <- matrixStats::colSds(train_mtx)
+    # train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
+    # train_target <- (train_target - mean(train_target)) / sd(train_target)
     #test_mtx <- t((t(test_mtx) - feature_means) / feature_sds)
     
     # inner hyperparameter optim loop using LOOCV to find best lambda
@@ -908,10 +908,10 @@ for (task_name in names(prediction_specs)) {
                            s=lambda_value)[,1]
   } else if (task_specs$model == "elnet") {
     # standardize the features, even though glmnet is doing this automatically!
-    feature_means <- matrixStats::colMeans2(train_mtx)
-    feature_sds <- matrixStats::colSds(train_mtx)
-    train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
-    train_target <- (train_target - mean(train_target)) / sd(train_target)
+    # feature_means <- matrixStats::colMeans2(train_mtx)
+    # feature_sds <- matrixStats::colSds(train_mtx)
+    # train_mtx <- t((t(train_mtx) - feature_means) / feature_sds)
+    # train_target <- (train_target - mean(train_target)) / sd(train_target)
     #test_mtx <- t((t(test_mtx) - feature_means) / feature_sds)
     
     # inner hyperparameter optim loop using LOOCV to find best lambda

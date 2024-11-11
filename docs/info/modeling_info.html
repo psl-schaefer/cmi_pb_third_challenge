@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Philipp Sven Lars Schäfer">
-<meta name="dcterms.date" content="2024-11-09">
+<meta name="dcterms.date" content="2024-11-10">
 
 <title>Notes on the Modeling Strategy – PSLS @ 3rd CMI-PB Challenge</title>
 <style>
@@ -171,6 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#construction-of-target-tracks" id="toc-construction-of-target-tracks" class="nav-link" data-scroll-target="#construction-of-target-tracks"><span class="header-section-number">2.5</span> Construction of Target Tracks</a></li>
   </ul></li>
   <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">3</span> Model Selection</a></li>
+  <li><a href="#other-thoughts" id="toc-other-thoughts" class="nav-link" data-scroll-target="#other-thoughts"><span class="header-section-number">4</span> Other Thoughts</a></li>
   </ul>
 </nav>
     </div>
@@ -196,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 9, 2024</p>
+      <p class="date">November 10, 2024</p>
     </div>
   </div>
   
@@ -352,6 +353,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>If several models with top performance and low variance, choose the more regularized model</li>
 <li>If several models with top performance and low variance, choose model that is not using any assay that is missing often in test data (specifically Olink!)</li>
 </ul></li>
+</ul>
+</section>
+<section id="other-thoughts" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="other-thoughts"><span class="header-section-number">4</span> Other Thoughts</h2>
+<ul>
+<li>In pretty much none of the models I consider the 2020 cohort, because the performance of models that use all the data is quite underwhelming…</li>
 </ul>
 
 
@@ -965,7 +972,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Top ranking performance</span>
 <span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Low variance between the test sets</span>
 <span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>If several models with top performance and low variance, choose the more regularized model</span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>If several models with top performance and low variance, choose model that is not using any assay that is missing often in test data (specifically Olink!)</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>If several models with top performance and low variance, choose model that is not using any assay that is missing often in test data (specifically Olink!)</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="fu">## Other Thoughts</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>In pretty much none of the models I consider the 2020 cohort, because the performance of models that use all the data is quite underwhelming...</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

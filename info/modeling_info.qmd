@@ -133,3 +133,8 @@ engine: knitr
   - Low variance between the test sets
   - If several models with top performance and low variance, choose the more regularized model
   - If several models with top performance and low variance, choose model that is not using any assay that is missing often in test data (specifically Olink!)
+
+
+## Other Thoughts
+
+- In pretty much none of the models I consider the 2020 cohort, because the performance of models that use all the data is quite underwhelming...
