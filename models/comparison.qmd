@@ -62,8 +62,6 @@ purrr::map(all_settings, function(setting_a) {
   dplyr::bind_rows() %>%
   dplyr::mutate(setting_a = str_remove(setting_a, "model_selection_")) %>%
   dplyr::mutate(setting_b = str_remove(setting_b, "model_selection_")) %>%
-  dplyr::mutate(setting_a = factor(setting_a, levels=c("default", "normalized", "integrated"))) %>%
-  dplyr::mutate(setting_b = factor(setting_b, levels=c("default", "normalized", "integrated"))) %>%
   ggplot(aes(x=setting_a, y=setting_b)) +
   geom_tile(aes(fill=srho)) +
   geom_text(aes(label = sprintf("%.2f", srho)), color = "white") +

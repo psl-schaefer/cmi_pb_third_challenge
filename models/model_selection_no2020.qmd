@@ -719,18 +719,18 @@ prediction_specs <- list(
     "table_col" = "1.1) IgG-PT-D14-titer-Rank"
   ),
   "task_12" = list(
-    "model" = "lasso",
-    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+t_cell_activation+t_cell_polarization+metadata+baseline",
+    "model" = "elnet",
+    "feature_set" = "pbmc_cell_frequency+plasma_ab_titer+plasma_cytokine_concentration_by_legendplex+metadata+baseline",
     "table_col" = "1.2) IgG-PT-D14-FC-Rank"
   ),
   "task_21" = list(
-    "model" = "rf",
+    "model" = "elnet",
     "feature_set" = "pbmc_cell_frequency_pca+plasma_cytokine_concentration_by_legendplex_pca+t_cell_activation_pca+metadata+baseline",
     "table_col" = "2.1) Monocytes-D1-Rank"
   ),
   "task_22" = list(
     "model" = "elnet",
-    "feature_set" = "pbmc_cell_frequency+plasma_cytokine_concentration_by_legendplex+metadata+baseline",
+    "feature_set" = "plasma_cytokine_concentration_by_legendplex+t_cell_activation+t_cell_polarization+metadata+baseline",
     "table_col" = "2.2) Monocytes-D1-FC-Rank"
   ),
   "task_31" = list(
@@ -740,12 +740,12 @@ prediction_specs <- list(
   ),
   "task_32" = list(
     "model" = "rf",
-    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+plasma_ab_titer+plasma_cytokine_concentration_by_legendplex+t_cell_activation+t_cell_polarization+metadata+baseline",
+    "feature_set" = "plasma_ab_titer+metadata+baseline",
     "table_col" = "3.2) CCL3-D3-FC-Rank"
   ),
   "task_41" = list(
     "model" = "elnet",
-    "feature_set" = "pbmc_cell_frequency+pbmc_gene_expression+t_cell_activation+metadata+baseline",
+    "feature_set" = "plasma_ab_titer_pca+plasma_cytokine_concentration_by_legendplex_pca+t_cell_activation_pca+metadata+baseline",
     "table_col" = "4.1) IFNG/IL5-Polarization-D30-Rank"
   )
 )

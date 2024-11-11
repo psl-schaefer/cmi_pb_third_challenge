@@ -5,7 +5,8 @@ library(sva)
 
 normalize_experimental_data <- function(meta_data, 
                                         raw_experimental_data, 
-                                        gene_meta) {
+                                        gene_meta,
+                                        gex_norm_per_year=FALSE) {
   specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
   normalized_data <- list()
   
@@ -49,32 +50,44 @@ normalize_experimental_data <- function(meta_data,
   # check that all column (gene) names are unique
   stopifnot(length(colnames(pbmc_gene_expression_wide)) == length(unique(colnames(pbmc_gene_expression_wide))))
   
+  pbmc_gene_expression_meta <- tibble::column_to_rownames(meta_data, var="specimen_id") %>%
+    .[rownames(pbmc_gene_expression_wide), ] 
+  
   # DESeq2 normalization with variance stabilizing transformation (vst)
   # transforms the count data (normalized by division by the size factors or normalization factors), 
   # yielding a matrix of values which are now approximately homoskedastic
   # The transformation also normalizes with respect to library size
-  # perform the transformation per cohort
-  pbmc_gene_expression_meta <- tibble::column_to_rownames(meta_data, var="specimen_id") %>%
-    .[rownames(pbmc_gene_expression_wide), ] 
-  pbmc_gene_expression_normalized <- matrix(data=0, 
-                                            nrow=nrow(pbmc_gene_expression_wide),
-                                            ncol=ncol(pbmc_gene_expression_wide))
-  dimnames(pbmc_gene_expression_normalized) <- dimnames(pbmc_gene_expression_wide)
+  if (!gex_norm_per_year) {
+    pbmc_gene_expression_normalized <- DESeq2::DESeqDataSetFromMatrix(countData = t(pbmc_gene_expression_wide),
+                                   colData = pbmc_gene_expression_meta,
+                                   design = ~ 1)
+    pbmc_gene_expression_normalized <- DESeq2::estimateSizeFactors(pbmc_gene_expression_normalized, quiet=TRUE) 
+    pbmc_gene_expression_normalized <- DESeq2::estimateDispersions(pbmc_gene_expression_normalized, quiet=TRUE)
+    pbmc_gene_expression_normalized <- DESeq2::varianceStabilizingTransformation(pbmc_gene_expression_normalized, blind=TRUE)
+    pbmc_gene_expression_normalized <- t(assay(pbmc_gene_expression_normalized))
+  } else {
+    # perform the transformation per cohort
+    pbmc_gene_expression_normalized <- matrix(data=0,
+                                              nrow=nrow(pbmc_gene_expression_wide),
+                                              ncol=ncol(pbmc_gene_expression_wide))
+    dimnames(pbmc_gene_expression_normalized) <- dimnames(pbmc_gene_expression_wide)
   
-  for (year in unique(pbmc_gene_expression_meta$dataset)) {
-    # year <- unique(pbmc_gene_expression_meta$dataset)[1]
-    specimen_per_year <- rownames(pbmc_gene_expression_meta)[pbmc_gene_expression_meta$dataset==year]
-    normalized_per_year <- 
-      DESeq2::DESeqDataSetFromMatrix(countData = t(pbmc_gene_expression_wide[specimen_per_year, ]),
-                                     colData = tibble::tibble(specimen_id=specimen_per_year),
-                                     design = ~ 1)
-    normalized_per_year <- DESeq2::estimateSizeFactors(normalized_per_year, quiet=TRUE) 
-    normalized_per_year <- DESeq2::estimateDispersions(normalized_per_year, quiet=TRUE)
-    normalized_per_year <- DESeq2::varianceStabilizingTransformation(normalized_per_year, blind=TRUE)
-    normalized_per_year <- t(assay(normalized_per_year))
-    pbmc_gene_expression_normalized[rownames(normalized_per_year), colnames(normalized_per_year)] <-
-      normalized_per_year
+    for (year in unique(pbmc_gene_expression_meta$dataset)) {
+      # year <- unique(pbmc_gene_expression_meta$dataset)[1]
+      specimen_per_year <- rownames(pbmc_gene_expression_meta)[pbmc_gene_expression_meta$dataset==year]
+      normalized_per_year <-
+        DESeq2::DESeqDataSetFromMatrix(countData = t(pbmc_gene_expression_wide[specimen_per_year, ]),
+                                       colData = tibble::tibble(specimen_id=specimen_per_year),
+                                       design = ~ 1)
+      normalized_per_year <- DESeq2::estimateSizeFactors(normalized_per_year, quiet=TRUE)
+      normalized_per_year <- DESeq2::estimateDispersions(normalized_per_year, quiet=TRUE)
+      normalized_per_year <- DESeq2::varianceStabilizingTransformation(normalized_per_year, blind=TRUE)
+      normalized_per_year <- t(assay(normalized_per_year))
+      pbmc_gene_expression_normalized[rownames(normalized_per_year), colnames(normalized_per_year)] <-
+        normalized_per_year
+    }
   }
+
   # convert back to long format
   normalized_data$pbmc_gene_expression <- pbmc_gene_expression_normalized %>%
     as.data.frame() %>%
@@ -142,7 +155,7 @@ normalize_experimental_data <- function(meta_data,
 }
 
 
-integrate_experimental_data <- function(meta_data, normalized_experimental_data) {
+integrate_experimental_data <- function(meta_data, normalized_experimental_data, gex_norm_per_year=FALSE) {
   integrated_data <- list()
   
   # 1) pbmc_cell_frequency: Nothing
@@ -160,7 +173,7 @@ integrate_experimental_data <- function(meta_data, normalized_experimental_data)
     as.matrix()
   
   pbmc_gene_expression_meta <- tibble::column_to_rownames(meta_data, var="specimen_id") %>%
-    .[rownames(pbmc_gene_expression_wide), ] 
+    .[rownames(pbmc_gene_expression_wide), ]
   
   pbmc_gene_expression_corrected <- sva::ComBat_seq(
     counts = t(pbmc_gene_expression_wide), batch = pbmc_gene_expression_meta$dataset
@@ -175,26 +188,41 @@ integrate_experimental_data <- function(meta_data, normalized_experimental_data)
   pbmc_gene_expression_meta <- tibble::column_to_rownames(meta_data, var="specimen_id") %>%
     .[rownames(pbmc_gene_expression_corrected), ] 
   
-  # again vst normalize
-  pbmc_gene_expression_normalized <- matrix(data=0, 
-                                            nrow=nrow(pbmc_gene_expression_corrected),
-                                            ncol=ncol(pbmc_gene_expression_corrected))
-  dimnames(pbmc_gene_expression_normalized) <- dimnames(pbmc_gene_expression_corrected)
-  
-  for (year in unique(pbmc_gene_expression_meta$dataset)) {
-    # year <- unique(pbmc_gene_expression_meta$dataset)[1]
-    specimen_per_year <- rownames(pbmc_gene_expression_meta)[pbmc_gene_expression_meta$dataset==year]
-    normalized_per_year <- 
-      DESeq2::DESeqDataSetFromMatrix(countData = t(pbmc_gene_expression_corrected[specimen_per_year, ]),
-                                     colData = tibble::tibble(specimen_id=specimen_per_year),
-                                     design = ~ 1)
-    normalized_per_year <- DESeq2::estimateSizeFactors(normalized_per_year, quiet=TRUE) 
-    normalized_per_year <- DESeq2::estimateDispersions(normalized_per_year, quiet=TRUE)
-    normalized_per_year <- DESeq2::varianceStabilizingTransformation(normalized_per_year, blind=TRUE)
-    normalized_per_year <- t(assay(normalized_per_year))
-    pbmc_gene_expression_normalized[rownames(normalized_per_year), colnames(normalized_per_year)] <-
-      normalized_per_year
+  # DESeq2 normalization with variance stabilizing transformation (vst)
+  # transforms the count data (normalized by division by the size factors or normalization factors), 
+  # yielding a matrix of values which are now approximately homoskedastic
+  # The transformation also normalizes with respect to library size
+  if (!gex_norm_per_year) {
+    pbmc_gene_expression_normalized <- DESeq2::DESeqDataSetFromMatrix(countData = t(pbmc_gene_expression_corrected),
+                                                                      colData = pbmc_gene_expression_meta,
+                                                                      design = ~ 1)
+    pbmc_gene_expression_normalized <- DESeq2::estimateSizeFactors(pbmc_gene_expression_normalized, quiet=TRUE) 
+    pbmc_gene_expression_normalized <- DESeq2::estimateDispersions(pbmc_gene_expression_normalized, quiet=TRUE)
+    pbmc_gene_expression_normalized <- DESeq2::varianceStabilizingTransformation(pbmc_gene_expression_normalized, blind=TRUE)
+    pbmc_gene_expression_normalized <- t(assay(pbmc_gene_expression_normalized))
+  } else {
+    # perform the transformation per cohort
+    pbmc_gene_expression_normalized <- matrix(data=0,
+                                              nrow=nrow(pbmc_gene_expression_corrected),
+                                              ncol=ncol(pbmc_gene_expression_corrected))
+    dimnames(pbmc_gene_expression_normalized) <- dimnames(pbmc_gene_expression_corrected)
+    
+    for (year in unique(pbmc_gene_expression_meta$dataset)) {
+      # year <- unique(pbmc_gene_expression_meta$dataset)[1]
+      specimen_per_year <- rownames(pbmc_gene_expression_meta)[pbmc_gene_expression_meta$dataset==year]
+      normalized_per_year <-
+        DESeq2::DESeqDataSetFromMatrix(countData = t(pbmc_gene_expression_corrected[specimen_per_year, ]),
+                                       colData = tibble::tibble(specimen_id=specimen_per_year),
+                                       design = ~ 1)
+      normalized_per_year <- DESeq2::estimateSizeFactors(normalized_per_year, quiet=TRUE)
+      normalized_per_year <- DESeq2::estimateDispersions(normalized_per_year, quiet=TRUE)
+      normalized_per_year <- DESeq2::varianceStabilizingTransformation(normalized_per_year, blind=TRUE)
+      normalized_per_year <- t(assay(normalized_per_year))
+      pbmc_gene_expression_normalized[rownames(normalized_per_year), colnames(normalized_per_year)] <-
+        normalized_per_year
+    }
   }
+  
   # convert back to long format
   integrated_data$pbmc_gene_expression <- 
     pbmc_gene_expression_normalized %>%
