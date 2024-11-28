@@ -790,11 +790,11 @@ purrr::imap(prediction_specs, function(task_specs, task) {
 - Make predictions for the 2023 data
 
 ```{r}
+var_imp_list <- list()
 predictions_list <- list()
 
-
 for (task_name in names(prediction_specs)) {
-  # task_name <- "task_11"
+  # task_name <- "task_12"
   task_specs <- prediction_specs[[task_name]]
   
   print(task_name)
@@ -866,9 +866,15 @@ for (task_name in names(prediction_specs)) {
   } else if (task_specs$model == "rf") {
     model <- ranger::ranger(formula = target ~ ., 
                             data = train_df, 
-                            num.trees = 500)
+                            num.trees = 500, 
+                            importance = "impurity")
     predictions <- predict(model, test_df)$predictions
     names(predictions) <- rownames(test_df)
+    var_imp_list[[task_name]] <- 
+      tibble(task=task_name,
+             importance = model$variable.importance,
+             feature = names(model$variable.importance)
+      )
   } else if (task_specs$model == "rf+boruta") {
     boruta_out <- Boruta::Boruta(formula = target ~ .,
                                  data = train_df,
@@ -882,8 +888,15 @@ for (task_name in names(prediction_specs)) {
     test_df_subset <- test_df %>% dplyr::select(dplyr::all_of(c(boruta_feats, "target")))
     model <- ranger::ranger(formula = target ~ ., 
                             data = train_df_subset, 
-                            num.trees = 500)
+                            num.trees = 500, 
+                            importance = "impurity")
     predictions <- predict(model, test_df_subset)$predictions
+    names(predictions) <- rownames(test_df)
+    var_imp_list[[task_name]] <- 
+      tibble(task=task_name,
+             importance = model$variable.importance,
+             feature = names(model$variable.importance)
+      )
   } else if (task_specs$model == "lasso") {
     # standardize the features, even though glmnet is doing this automatically!
     # feature_means <- matrixStats::colMeans2(train_mtx)
@@ -914,6 +927,12 @@ for (task_name in names(prediction_specs)) {
     predictions <- predict(model,
                            newx=test_mtx, 
                            s=lambda_value)[,1]
+    coefs <- model$glmnet.fit$beta[, lambda_value==model$glmnet.fit$lambda]
+    var_imp_list[[task_name]] <- 
+      tibble(task=task_name,
+             importance = abs(coefs),
+             feature = names(coefs)
+      )
   } else if (task_specs$model == "elnet") {
     # standardize the features, even though glmnet is doing this automatically!
     # feature_means <- matrixStats::colMeans2(train_mtx)
@@ -937,6 +956,12 @@ for (task_name in names(prediction_specs)) {
     predictions <- predict(model,
                            newx=test_mtx, 
                            s=lambda_value)[,1]
+    coefs <- model$glmnet.fit$beta[, lambda_value==model$glmnet.fit$lambda]
+    var_imp_list[[task_name]] <- 
+      tibble(task=task_name,
+             importance = abs(coefs),
+             feature = names(coefs)
+      )
   }
   
   stopifnot(all(names(predictions) == rownames(test_df)))
@@ -990,6 +1015,24 @@ readr::write_tsv(
   file = file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_submission_psls.tsv"))
 )
 submission_df_with_rank
+```
+
+Then we can also look at the most important features
+
+```{r}
+var_imp_list %>%
+  dplyr::bind_rows() %>%
+  dplyr::group_by(task) %>%
+  dplyr::slice_max(order_by=importance, n=10, with_ties = FALSE) %>%
+  dplyr::filter(importance > 0)
+  
+var_imp_list %>%
+  dplyr::bind_rows() %>%
+  dplyr::group_by(task) %>%
+  dplyr::slice_max(order_by=importance, n=10, with_ties = FALSE) %>%
+  dplyr::filter(importance > 0) %>%
+  dplyr::summarise(features = paste0(feature, collapse=", ")) %>%
+  readr::write_delim(., file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_var_imp_df.tsv")), delim="\t")
 ```
 
 # Appendix

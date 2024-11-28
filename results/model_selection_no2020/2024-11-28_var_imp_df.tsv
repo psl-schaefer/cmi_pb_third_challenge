@@ -1,0 +1,7 @@
+task	features
+task_12	pbmc_cell_frequency_CD4Tcells, plasma_ab_titer_IgG_TT, plasma_ab_titer_IgG_PT, pbmc_cell_frequency_Classical_Monocytes, biological_sex_Male, plasma_ab_titer_IgG1_PRN, plasma_ab_titer_IgG1_DT, plasma_ab_titer_IgG4_DT, age_at_boost, plasma_ab_titer_IgG2_FHA
+task_21	baseline, PC3.x, PC4.x, PC1.x, PC6.y, PC1, PC5.x, PC6.x, PC7, PC2
+task_22	t_cell_activation_PHA, biological_sex_Male, t_cell_polarization_PT_Q16552, t_cell_activation_PT, plasma_cytokine_concentration_by_legendplex_P13501, plasma_cytokine_concentration_by_legendplex_P18510, plasma_cytokine_concentration_by_legendplex_P09919, baseline, t_cell_activation_DMSO
+task_31	infancy_vac_aP, baseline
+task_32	baseline, plasma_ab_titer_IgG2_PRN, plasma_ab_titer_IgG_PRN, plasma_ab_titer_IgG3_OVA, plasma_ab_titer_IgG4_DT, plasma_ab_titer_IgG2_OVA, plasma_ab_titer_IgG4_TT, plasma_ab_titer_IgG2_TT, plasma_ab_titer_IgG3_DT, plasma_ab_titer_IgG2_DT
+task_41	baseline, PC15, PC1

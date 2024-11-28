@@ -1,0 +1,7 @@
+task	features
+task_12	pbmc_cell_frequency_CD4Tcells, t_cell_polarization_PHA_P01579, pbmc_cell_frequency_Monocytes, t_cell_polarization_PHA_Q16552, pbmc_cell_frequency_Intermediate_Monocytes, baseline, t_cell_polarization_PT_P01579, t_cell_polarization_PT_P05113, t_cell_polarization_PHA_P05113, biological_sex_Male
+task_21	baseline, PC3.x, PC4.x, PC5.x, PC6.x, PC1.x, PC6.y, PC1, PC2, PC7.y
+task_22	t_cell_activation_PHA, biological_sex_Male, t_cell_polarization_PT_Q16552, baseline, t_cell_activation_PT, plasma_cytokine_concentration_by_legendplex_P13501, plasma_cytokine_concentration_by_legendplex_P18510, plasma_cytokine_concentration_by_legendplex_P09919, t_cell_activation_DMSO
+task_31	baseline, infancy_vac_aP, plasma_cytokine_concentration_by_legendplex_P13501
+task_32	baseline, PC9, PC13, PC6, PC15, PC8, PC1, PC3, PC2, PC16
+task_41	baseline, pbmc_cell_frequency_CD8Tcells, t_cell_activation_TT, plasma_cytokine_concentration_by_legendplex_P13232
