@@ -40,7 +40,7 @@ protein_meta <- read_protein_meta(input_dir)
 meta_data <- read_harmonized_meta_data(input_dir)
 specimen_per_day <- get_specimen_per_day(meta_data=meta_data)
 
-RECOMPUTE <- TRUE
+RECOMPUTE <- FALSE
 if (RECOMPUTE) {
   raw_experimental_data <- read_raw_experimental_data(input_dir)
   
@@ -257,6 +257,23 @@ experimental_predictors_day_0_pca <- experimental_predictors_day_0 %>%
       dplyr::mutate(subject_id = df$subject_id) %>%
       dplyr::select(subject_id, everything())
     return(df_pca)
+})
+
+experimental_predictors_day_0_pca_rotation <- experimental_predictors_day_0 %>%
+  purrr::imap(function(df, modality) {
+    #df <- experimental_predictors_day_0$pbmc_cell_frequency
+    mtx <- df %>% dplyr::select(-subject_id) %>% as.matrix()
+    pca <- stats::prcomp(mtx)
+    pca$rotation %>%
+      as.data.frame() %>%
+      tibble::rownames_to_column(var="feature") %>%
+      tidyr::pivot_longer(cols=!feature, names_to="PCA", values_to="loading") %>%
+      dplyr::mutate(PCA = stringr::str_replace(PCA, "PC", "PCA_")) %>%
+      dplyr::mutate(abs_loading = abs(loading)) %>%
+      dplyr::arrange(PCA, desc(abs_loading)) %>%
+      dplyr::mutate(modality = modality) %>%
+      dplyr::select(modality, feature, PCA, loading, abs_loading) %>%
+      return()
 })
 
 modality_powerset <- purrr::map(1:length(experimental_predictors_day_0), function(i) {
@@ -1043,5 +1060,62 @@ Also write the image just in case
 ```{r}
 save.image(file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_model_selection_session.RData")))
 #load(file=file.path(output_dir, "2024-11-11_model_selection_session.RData"))
+```
+
+## PCA Predictors (Important Features)
+
+- task 2.1
+  - plasma_cytokine_concentration_by_legendplex_pca components 1,2,3,4,5,6
+  - pbmc_cell_frequency_pca components 1,2
+  - t_cell_activation_pca component 1
+
+- task 3.2
+  - plasma_ab_titer_pca component 1, 2, 3, 6, 8, 9, 11, 13, 15
+
+```{r}
+used_in_task_21 <- list(
+  "plasma_cytokine_concentration_by_legendplex_pca" = list("PCA_1", "PCA_2", "PCA_3", "PCA_4", "PCA_5", "PCA_6"),
+  "pbmc_cell_frequency_pca" = list("PCA_1", "PCA_2"),
+  "t_cell_activation_pca" = list("PCA_1")
+  )
+
+used_in_task_32 <- list(
+  "plasma_ab_titer_pca" = c("PCA_1", "PCA_2", "PCA_3", "PCA_6", "PCA_8", "PCA_9", "PCA_11", "PCA_13", "PCA_15")
+)
+
+df_used_in_task_21 <- tibble(
+  modality = stringr::str_replace(names(used_in_task_21), "_pca", ""),
+  PCA = used_in_task_21
+) %>%
+  unnest_longer(PCA) %>%
+  dplyr::mutate(used_in_task_21 = TRUE)
+
+df_used_in_task_32 <- tibble(
+  modality = stringr::str_replace(names(used_in_task_32), "_pca", ""),
+  PCA = used_in_task_32
+) %>%
+  unnest_longer(PCA) %>%
+  dplyr::mutate(used_in_task_32 = TRUE)
+
+summary_df <- purrr::imap(experimental_predictors_day_0_pca_rotation, function(df, modality) {
+  df %>%
+    dplyr::group_by(PCA) %>%
+    dplyr::slice_max(abs_loading, n=5) %>%
+    dplyr::ungroup()
+}) %>%
+  dplyr::bind_rows() %>%
+  dplyr::left_join(df_used_in_task_21, by=c("modality", "PCA")) %>%
+  dplyr::left_join(df_used_in_task_32, by=c("modality", "PCA")) %>%
+  mutate(across(everything(), ~ replace_na(.x, FALSE)))
+
+summary_df %>%
+  head()
+```
+
+```{r}
+summary_df %>%
+  dplyr::filter(used_in_task_21 | used_in_task_32) %>%
+  dplyr::arrange(desc(used_in_task_21), desc(used_in_task_32), modality, PCA, abs_loading) %>%
+  readr::write_tsv(file=file.path(output_dir, paste0(format(Sys.Date(), "%Y-%m-%d"), "_pca_loadings.tsv")))
 ```
 
